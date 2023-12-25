@@ -1,12 +1,17 @@
+import 'package:canteen/models/menus.dart';
 import 'package:flutter/material.dart';
 import 'package:canteen/screens/categories_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:provider/provider.dart';
 
 class HomeCategory extends StatefulWidget {
   final IconData icon;
   final String title;
   final String items;
-  final Function ?tap;
+  final int len;
+  bool isSelected;
+  Function? onTap;
   final bool isHome;
 
   HomeCategory({
@@ -14,8 +19,10 @@ class HomeCategory extends StatefulWidget {
     required this.icon,
     required this.title,
     required this.items,
-    this.tap, required this.isHome})
-      : super(key: key);
+    required this.isHome,
+    this.onTap,
+    this.isSelected = false, required this.len,
+  }) : super(key: key);
 
   @override
   _HomeCategoryState createState() => _HomeCategoryState();
@@ -24,32 +31,55 @@ class HomeCategory extends StatefulWidget {
 class _HomeCategoryState extends State<HomeCategory> {
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: (){
-        if(widget.isHome){
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (BuildContext context){
-              return CategoriesScreen();
-            },
-          ),
-        );}
-        else{
-          widget.tap;
+    final app = AppLocalizations.of(context)!;
+    final menuProvider = Provider.of<MenuProvider>(context, listen: true);
+    // final len = menuProvider.getMenusByCategory(widget.title).length;
+
+    // Filter menus by category directly inside the build method
+    
+    return GestureDetector(
+      behavior: HitTestBehavior.deferToChild,
+      onTap: () {
+        if (widget.isHome) {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (BuildContext context) {
+                return CategoriesScreen(
+                  len: widget.len,
+                  catie: widget.title,
+                );
+              },
+            ),
+          );
+        } else {
+          menuProvider.updateCategory(widget.title);
+
+          setState(() {});
         }
       },
       child: Card(
-        shape: RoundedRectangleBorder( borderRadius: BorderRadius.circular(10.0)),
+        surfaceTintColor: Colors.white,
+        color: Colors.white,
+        // color: widget.isSelected && !widget.isHome
+        //     ? Colors.red.shade100
+        //     : Colors.white,
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         elevation: 4.0,
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
+        shadowColor: Colors.grey,
+        child: Container(
+          margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+          ),
           child: Row(
             children: <Widget>[
               Padding(
                 padding: EdgeInsets.only(left: 0.0, right: 10.0),
                 child: Icon(
                   widget.icon,
-                  color: Theme.of(context).accentColor,
+                  color: Colors.red,
                 ),
               ),
               SizedBox(width: 5),
@@ -65,9 +95,8 @@ class _HomeCategoryState extends State<HomeCategory> {
                       fontSize: 17,
                     ),
                   ),
-
                   Text(
-                    "${widget.items} Items",
+                    widget.len.toString() + '' + app.items,
                     style: TextStyle(
                       fontWeight: FontWeight.w400,
                       fontSize: 10,

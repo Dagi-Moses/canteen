@@ -3,6 +3,8 @@ import 'package:canteen/screens/notifications.dart';
 import 'package:canteen/util/foods.dart';
 import 'package:canteen/widgets/badge.dart';
 import 'package:canteen/widgets/grid_product.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../models/menus.dart';
 
 
 class DishesScreen extends StatefulWidget {
@@ -13,6 +15,7 @@ class DishesScreen extends StatefulWidget {
 class _DishesScreenState extends State<DishesScreen> {
   @override
   Widget build(BuildContext context) {
+    final app = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -24,7 +27,7 @@ class _DishesScreenState extends State<DishesScreen> {
         ),
         centerTitle: true,
         title: Text(
-          "Dishes",
+          app.dishes,
         ),
         elevation: 0.0,
         actions: <Widget>[
@@ -52,7 +55,7 @@ class _DishesScreenState extends State<DishesScreen> {
 
           children: <Widget>[
             Text(
-              "Chinese",
+              app.chinese,
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w800,
@@ -72,20 +75,18 @@ class _DishesScreenState extends State<DishesScreen> {
               ),
               itemCount: 4,
               itemBuilder: (BuildContext context, int index) {
-                Map food = foods[index];
+              Map food = foods[index];
+                Menus menu = Menus.fromJson(json: food as Map<String, dynamic>);
                 return GridProduct(
-                  img: food['img'],
-                  isFav: false,
-                  name: food['name'],
-                  rating: 5.0,
-                  raters: 23,
+                model: menu,
+               
                 );
               },
             ),
 
             SizedBox(height: 20.0),
             Text(
-              "Italian",
+              app.italian,
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w800,
@@ -105,20 +106,18 @@ class _DishesScreenState extends State<DishesScreen> {
               ),
               itemCount: 4,
               itemBuilder: (BuildContext context, int index) {
-                Map food = foods[index];
+               Map food = foods[index];
+                Menus menu = Menus.fromJson(json: food as Map<String, dynamic>);
                 return GridProduct(
-                  img: food['img'],
-                  isFav: false,
-                  name: food['name'],
-                  rating: 5.0,
-                  raters: 23,
+                model: menu,
+              
                 );
               },
             ),
 
             SizedBox(height: 20.0),
             Text(
-              "African",
+              app.african,
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w800,
@@ -139,12 +138,10 @@ class _DishesScreenState extends State<DishesScreen> {
               itemCount: 4,
               itemBuilder: (BuildContext context, int index) {
                 Map food = foods[index];
+                Menus menu = Menus.fromJson(json: food as Map<String, dynamic>);
                 return GridProduct(
-                  img: food['img'],
-                  isFav: false,
-                  name: food['name'],
-                  rating: 5.0,
-                  raters: 23,
+                model: menu,
+                
                 );
               },
             ),

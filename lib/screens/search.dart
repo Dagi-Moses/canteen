@@ -1,131 +1,187 @@
+import 'package:canteen/models/menus.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:canteen/util/const.dart';
-import 'package:canteen/util/foods.dart';
-import 'package:canteen/widgets/smooth_star_rating.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../models/searchHistoryManager.dart';
+import '../widgets/HistoryWidget.dart';
 
 class SearchScreen extends StatefulWidget {
   @override
   _SearchScreenState createState() => _SearchScreenState();
 }
 
-class _SearchScreenState extends State<SearchScreen> with AutomaticKeepAliveClientMixin<SearchScreen>{
-  final TextEditingController _searchControl = new TextEditingController();
+class _SearchScreenState extends State<SearchScreen> {
+  final SearchManager _history = SearchManager();
+  final TextEditingController _searchControl = TextEditingController();
+  List<Menus> searchResults = [];
 
   @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    return Padding(
-      padding: EdgeInsets.fromLTRB(10.0,0,10.0,0),
-      child: ListView(
-        children: <Widget>[
-          SizedBox(height: 10.0),
+  void initState() {
+    super.initState();
+    _searchControl.addListener(() {
+      _updateSearchResults(_searchControl.text);
+    });
+  }
 
-          Card(
+  void _updateSearchResults(String searchText) async {
+    if (searchText.isNotEmpty) {
+      QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('menus')
+          .where(
+            'title',
+            isGreaterThanOrEqualTo: searchText.toLowerCase(),
+          )
+          .get();
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        setState(() {
+          searchResults = snapshot.docs
+              .map((doc) =>
+                  Menus.fromJson(json: doc.data() as Map<String, dynamic>))
+              .toList();
+        });
+      });
+    } else {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        setState(() {
+          searchResults.clear();
+        });
+      });
+    }
+  }
+
+  FocusNode focusNode = FocusNode();
+  @override
+  Widget build(BuildContext context) {
+    final app = AppLocalizations.of(context)!;
+
+    return CustomScrollView(
+      slivers: <Widget>[
+        SliverAppBar(
+          backgroundColor: Colors.transparent,
+          automaticallyImplyLeading: false,
+          centerTitle: true,
+          title: Card(
             elevation: 6.0,
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.all(
                   Radius.circular(5.0),
                 ),
               ),
               child: TextField(
-                style: TextStyle(
+                // onSubmitted: (v) {
+                //   focusNode.unfocus();
+                // },
+                focusNode: focusNode,
+                style: const TextStyle(
                   fontSize: 15.0,
                   color: Colors.black,
                 ),
                 decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(10.0),
+                  contentPadding: const EdgeInsets.all(10.0),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0),
-                    borderSide: BorderSide(color: Colors.white,),
+                    borderSide: const BorderSide(
+                      color: Colors.white,
+                    ),
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white,),
+                    borderSide: const BorderSide(
+                      color: Colors.white,
+                    ),
                     borderRadius: BorderRadius.circular(5.0),
                   ),
-                  hintText: "Search..",
-                  suffixIcon: Icon(
+                  hintText: app.search,
+                  suffixIcon: const Icon(
                     Icons.search,
                     color: Colors.black,
                   ),
-                  hintStyle: TextStyle(
+                  hintStyle: const TextStyle(
                     fontSize: 15.0,
                     color: Colors.black,
                   ),
                 ),
-                maxLines: 1,
                 controller: _searchControl,
               ),
             ),
           ),
-
-          SizedBox(height: 5.0),
-
-          Padding(
-            padding: EdgeInsets.all(20.0),
-            child: Text(
-              "History",
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w400,
-              ),
+          expandedHeight: 70.0,
+          floating: false,
+          pinned: true,
+        ),
+        SliverFillRemaining(
+          hasScrollBody: false,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
+            child: Column(
+              children: <Widget>[
+                _searchControl.text.isEmpty
+                    ? _buildSearchHistory()
+                    : Expanded(
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          primary: false,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: searchResults.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return HistoryWidget(
+                              focusNode: focusNode,
+                              menu: searchResults[index],
+                            );
+                          },
+                        ),
+                      ),
+                const SizedBox(height: 30),
+              ],
             ),
           ),
-
-          ListView.builder(
-            shrinkWrap: true,
-            primary: false,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: foods == null ? 0 :foods.length,
-            itemBuilder: (BuildContext context, int index) {
-              Map food = foods[index];
-              return ListTile(
-                title: Text(
-                  "${food['name']}",
-                  style: TextStyle(
-//                    fontSize: 15,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-                leading: CircleAvatar(
-                  radius: 25.0,
-                  backgroundImage: AssetImage(
-                    "${food['img']}",
-                  ),
-                ),
-                trailing: Text(r"$10"),
-                subtitle:  Row(
-                  children: <Widget>[
-                    SmoothStarRating(
-                      starCount: 1,
-                      color: Constants.ratingBG,
-                      allowHalfRating: true,
-                      rating: 5.0,
-                      size: 12.0,
-                    ),
-                    SizedBox(width: 6.0),
-                    Text(
-                      "5.0 (23 Reviews)",
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w300,
-                      ),
-                    ),
-                  ],
-                ),
-                onTap: (){},
-              );
-            },
-          ),
-
-          SizedBox(height: 30),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
-  @override
-  bool get wantKeepAlive => true;
+  Widget _buildSearchHistory() {
+    return FutureBuilder(
+      future: _history.getMenusFromSharedPreferences(),
+      builder: (BuildContext context, AsyncSnapshot<List<Menus>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else {
+          List<Menus> historyData = snapshot.data!;
+          return SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (BuildContext context, int index) {
+                final document = historyData[index];
+
+                return Dismissible(
+                  key: Key(index.toString()),
+                  direction: DismissDirection.horizontal,
+                  background: Container(
+                    color: Colors.red,
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    alignment: AlignmentDirectional.centerEnd,
+                    child: const Icon(Icons.delete, color: Colors.white),
+                  ),
+                  onDismissed: (direction) {
+                    _history
+                        .deleteMenuFromSharedPreferences(document.menuTitle);
+                  },
+                  child: HistoryWidget(
+                    focusNode: focusNode,
+                    menu: document,
+                  ),
+                );
+              },
+              childCount: historyData.length,
+            ),
+          );
+        }
+      },
+    );
+  }
 }

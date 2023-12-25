@@ -1,32 +1,30 @@
-import 'package:canteen/screens/main_screen.dart';
-import 'package:canteen/screens/walkthrough.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
+
+import 'package:canteen/util/const.dart';
+
 import 'package:flutter/material.dart';
-import '../admin/screens/home_screen.dart';
+
+import 'HomeLayout.dart';
+import 'language screen.dart';
 
 class Layout extends StatefulWidget {
-  const Layout({super.key});
+  final String ? uid;
+  Layout({super.key, required this.uid});
 
   @override
   State<Layout> createState() => _LayoutState();
 }
 
 class _LayoutState extends State<Layout> {
+ String? code = prefs.getString('languageCode');
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
-        if (snapshot.hasData && snapshot.data != null) {
-          if (snapshot.data!.uid == 'S6hMPwvFmWc08JfLMhwEScXd5p23') {
-            return HomeScreen();
-          } else {
-            return MainScreen();
-          }
-        } else {
-          return Walkthrough();
-        }
-      },
-    );
+    if (widget.uid == null || widget.uid!.isEmpty || widget.uid == '' || code == null || code == '') {
+     return LanguageScreen();
+    } else {
+        return HomeLayout(
+        uid: widget.uid,
+      );
+    }
   }
 }

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../models/menus.dart';
 
 class IconBadge extends StatefulWidget {
 
@@ -14,8 +17,12 @@ class IconBadge extends StatefulWidget {
 }
 
 class _IconBadgeState extends State<IconBadge> {
+  
   @override
   Widget build(BuildContext context) {
+     final cartMenu = Provider.of<MenuProvider>(
+      context,
+    );
     return Stack(
       children: <Widget>[
         Icon(
@@ -37,7 +44,7 @@ class _IconBadgeState extends State<IconBadge> {
             child: Padding(
               padding: EdgeInsets.only(top: 1),
               child:Text(
-                "3",
+                cartMenu.cartMenus.length.toString(),
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 8,

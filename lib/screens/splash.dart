@@ -1,12 +1,17 @@
 import 'dart:async';
-import 'package:canteen/screens/main_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
+
 import 'package:flutter/services.dart';
-import 'package:canteen/screens/walkthrough.dart';
+
 import 'package:canteen/util/const.dart';
 
-import '../admin/screens/home_screen.dart';
+import 'package:provider/provider.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../providers/app_provider.dart';
+
 import 'layout.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -15,29 +20,40 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  startTimeout() {
-    return Timer(Duration(seconds: 3), changeScreen);
-  }
-
   changeScreen() async {
+    prefs = await SharedPreferences.getInstance();
+
+    String? uid = prefs.getString('auth_token');
+
+    String? code = prefs.getString('languageCode');
+
+    final app = Provider.of<AppProvider>(context, listen: false);
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) {
-      return Layout();
+      return Layout(
+        uid: uid,
+      );
     }));
+
+    if (code != null || code != '') {
+      app.setPreferredLanguage(code!);
+    }
   }
 
   @override
   void initState() {
     super.initState();
-    SystemChrome.setEnabledSystemUIOverlays([]);
-    startTimeout();
+
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+
+    changeScreen();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: Colors.white,
       body: Container(
-        margin: EdgeInsets.only(left: 40.0, right: 40.0),
+        margin: const EdgeInsets.only(left: 40.0, right: 40.0),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -46,12 +62,12 @@ class _SplashScreenState extends State<SplashScreen> {
               Icon(
                 Icons.fastfood,
                 size: 150.0,
-                color: Theme.of(context).accentColor,
+                color: Colors.red,
               ),
-              SizedBox(width: 40.0),
+              const SizedBox(width: 40.0),
               Container(
                 alignment: Alignment.center,
-                margin: EdgeInsets.only(
+                margin: const EdgeInsets.only(
                   top: 15.0,
                 ),
                 child: Text(
@@ -59,7 +75,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   style: TextStyle(
                     fontSize: 25.0,
                     fontWeight: FontWeight.w700,
-                    color: Theme.of(context).accentColor,
+                    color: Colors.red,
                   ),
                 ),
               ),

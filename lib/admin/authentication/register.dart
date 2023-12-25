@@ -16,7 +16,8 @@ import 'package:canteen/admin/widgets/loading_dialog.dart';
 import 'package:firebase_storage/firebase_storage.dart' as fStorage;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../global/global.dart';
+
+import '../../util/const.dart';
 import '../widgets/header_widget.dart';
 import 'login.dart';
 
@@ -228,12 +229,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
       },
     );
 
-    // save data locally (to access data easly from phone storage)
-    sharedPreferences = await SharedPreferences.getInstance();
-    await sharedPreferences!.setString("uid", currentUser.uid);
-    await sharedPreferences!.setString("email", currentUser.email.toString());
-    await sharedPreferences!.setString("name", nameController.text.trim());
-    await sharedPreferences!.setString("photoUrl", sellerImageUrl);
+    // // save data locally (to access data easly from phone storage)
+    // sharedPreferences = await SharedPreferences.getInstance();
+    // await sharedPreferences!.setString("uid", currentUser.uid);
+    // await sharedPreferences!.setString("email", currentUser.email.toString());
+    // await sharedPreferences!.setString("name", nameController.text.trim());
+    // await sharedPreferences!.setString("photoUrl", sellerImageUrl);
   }
 
   @override
@@ -435,7 +436,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           },
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Theme.of(context).primaryColor,
+                          color: Colors.white,
                         ),
                       ),
                     ],

@@ -1,22 +1,14 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter/material.dart';
 
-import '../models/items.dart';
+
+import '../../models/order request.dart';
 import '../screens/order_details_screen.dart';
 
 class OrderCardDesign extends StatelessWidget {
-  final int? itemCount;
-  final List<DocumentSnapshot>? data;
-  final String? orderID;
-  final List<String>? seperateQuantitiesList;
+  final OrderRequestModel model;
 
-  const OrderCardDesign({
-    Key? key,
-    this.itemCount,
-    this.data,
-    this.orderID,
-    this.seperateQuantitiesList,
-  }) : super(key: key);
+  const OrderCardDesign({Key? key, required this.model}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +17,7 @@ class OrderCardDesign extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: ((context) => OrderDetailsScreen(orderID: orderID)),
+            builder: ((context) => OrderDetailsScreen(orderID: model.menuID)),
           ),
         );
       },
@@ -45,15 +37,15 @@ class OrderCardDesign extends StatelessWidget {
         ),
         padding: const EdgeInsets.all(4),
         margin: const EdgeInsets.all(8),
-        height: itemCount! * 125,
+        height: model.itemCount! * 125,
         child: ListView.builder(
-          itemCount: itemCount,
+          itemCount: model.itemCount,
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) {
-            Items model =
-                Items.fromJson(data![index].data()! as Map<String, dynamic>);
             return placedOrderDesignWidget(
-                model, context, seperateQuantitiesList![index]);
+              model,
+              context,
+            );
           },
         ),
       ),
@@ -62,7 +54,9 @@ class OrderCardDesign extends StatelessWidget {
 }
 
 Widget placedOrderDesignWidget(
-    Items model, BuildContext context, seperateQuantitiesList) {
+  OrderRequestModel model,
+  BuildContext context,
+) {
   return Container(
     width: MediaQuery.of(context).size.width,
     height: 120,
@@ -100,7 +94,7 @@ Widget placedOrderDesignWidget(
             children: [
               Expanded(
                 child: Text(
-                  model.title!,
+                  model.menuTitle,
                   style: const TextStyle(
                     color: Colors.black,
                     fontSize: 16,
@@ -117,7 +111,7 @@ Widget placedOrderDesignWidget(
                 ),
               ),
               Text(
-                model.price.toString() + "   ",
+                model.menuPrice.toString() + "   ",
                 style: const TextStyle(
                   color: Colors.blue,
                   fontSize: 18,
@@ -138,7 +132,7 @@ Widget placedOrderDesignWidget(
               ),
               Expanded(
                   child: Text(
-                seperateQuantitiesList,
+                'seperateQuantitiesList',
                 style: const TextStyle(
                   color: Colors.black54,
                   fontSize: 30,

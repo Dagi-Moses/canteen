@@ -1,21 +1,41 @@
+import 'package:canteen/models/menus.dart';
 import 'package:flutter/material.dart';
 import 'package:canteen/screens/notifications.dart';
-import 'package:canteen/util/categories.dart';
-import 'package:canteen/util/foods.dart';
+
+
 import 'package:canteen/widgets/badge.dart';
 import 'package:canteen/widgets/grid_product.dart';
 import 'package:canteen/widgets/home_category.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
+
 
 class CategoriesScreen extends StatefulWidget {
+  String catie;
+  int len;
+
+  CategoriesScreen({
+    super.key,
+    required this.catie,
+    required this.len,
+  });
   @override
   _CategoriesScreenState createState() => _CategoriesScreenState();
 }
 
 class _CategoriesScreenState extends State<CategoriesScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<MenuProvider>(context, listen: false)
+        .updateCategory(widget.catie);
+  }
 
-  String catie = "Drinks";
   @override
   Widget build(BuildContext context) {
+    final menuProvider = Provider.of<MenuProvider>(context, listen: true);
+      final app = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -23,11 +43,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           icon: Icon(
             Icons.keyboard_backspace,
           ),
-          onPressed: ()=>Navigator.pop(context),
+          onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
         title: Text(
-          "Categories",
+          app.categoriess,
         ),
         elevation: 0.0,
         actions: <Widget>[
@@ -36,10 +56,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               icon: Icons.notifications,
               size: 22.0,
             ),
-            onPressed: (){
+            onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (BuildContext context){
+                  builder: (BuildContext context) {
                     return Notifications();
                   },
                 ),
@@ -48,9 +68,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           ),
         ],
       ),
-
       body: Padding(
-        padding: EdgeInsets.fromLTRB(10.0,0,10.0,0),
+        padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
         child: ListView(
           children: <Widget>[
             SizedBox(height: 10.0),
@@ -59,26 +78,24 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 shrinkWrap: true,
-                itemCount: categories == null?0:categories.length,
+                itemCount: app.categories.length,
                 itemBuilder: (BuildContext context, int index) {
-                  Map cat = categories[index];
+                  Map cat = app.categories[index];
+                  bool isSelected = cat['name'] == menuProvider.category;
                   return HomeCategory(
+                   len: widget.len,
+                    isSelected:isSelected,  
                     icon: cat['icon'],
                     title: cat['name'],
                     items: cat['items'].toString(),
                     isHome: false,
-                    tap: (){
-                      setState((){catie = "${cat['name']}";});
-                    },
                   );
                 },
               ),
             ),
-
             SizedBox(height: 20.0),
-
             Text(
-              "$catie",
+              "${menuProvider.category}",
               style: TextStyle(
                 fontSize: 23,
                 fontWeight: FontWeight.w800,
@@ -86,7 +103,6 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             ),
             Divider(),
             SizedBox(height: 10.0),
-
             GridView.builder(
               shrinkWrap: true,
               primary: false,
@@ -96,19 +112,15 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                 childAspectRatio: MediaQuery.of(context).size.width /
                     (MediaQuery.of(context).size.height / 1.25),
               ),
-              itemCount: foods == null ? 0 :foods.length,
+              itemCount: menuProvider.categoryMenus.length,
               itemBuilder: (BuildContext context, int index) {
-                Map food = foods[index];
+                final food = menuProvider.categoryMenus[index];
+                // Menus Menu = Menus.fromJson(json: food as Map<String, dynamic>)  ;
                 return GridProduct(
-                  img: food['img'],
-                  isFav: false,
-                  name: food['name'],
-                  rating: 5.0,
-                  raters: 23,
+                  model: food,
                 );
               },
             ),
-
           ],
         ),
       ),

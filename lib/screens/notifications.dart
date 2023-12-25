@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class Notifications extends StatefulWidget {
   @override
   _NotificationsState createState() => _NotificationsState();
@@ -8,6 +8,7 @@ class Notifications extends StatefulWidget {
 class _NotificationsState extends State<Notifications> {
   @override
   Widget build(BuildContext context) {
+    final app = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -19,7 +20,7 @@ class _NotificationsState extends State<Notifications> {
         ),
         centerTitle: true,
         title: Text(
-          "Notifications",
+          app.notification,
         ),
         elevation: 0.0,
       ),
@@ -36,7 +37,7 @@ class _NotificationsState extends State<Notifications> {
                   color: Colors.white,
                 ),
               ),
-              title: Text("Your Order has been delivered successfully"),
+              title: Text(app.deliveredOrder),
               onTap: (){},
             ),
             Divider(),
@@ -48,7 +49,7 @@ class _NotificationsState extends State<Notifications> {
                   color: Colors.white,
                 ),
               ),
-              title: Text("Error processing your order"),
+              title: Text(app.orderError),
               onTap: (){},
             ),
             Divider(),
@@ -60,7 +61,7 @@ class _NotificationsState extends State<Notifications> {
                   color: Colors.white,
                 ),
               ),
-              title: Text("You order has been processed and will be delivered shortly"),
+              title: Text(app.processedOrder),
               onTap: (){},
             ),
             Divider(),
@@ -72,7 +73,7 @@ class _NotificationsState extends State<Notifications> {
                   color: Colors.white,
                 ),
               ),
-              title: Text("Please Verify your email address"),
+              title: Text(app.verifyEmail),
               onTap: (){},
             ),
           ],

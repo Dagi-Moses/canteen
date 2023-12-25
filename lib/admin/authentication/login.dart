@@ -5,12 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:canteen/admin/authentication/register.dart';
-import 'package:canteen/admin/global/global.dart';
+
 import 'package:canteen/admin/screens/home_screen.dart';
 import 'package:canteen/admin/widgets/custom_text_field.dart';
 import 'package:canteen/admin/widgets/error_dialog.dart';
 import 'package:canteen/admin/widgets/loading_dialog.dart';
 
+import '../../util/const.dart';
 import '../widgets/header_widget.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -92,13 +93,13 @@ class _LoginScreenState extends State<LoginScreen> {
         //check if the user is seller
         if (snapshot.exists) {
           if (snapshot.data()!["status"] == "approved") {
-            await sharedPreferences!.setString("uid", currentUser.uid);
-            await sharedPreferences!
-                .setString("email", snapshot.data()!["sellerEmail"]);
-            await sharedPreferences!
-                .setString("name", snapshot.data()!["sellerName"]);
-            await sharedPreferences!
-                .setString("photoUrl", snapshot.data()!["sellerAvatarUrl"]);
+            // await sharedPreferences!.setString("uid", currentUser.uid);
+            // await sharedPreferences!
+            //     .setString("email", snapshot.data()!["sellerEmail"]);
+            // await sharedPreferences!
+            //     .setString("name", snapshot.data()!["sellerName"]);
+            // await sharedPreferences!
+              //  .setString("photoUrl", snapshot.data()!["sellerAvatarUrl"]);
             Navigator.pop(context);
             Navigator.push(
               context,
@@ -281,7 +282,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 },
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color: Theme.of(context).primaryColor,
+                                color: Colors.white,
                               ),
                             ),
                           ],

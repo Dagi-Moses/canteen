@@ -1,11 +1,18 @@
+import 'package:canteen/admin/widgets/simple_dialog.dart';
+import 'package:canteen/screens/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:canteen/admin/authentication/login.dart';
+
 import 'package:canteen/admin/screens/history_screen.dart';
 import 'package:canteen/admin/screens/home_screen.dart';
 import 'package:canteen/admin/screens/new_orders_screen.dart';
 
-import '../global/global.dart';
+import 'package:provider/provider.dart';
+
+import '../../providers/provider.dart';
+import '../../util/const.dart';
+import '../functions.dart';
+import '/screens/join.dart';
 
 class MyDrawer extends StatelessWidget {
   final TextEditingController _controller = TextEditingController();
@@ -14,18 +21,10 @@ class MyDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context, listen: true);
+
     return Drawer(
       child: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: FractionalOffset(-2.0, 0.0),
-            end: FractionalOffset(5.0, -1.0),
-            colors: [
-              Color(0xFFFFFFFF),
-              Color(0xFFFAC898),
-            ],
-          ),
-        ),
         child: ListView(
           children: [
             //header drawer
@@ -44,20 +43,24 @@ class MyDrawer extends StatelessWidget {
                         height: 160,
                         width: 160,
                         child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.amber.withOpacity(0.4),
-                                offset: const Offset(-1, 10),
-                                blurRadius: 10,
-                              )
-                            ],
-                          ),
-                          child: CircleAvatar(
-                            //we get the profile image from sharedPreferences (global.dart)
-                            backgroundImage: NetworkImage(
-                              sharedPreferences!.getString("photoUrl")!,
+                          child: GestureDetector(
+                            onTap: () async {
+                              takeImage(context: context);
+                            },
+                            child: CircleAvatar(
+                              backgroundColor: userProvider.profileImage == ''
+                                  ? Colors.yellow
+                                  : Colors.black,
+                              backgroundImage: userProvider.profileImage != ''
+                                  ? NetworkImage(userProvider.profileImage!)
+                                  : null,
+                              child: userProvider.profileImage == ''
+                                  ? Icon(
+                                      Icons.person,
+                                      size: 100,
+                                      color: Colors.black,
+                                    )
+                                  : null,
                             ),
                           ),
                         ),
@@ -65,13 +68,13 @@ class MyDrawer extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  //we get the user name from sharedPreferences (global.dart)
                   Text(
-                    sharedPreferences!.getString("name")!,
+                    userProvider.name,
                     style: GoogleFonts.lato(
                       textStyle: const TextStyle(
                         fontSize: 25,
                         fontWeight: FontWeight.bold,
+                        color: Colors.black,
                       ),
                     ),
                   ),
@@ -88,7 +91,7 @@ class MyDrawer extends StatelessWidget {
                 children: [
                   const Divider(
                     height: 10,
-                    color: Colors.white,
+                    color: Colors.black,
                     thickness: 2,
                   ),
                   ListTile(
@@ -101,6 +104,7 @@ class MyDrawer extends StatelessWidget {
                       'Home',
                       style: GoogleFonts.lato(
                         textStyle: const TextStyle(
+                          color: Colors.black,
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
@@ -130,6 +134,7 @@ class MyDrawer extends StatelessWidget {
                       'New Orders',
                       style: GoogleFonts.lato(
                         textStyle: const TextStyle(
+                          color: Colors.black,
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
@@ -159,6 +164,7 @@ class MyDrawer extends StatelessWidget {
                       'History - Orders',
                       style: GoogleFonts.lato(
                         textStyle: const TextStyle(
+                          color: Colors.black,
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
@@ -180,29 +186,64 @@ class MyDrawer extends StatelessWidget {
                   ),
                   ListTile(
                     leading: const Icon(
-                      Icons.exit_to_app,
+                      Icons.person,
                       color: Colors.black,
                       size: 30,
                     ),
                     title: Text(
-                      'Sign Out',
+                      'View Users App',
                       style: GoogleFonts.lato(
                         textStyle: const TextStyle(
+                          color: Colors.black,
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                     onTap: () {
-                      firebaseAuth.signOut().then((value) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (c) => const LoginScreen(),
-                          ),
-                        );
-                        _controller.clear();
-                      });
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (c) => MainScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  const Divider(
+                    height: 10,
+                    color: Colors.white,
+                    thickness: 2,
+                  ),
+                  ListTile(
+                    leading: const Icon(
+                      Icons.exit_to_app,
+                      color: Colors.red,
+                      size: 30,
+                    ),
+                    title: Text(
+                      'Sign Out',
+                      style: GoogleFonts.lato(
+                        textStyle: const TextStyle(
+                          color: Colors.red,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    onTap: () {
+                      signout(
+                          context: context,
+                          onTap: () {
+                            firebaseAuth.signOut().then((value) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (c) => JoinApp(),
+                                ),
+                              );
+                              _controller.clear();
+                            });
+                          });
                     },
                   ),
                   const Divider(

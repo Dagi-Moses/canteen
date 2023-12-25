@@ -2,14 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:canteen/admin/global/global.dart';
-//import 'package:canteen/admin/splash_screen/splash_screen.dart';
+
 import 'package:canteen/admin/widgets/simple_app_bar.dart';
-import '../../screens/splash.dart';
-import '../models/items.dart';
+import 'package:intl/intl.dart';
+
+import '../../models/menus.dart';
+
 
 class ItemDetailsScreen extends StatefulWidget {
-  final Items? model;
+  final Menus? model;
   const ItemDetailsScreen({Key? key, this.model}) : super(key: key);
 
   @override
@@ -21,20 +22,11 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
 
   deleteItem(String itemID) {
     FirebaseFirestore.instance
-        .collection("sellers")
-        .doc(sharedPreferences!.getString("uid"))
         .collection("menus")
         .doc(widget.model!.menuID)
-        .collection("items")
-        .doc(itemID)
         .delete()
         .then(
       (value) {
-        FirebaseFirestore.instance.collection("items").doc(itemID).delete();
-
-        Navigator.push(context,
-            MaterialPageRoute(builder: ((context) =>  SplashScreen())));
-
         Fluttertoast.showToast(msg: "Item Deleted");
       },
     );
@@ -44,7 +36,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: SimpleAppBar(
-        title: sharedPreferences!.getString("name"),
+        title: 'Item Detail',
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -122,7 +114,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        widget.model!.title.toString(),
+                        widget.model!.menuTitle.toString(),
                         style: GoogleFonts.lato(
                           textStyle: const TextStyle(
                             fontSize: 25,
@@ -130,6 +122,35 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                             color: Colors.white,
                           ),
                         ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Category: ",
+                            style: GoogleFonts.lato(
+                              textStyle: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 5),
+                          Text(
+                            widget.model!.category.toString(),
+                            textAlign: TextAlign.justify,
+                            style: GoogleFonts.lato(
+                              textStyle: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.normal,
+                                  color: Colors.black.withOpacity(0.7)),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     Padding(
@@ -149,7 +170,37 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                           ),
                           const SizedBox(height: 5),
                           Text(
-                            widget.model!.longDescription.toString(),
+                            widget.model!.menuInfo.toString(),
+                            textAlign: TextAlign.justify,
+                            style: GoogleFonts.lato(
+                              textStyle: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.normal,
+                                  color: Colors.black.withOpacity(0.7)),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Date Uploaded: ",
+                            style: GoogleFonts.lato(
+                              textStyle: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 5),
+                          Text(
+                             DateFormat('dd/MM/yyyy HH:mm:ss')
+                                  .format(widget.model!.publishDate),
                             textAlign: TextAlign.justify,
                             style: GoogleFonts.lato(
                               textStyle: TextStyle(
@@ -175,7 +226,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                             ),
                           ),
                           Text(
-                            "\$" + widget.model!.price.toString(),
+                            "\$" + widget.model!.menuPrice.toString(),
                             style: GoogleFonts.lato(
                               textStyle: const TextStyle(
                                 fontSize: 30,
@@ -188,25 +239,38 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                     ),
                     const SizedBox(height: 10),
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 30,
-                        vertical: 20,
-                      ),
-                      child: InkWell(
-                        onTap: () {
-                          //delete item
-                          deleteItem(widget.model!.itemID!);
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: const [
-                            Icon(
-                              Icons.delete,
-                              color: Colors.red,
-                              size: 40,
-                            ),
-                          ],
-                        ),
+                      padding: const EdgeInsets.only(top: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.grey[900],
+                                  elevation: 2.0,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(15)))),
+                              onPressed: () {
+                                 deleteItem(widget.model!.menuID);
+                              },
+                              child: Row(children: [
+                                Text(
+                                  'Delete',
+                                  style: GoogleFonts.lato(
+                                    textStyle: const TextStyle(
+                                      color: Colors.red,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.delete,
+                                  color: Colors.red,
+                                  size: 30,
+                                ),
+                              ])),
+                        ],
                       ),
                     ),
                   ],

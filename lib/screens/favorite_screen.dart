@@ -1,56 +1,68 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter/material.dart';
-import 'package:canteen/util/foods.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:canteen/widgets/grid_product.dart';
+
+
+import '../../models/menus.dart';
+import '../util/const.dart';
 
 class FavoriteScreen extends StatefulWidget {
   @override
   _FavoriteScreenState createState() => _FavoriteScreenState();
 }
 
-class _FavoriteScreenState extends State<FavoriteScreen> with AutomaticKeepAliveClientMixin<FavoriteScreen>{
+class _FavoriteScreenState extends State<FavoriteScreen>
+    {
   @override
   Widget build(BuildContext context) {
-    super.build(context);
+     final app = AppLocalizations.of(context)!;
+    
+   
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.fromLTRB(10.0,0,10.0,0),
+        padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
         child: ListView(
           children: <Widget>[
             SizedBox(height: 10.0),
             Text(
-              "My Favorite Items",
+              app.myFavoriteItems,
               style: TextStyle(
                 fontSize: 23,
                 fontWeight: FontWeight.w800,
               ),
             ),
             SizedBox(height: 10.0),
+            StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection('menus')
+                    .where('likes', arrayContains: uid)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                 
 
-            GridView.builder(
-              shrinkWrap: true,
-              primary: false,
-              physics: NeverScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: MediaQuery.of(context).size.width /
-                    (MediaQuery.of(context).size.height / 1.25),
-              ),
-              itemCount: foods == null ? 0 :foods.length,
-              itemBuilder: (BuildContext context, int index) {
-//                Food food = Food.fromJson(foods[index]);
-                Map food = foods[index];
-//                print(foods);
-//                print(foods.length);
-                return GridProduct(
-                  img: food['img'],
-                  isFav: true,
-                  name: food['name'],
-                  rating: 5.0,
-                  raters: 23,
-                );
-              },
-            ),
+                  return GridView.builder(
+                      shrinkWrap: true,
+                      primary: false,
+                      physics: NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: MediaQuery.of(context).size.width /
+                            (MediaQuery.of(context).size.height / 1.25),
+                      ),
+                      itemCount:
+                          snapshot.data!.docs.length,
+                      itemBuilder: (BuildContext context, int index) {
+                      DocumentSnapshot document = snapshot.data!.docs[index];
+                    Menus menu = Menus.fromJson(
+                        json: document.data() as Map<String, dynamic>);
 
+                    return GridProduct(
+                      model: menu,
+                    );
+                      });
+                }),
             SizedBox(height: 30),
           ],
         ),
@@ -58,6 +70,4 @@ class _FavoriteScreenState extends State<FavoriteScreen> with AutomaticKeepAlive
     );
   }
 
-  @override
-  bool get wantKeepAlive => true;
 }

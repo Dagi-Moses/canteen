@@ -1,10 +1,9 @@
-import 'package:canteen/screens/main_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+
 import 'package:flutter/material.dart';
 import 'package:canteen/screens/login.dart';
 import 'package:canteen/screens/register.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 class JoinApp extends StatefulWidget {
@@ -22,13 +21,14 @@ class _JoinAppState extends State<JoinApp> with SingleTickerProviderStateMixin{
   void initState() {
     super.initState();
     _tabController = TabController(vsync: this, initialIndex: 1, length: 2);
-    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+   
     
   }
 
 
   @override
   Widget build(BuildContext context) {
+    final app = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -41,8 +41,8 @@ class _JoinAppState extends State<JoinApp> with SingleTickerProviderStateMixin{
         ),
         bottom: TabBar(
           controller: _tabController,
-          indicatorColor: Theme.of(context).accentColor,
-          labelColor: Theme.of(context).accentColor,
+          indicatorColor: Colors.red,
+          labelColor: Colors.red,
           unselectedLabelColor: Colors.grey,
           labelStyle: TextStyle(
             fontSize: 20.0,
@@ -54,10 +54,10 @@ class _JoinAppState extends State<JoinApp> with SingleTickerProviderStateMixin{
           ),
           tabs: <Widget>[
             Tab(
-              text: "Login",
+              text:app.login ,
             ),
             Tab(
-              text: "Register",
+              text: app.register,
             ),
           ],
         ),

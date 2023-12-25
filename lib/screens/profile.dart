@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:canteen/providers/app_provider.dart';
-import 'package:canteen/screens/splash.dart';
+
 import 'package:canteen/util/const.dart';
+
+import '../admin/functions.dart';
+
+import '../admin/screens/home_screen.dart';
+import '../admin/widgets/simple_dialog.dart';
+import '../providers/provider.dart';
+import 'join.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -10,231 +18,364 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  List<String> category = [
+    'English',
+    'French',
+    'Yoruba',
+    'Igbo',
+  ];
 
+  String? selectedObject;
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(
+      context,
+    );
+    final app = AppLocalizations.of(context)!;
+    final prov = Provider.of<AppProvider>(context, listen: false);
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.fromLTRB(10.0,0,10.0,0),
-
+        padding: const EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
         child: ListView(
+          shrinkWrap: true,
           children: <Widget>[
             Row(
+              //crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 Padding(
-                  padding: EdgeInsets.only(left: 10.0, right: 10.0),
-                  child: Image.asset(
-                    "assets/cm4.jpeg",
-                    fit: BoxFit.cover,
-                    width: 100.0,
-                    height: 100.0,
+                  padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                  child: SizedBox(
+                    height: 120,
+                    width: 120,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.4),
+                            offset: const Offset(-1, 10),
+                            blurRadius: 10,
+                          )
+                        ],
+                      ),
+                      child: GestureDetector(
+                        onTap: () async {
+                          takeImage(context: context);
+                        },
+                        child: CircleAvatar(
+                          backgroundColor: Colors.grey[600],
+                          backgroundImage: userProvider.profileImage != ''
+                              ? NetworkImage(userProvider.profileImage!)
+                              : null,
+                          child: userProvider.profileImage == ''
+                              ? const Icon(
+                                  Icons.person,
+                                  size: 100,
+                                  color: Colors.black,
+                                )
+                              : null,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            "Noel",
-                            style: TextStyle(
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                          userProvider.name,
+                          style: const TextStyle(
                               fontSize: 20.0,
                               fontWeight: FontWeight.bold,
-                            ),
+                              color: Colors.black),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 5.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                          userProvider.email,
+                          style: const TextStyle(
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.bold,
                           ),
-                        ],
-                      ),
-
-                      SizedBox(height: 5.0),
-
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            "noel@gmail.com",
-                            style: TextStyle(
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.bold,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20.0),
+                    LayoutBuilder(
+                      builder: (context, constraints) {
+                        return Flex(
+                         
+                          direction: constraints.maxWidth > 150 ?  Axis.vertical : Axis.horizontal,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            uid == Constants.admin
+                                ? GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (c) => const HomeScreen(),
+                                        ),
+                                      );
+                                    },
+                                    child: Card(
+                                      elevation: 6.0,
+                                      child: Container(
+                                        constraints: BoxConstraints(
+                                          maxWidth:
+                                              190, // Set your desired maximum width
+                                        ),
+                                        width: double.infinity,
+                                        padding: const EdgeInsets.all(6),
+                                        decoration: const BoxDecoration(
+                                          color: Colors.blue,
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(5.0),
+                                          ),
+                                        ),
+                                        child: Text(
+                                          app.viewAdminApp,
+                                          style: TextStyle(
+                                            overflow: TextOverflow.ellipsis,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                : const SizedBox(),
+                            SizedBox(
+                              width: 5,
                             ),
-                          ),
-                        ],
-                      ),
-
-                      SizedBox(height: 20.0),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          InkWell(
-                            onTap: (){
-                              Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                  builder: (BuildContext context){
-                                    return SplashScreen();
-                                  },
+                            InkWell(
+                              onTap: () async {
+                                signout(
+                                    context: context,
+                                    onTap: () {
+                                      firebaseAuth.signOut().then((value) {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (c) => JoinApp(),
+                                          ),
+                                        );
+                                      });
+                                    });
+                              },
+                              child: Card(
+                                elevation: 6.0,
+                                child: Container(
+                                    constraints: BoxConstraints(
+                                          maxWidth:
+                                              100, // Set your desired maximum width
+                                        ),
+                                  padding: const EdgeInsets.all(6),
+                                  decoration: const BoxDecoration(
+                                    color: Colors.red,
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(5.0),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    app.logOut,
+                                    style: TextStyle(
+                                      overflow:TextOverflow.ellipsis,
+                                      fontSize: 13.0,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.white,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                 ),
-                              );
-                            },
-                            child: Text("Logout",
-                              style: TextStyle(
-                                fontSize: 13.0,
-                                fontWeight: FontWeight.w400,
-                                color: Theme.of(context).accentColor,
                               ),
-                              overflow: TextOverflow.ellipsis,
                             ),
-                          ),
-                        ],
-                      ),
-
-                    ],
-                  ),
-                  flex: 3,
+                          ],
+                        );
+                      }
+                    ),
+                  ],
                 ),
               ],
             ),
-
-            Divider(),
+            const Divider(),
             Container(height: 15.0),
-
             Padding(
-              padding: EdgeInsets.all(5.0),
+              padding: const EdgeInsets.all(5.0),
               child: Text(
-                "Account Information".toUpperCase(),
-                style: TextStyle(
+                app.accountInformation.toUpperCase(),
+                style: const TextStyle(
+                  color: Colors.red,
                   fontSize: 16.0,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
+            _buildEditableField(
+              label: app.fullName,
+              provider: userProvider.name,
+              hintText: app.noName,
+              onSubmitted: (String value) {
+                if (value.trim().isNotEmpty) {
+                  userProvider.updateUserName(value);
+                }
+              },
+            ),
+            _buildEditableField(
+              label: app.email,
+              provider: userProvider.email,
+              hintText: app.noEmail,
+              onSubmitted: (String value) {
+                if (value.trim().isNotEmpty) {
+                  userProvider.updateUserEmail(value);
+                }
+              },
+            ),
+            _buildEditableField(
+              label: app.phone,
+              provider: userProvider.phoneNumber,
+              hintText: app.noPhoneNumber,
+              onSubmitted: (String value) {
+                if (value.trim().isNotEmpty) {
+                  userProvider.updatePhoneNumber(value);
+                }
+              },
+            ),
+            _buildEditableField(
+              label: app.address,
+              provider: userProvider.address,
+              hintText: app.noAddress,
+              onSubmitted: (String value) {
+                if (value.trim().isNotEmpty) {
+                  userProvider.updateUserAddress(value);
+                }
+              },
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 5),
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.red, width: 2.0)),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  iconSize: 30,
+                  value: selectedObject,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedObject = newValue;
+                    });
+                    if (newValue == 'English') {
+                      prov.setPreferredLanguage('en');
+                    } else if (newValue == 'French') {
+                      prov.setPreferredLanguage('fr');
+                    } else if (newValue == 'Yoruba') {
+                      prov.setPreferredLanguage('yo');
+                    } else {
+                      prov.setPreferredLanguage('ig');
+                    }
+                  },
+                  hint: Text(
+                    selectedObject ?? app.selectLanguage,
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w500),
+                  ), // Default hint text
+                  isExpanded:
+                      true, // Make the dropdown fill the available width
+                  style: TextStyle(
+                      color: Colors.black, fontSize: 16.0), // Extra styling
 
-            ListTile(
-              title: Text(
-                "Full Name",
-                style: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w700,
+                  items: category.map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(
+                          value,
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 17,
+                              fontWeight: FontWeight.w500),
+                        ));
+                  }).toList(),
                 ),
-              ),
-
-              subtitle: Text(
-                "Jane Mary Doe",
-              ),
-
-              trailing: IconButton(
-                icon: Icon(
-                  Icons.edit,
-                  size: 20.0,
-                ),
-                onPressed: (){
-                },
-                tooltip: "Edit",
               ),
             ),
-
-            ListTile(
-              title: Text(
-                "Email",
-                style: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-
-              subtitle: Text(
-                "noel@gmail.com",
-              ),
-            ),
-
-            ListTile(
-              title: Text(
-                "Phone",
-                style: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-
-              subtitle: Text(
-                "+1 816-926-6241",
-              ),
-            ),
-
-            ListTile(
-              title: Text(
-                "Address",
-                style: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-
-              subtitle: Text(
-                "1278 Loving Acres RoadKansas City, MO 64110",
-              ),
-            ),
-
-            ListTile(
-              title: Text(
-                "Gender",
-                style: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-
-              subtitle: Text(
-                "male",
-              ),
-            ),
-
-            ListTile(
-              title: Text(
-                "Date of Birth",
-                style: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-
-              subtitle: Text(
-                "April 9, 1995",
-              ),
-            ),
-
-             MediaQuery.of(context).platformBrightness == Brightness.dark
-                 ? SizedBox()
-                 : ListTile(
-              title: Text(
-                "Dark Theme",
-                style: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-
-              trailing: Switch(
-                value: Provider.of<AppProvider>(context).theme == Constants.lightTheme
-                    ? false
-                    : true,
-                onChanged: (v) async{
-                  if (v) {
-                    Provider.of<AppProvider>(context, listen: false)
-                        .setTheme(Constants.darkTheme, "dark");
-                  } else {
-                    Provider.of<AppProvider>(context, listen: false)
-                        .setTheme(Constants.lightTheme, "light");
-                  }
-                },
-                activeColor: Theme.of(context).accentColor,
-              ),
-            ),
+            MediaQuery.of(context).platformBrightness == Brightness.dark
+                ? const SizedBox()
+                : ListTile(
+                    title: Text(
+                      app.darkTheme,
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    trailing: Switch(
+                      value: Provider.of<AppProvider>(context).theme ==
+                              Constants.lightTheme
+                          ? false
+                          : true,
+                      onChanged: (v) async {
+                        // if (v) {
+                        //   Provider.of<AppProvider>(context, listen: false)
+                        //       .setTheme(Constants.darkTheme, "dark");
+                        // } else {
+                        //   Provider.of<AppProvider>(context, listen: false)
+                        //       .setTheme(Constants.lightTheme, "light");
+                        // }
+                      },
+                      activeColor: Colors.red,
+                    ),
+                  ),
           ],
         ),
       ),
     );
   }
+}
+
+Widget _buildEditableField({
+  required String label,
+  required String? provider,
+  required String hintText,
+  required Function(String) onSubmitted,
+}) {
+  FocusNode focusNode = FocusNode();
+  return ListTile(
+    title: Text(
+      label,
+      style: const TextStyle(
+        fontSize: 17,
+        color: Colors.black,
+        fontWeight: FontWeight.w700,
+      ),
+    ),
+    subtitle: TextFormField(
+      focusNode: focusNode,
+      onFieldSubmitted: onSubmitted,
+      style: TextStyle(
+        color: Colors.grey[900], // Change the color here
+      ),
+      decoration: InputDecoration(
+        hintStyle: TextStyle(
+          color: Colors.grey[900], // Change the color here
+        ),
+        hintText: provider!.isNotEmpty ? provider : hintText,
+        border: InputBorder.none,
+      ),
+    ),
+    trailing: IconButton(
+        onPressed: () {
+          focusNode.requestFocus();
+        },
+        icon: const Icon(Icons.edit)),
+  );
 }

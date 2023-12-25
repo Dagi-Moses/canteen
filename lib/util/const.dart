@@ -1,7 +1,24 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-class Constants{
+import 'package:shared_preferences/shared_preferences.dart';
 
-  static String appName = "Noels Canteen";
+//import 'package:shared_preferences/shared_preferences.dart';
+
+
+
+
+final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+String uid = firebaseAuth.currentUser!.uid;
+FirebaseFirestore firestore = FirebaseFirestore.instance;
+ late SharedPreferences prefs;
+class Constants {
+ 
+
+//the rest
+  static String apiKey = 'sk_live_f113140e0dd9cd86cd6ae6fc117e7da19622f314';
+  static String appName = "Noel's Canteen";
+  static String admin = '55qKXCk0RaU5S3GZ3jaLNGR09AT2';
 
   //Colors for theme
 //  Color(0xfffcfcff);
@@ -16,12 +33,14 @@ class Constants{
   static ThemeData lightTheme = ThemeData(
     backgroundColor: lightBG,
     primaryColor: lightPrimary,
-    accentColor:  lightAccent,
-   // cursorColor: lightAccent,
+    colorScheme:  ColorScheme.fromSwatch()
+.copyWith(secondary: lightAccent),
+    // cursorColor: lightAccent,
     scaffoldBackgroundColor: lightBG,
     appBarTheme: AppBarTheme(
-      textTheme: TextTheme(
-        subtitle1: TextStyle(
+      
+       titleTextStyle: 
+         TextStyle(
           color: darkBG,
           fontSize: 18.0,
           fontWeight: FontWeight.w800,
@@ -30,19 +49,22 @@ class Constants{
 //      iconTheme: IconThemeData(
 //        color: lightAccent,
 //      ),
-    ),
+    
   );
 
   static ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
     backgroundColor: darkBG,
     primaryColor: darkPrimary,
-    accentColor: darkAccent,
+     colorScheme: ColorScheme.dark(
+    primary: darkPrimary,
+    secondary: darkAccent,
+  ),
+    
     scaffoldBackgroundColor: darkBG,
     //cursorColor: darkAccent,
     appBarTheme: AppBarTheme(
-      textTheme: TextTheme(
-        subtitle1: TextStyle(
+      titleTextStyle: TextStyle(
           color: lightBG,
           fontSize: 18.0,
           fontWeight: FontWeight.w800,
@@ -51,8 +73,6 @@ class Constants{
 //      iconTheme: IconThemeData(
 //        color: darkAccent,
 //      ),
-    ),
+    
   );
-
-
 }

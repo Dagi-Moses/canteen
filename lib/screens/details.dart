@@ -1,270 +1,314 @@
+import 'package:canteen/util/firebase%20functions.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:canteen/screens/notifications.dart';
-import 'package:canteen/util/comments.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:canteen/util/const.dart';
-import 'package:canteen/util/foods.dart';
+
 import 'package:canteen/widgets/badge.dart';
 import 'package:canteen/widgets/smooth_star_rating.dart';
+import 'package:intl/intl.dart';
+import '../../models/menus.dart';
+import '../../models/review.dart';
+import '../widgets/review_dialog.dart';
 
 class ProductDetails extends StatefulWidget {
+  final Menus model;
+  final bool isFav;
+
+  ProductDetails({super.key, required this.model, required this.isFav});
   @override
   _ProductDetailsState createState() => _ProductDetailsState();
 }
 
 class _ProductDetailsState extends State<ProductDetails> {
-  bool isFav = false;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          icon: Icon(
-            Icons.keyboard_backspace,
+    final app = AppLocalizations.of(context)!;
+    return Padding(
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom ),
+      child: Scaffold(
+        
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          leading: IconButton(
+            icon: Icon(
+              Icons.keyboard_backspace,
+            ),
+            onPressed: () => Navigator.pop(context),
           ),
-          onPressed: ()=>Navigator.pop(context),
-        ),
-        centerTitle: true,
-        title: Text(
-          "Item Details",
-        ),
-        elevation: 0.0,
-        actions: <Widget>[
-          IconButton(
-            icon: IconBadge(
-              icon: Icons.notifications,
-              size: 22.0,
-            ),
-            onPressed: (){
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (BuildContext context){
-                    return Notifications();
-                  },
-                ),
-              );
-            },
+          centerTitle: true,
+          title: Text(
+            app.menuDetails,
           ),
-        ],
-      ),
-
-      body: Padding(
-        padding: EdgeInsets.fromLTRB(10.0,0,10.0,0),
-        child: ListView(
-          children: <Widget>[
-            SizedBox(height: 10.0),
-            Stack(
-              children: <Widget>[
-                Container(
-                  height: MediaQuery.of(context).size.height / 3.2,
-                  width: MediaQuery.of(context).size.width,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: Image.asset(
-                      "${foods[1]['img']}",
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-
-                Positioned(
-                  right: -10.0,
-                  bottom: 3.0,
-                  child: RawMaterialButton(
-                    onPressed: (){},
-                    fillColor: Colors.white,
-                    shape: CircleBorder(),
-                    elevation: 4.0,
-                    child: Padding(
-                      padding: EdgeInsets.all(5),
-                      child: Icon(
-                        isFav
-                            ?Icons.favorite
-                            :Icons.favorite_border,
-                        color: Colors.red,
-                        size: 17,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            SizedBox(height: 10.0),
-
-            Text(
-              "${foods[1]['name']}",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w800,
+          elevation: 0.0,
+          actions: <Widget>[
+            IconButton(
+              icon: IconBadge(
+                icon: Icons.notifications,
+                size: 22.0,
               ),
-              maxLines: 2,
-            ),
-
-            Padding(
-              padding: EdgeInsets.only(bottom: 5.0, top: 2.0),
-              child: Row(
-                children: <Widget>[
-                  SmoothStarRating(
-                    starCount: 5,
-                    color: Constants.ratingBG,
-                    allowHalfRating: true,
-                    rating: 5.0,
-                    size: 10.0,
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (BuildContext context) {
+                      return Notifications();
+                    },
                   ),
-                  SizedBox(width: 10.0),
-
-                  Text(
-                    "5.0 (23 Reviews)",
-                    style: TextStyle(
-                      fontSize: 11.0,
-                    ),
-                  ),
-
-                ],
-              ),
-            ),
-
-
-            Padding(
-              padding: EdgeInsets.only(bottom: 5.0, top: 2.0),
-              child: Row(
-                children: <Widget>[
-                  Text(
-                    "20 Pieces",
-                    style: TextStyle(
-                      fontSize: 11.0,
-                      fontWeight: FontWeight.w300,
-                    ),
-                  ),
-                  SizedBox(width: 10.0),
-
-                  Text(
-                    r"$90",
-                    style: TextStyle(
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.w900,
-                      color: Theme.of(context).accentColor,
-                    ),
-                  ),
-
-                ],
-              ),
-            ),
-
-
-            SizedBox(height: 20.0),
-
-            Text(
-              "Product Description",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w800,
-              ),
-              maxLines: 2,
-            ),
-
-            SizedBox(height: 10.0),
-
-            Text(
-              "Nulla quis lorem ut libero malesuada feugiat. Lorem ipsum dolor "
-                  "sit amet, consectetur adipiscing elit. Curabitur aliquet quam "
-                  "id dui posuere blandit. Pellentesque in ipsum id orci porta "
-                  "dapibus. Vestibulum ante ipsum primis in faucibus orci luctus "
-                  "et ultrices posuere cubilia Curae; Donec velit neque, auctor "
-                  "sit amet aliquam vel, ullamcorper sit amet ligula. Donec"
-                  " rutrum congue leo eget malesuada. Vivamus magna justo,"
-                  " lacinia eget consectetur sed, convallis at tellus."
-                  " Vivamus suscipit tortor eget felis porttitor volutpat."
-                  " Donec rutrum congue leo eget malesuada."
-                  " Pellentesque in ipsum id orci porta dapibus.",
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w300,
-              ),
-            ),
-
-            SizedBox(height: 20.0),
-
-            Text(
-              "Reviews",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w800,
-              ),
-              maxLines: 2,
-            ),
-            SizedBox(height: 20.0),
-
-            ListView.builder(
-              shrinkWrap: true,
-              primary: false,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: comments == null?0:comments.length,
-              itemBuilder: (BuildContext context, int index) {
-                Map comment = comments[index];
-                return ListTile(
-                    leading: CircleAvatar(
-                      radius: 25.0,
-                      backgroundImage: AssetImage(
-                        "${comment['img']}",
-                      ),
-                    ),
-
-                    title: Text("${comment['name']}"),
-                    subtitle: Column(
-                      children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            SmoothStarRating(
-                              starCount: 5,
-                              color: Constants.ratingBG,
-                              allowHalfRating: true,
-                              rating: 5.0,
-                              size: 12.0,
-                            ),
-                            SizedBox(width: 6.0),
-                            Text(
-                              "February 14, 2020",
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w300,
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        SizedBox(height: 7.0),
-                        Text(
-                          "${comment["comment"]}",
-                        ),
-                      ],
-                    ),
                 );
               },
             ),
-
-            SizedBox(height: 10.0),
           ],
         ),
-      ),
-
-
-
-      bottomNavigationBar: Container(
-        height: 50.0,
-        child: ElevatedButton(
-          child: Text(
-            "ADD TO CART",
-            style: TextStyle(
-              color: Colors.white,
+        body: SafeArea(
+          child: Padding(
+             padding: EdgeInsets.only(
+              left:10,
+              right :10,
+              ),
+            child: ListView(
+              children: <Widget>[
+                SizedBox(height: 10.0),
+                Stack(
+                  children: <Widget>[
+                    Container(
+                      height: MediaQuery.of(context).size.height / 3.2,
+                      width: MediaQuery.of(context).size.width,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8.0),
+                        child: Image.network(
+                          widget.model.thumbnailUrl,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      right: -10.0,
+                      bottom: 3.0,
+                      child: RawMaterialButton(
+                        onPressed: () {
+                          likePost(
+                              postId: widget.model.menuID,
+                              likes: widget.model.likes,
+                              likesCount: widget.model.likesCount);
+                        },
+                        fillColor: Colors.white,
+                        shape: CircleBorder(),
+                        elevation: 4.0,
+                        child: Padding(
+                          padding: EdgeInsets.all(5),
+                          child: Icon(
+                            widget.isFav ? Icons.favorite : Icons.favorite_border,
+                            color: Colors.red,
+                            size: 17,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10.0),
+                Text(
+                  widget.model.menuTitle,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                  ),
+                  maxLines: 2,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 5.0, top: 2.0),
+                  child: Row(
+                    children: <Widget>[
+                      SmoothStarRating(
+                        borderColor: Constants.ratingBG,
+                        starCount: 5,
+                        color: Constants.ratingBG,
+                        allowHalfRating: true,
+                        rating: widget.model.rating,
+                        size: 25.0,
+                      ),
+                      SizedBox(width: 10.0),
+                      Text(
+                        " ${widget.model.rating.toString()} (${widget.model.raters.length.toString()} Reviews)",
+                        style:
+                            TextStyle(fontSize: 15.0, fontWeight: FontWeight.w400),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 5.0, top: 2.0),
+                  child: RichText(
+                      text: TextSpan(children: [
+                    const TextSpan(
+                      text: r"₦",
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.red,
+                      ),
+                    ),
+                    TextSpan(
+                      text: widget.model.menuPrice.toString(),
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ])),
+                ),
+                SizedBox(height: 20.0),
+                Text(
+                  app.productDescription,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                  ),
+                  maxLines: 2,
+                ),
+                SizedBox(height: 10.0),
+                Text(
+                  widget.model.menuInfo,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                SizedBox(height: 20.0),
+                Text(
+                  app.reviews,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                  ),
+                  maxLines: 2,
+                ),
+                SizedBox(height: 20.0),
+                StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection("menus")
+                      .doc(widget.model.menuID)
+                      .collection("reviews")
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        primary: false,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          DocumentSnapshot document = snapshot.data!.docs[index];
+                          Review review = Review.fromJson(
+                              json: document.data() as Map<String, dynamic>);
+                          return ListTile(
+                            leading: CircleAvatar(
+                              radius: 25.0,
+                              backgroundImage: NetworkImage(
+                                review.raterImage,
+                              ),
+                            ),
+                            title: Text(review.senderName),
+                            subtitle: Column(
+                              children: <Widget>[
+                                Row(
+                                  children: <Widget>[
+                                    SmoothStarRating(
+                                      starCount: 5,
+                                      color: Constants.ratingBG,
+                                      allowHalfRating: true,
+                                      rating: review.rating,
+                                      size: 17.0,
+                                    ),
+                                    SizedBox(width: 6.0),
+                                    Text(
+                                      // DateFormat.jm('MM/dd/yyyy').format(review.reviewDate),
+                                      DateFormat('dd/MM/yyyy ')
+                                          .format(review.reviewDate),
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 7.0),
+                                Text(
+                                  review.description,
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    } else {
+                      return SizedBox();
+                    }
+                  },
+                ),
+                SizedBox(height: 10.0),
+              ],
             ),
           ),
+        ),
+        bottomNavigationBar: Container(
          
-          style: ElevatedButton.styleFrom(
-            backgroundColor:  Theme.of(context).accentColor,
+          height: 82,
+          color: Colors.transparent,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                height: 40.0,
+                width: double.maxFinite,
+                child: ElevatedButton(
+                  child: Text(
+                    app.leaveReview,
+                    style: TextStyle(
+                      color: Colors.red,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey[900],
+                    elevation: 10.0,
+                  ),
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (context) => ReviewDialog(
+                              menuID: widget.model.menuID,
+                              menu: widget.model,
+                            ));
+                  },
+                ),
+              ),
+              Container(
+                width: double.maxFinite,
+                height: 40.0,
+                child: ElevatedButton(
+                  child: Text(
+                    app.addToCart,
+                    style: TextStyle(
+                      color: Colors.grey[900],
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    elevation: 10.0,
+                  ),
+                  onPressed: () {
+                    addProductToCart(menu: widget.model);
+                  },
+                ),
+              ),
+            ],
           ),
-          onPressed: (){},
         ),
       ),
     );

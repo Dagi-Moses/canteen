@@ -2,7 +2,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../models/address.dart';
+import '../../models/address.dart';
 import '../widgets/progress_bar.dart';
 import '../widgets/shipment_address_design.dart';
 import '../widgets/status_banner.dart';

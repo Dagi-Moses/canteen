@@ -1,28 +1,26 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:canteen/screens/details.dart';
 import 'package:canteen/util/const.dart';
 import 'package:canteen/widgets/smooth_star_rating.dart';
 
+import '../../models/menus.dart';
+
 class GridProduct extends StatelessWidget {
 
-  final String name;
-  final String img;
-  final bool isFav;
-  final double rating;
-  final int raters;
+  final Menus model;
+ 
 
 
   GridProduct({
     Key? key,
-    required this.name,
-    required this.img,
-    required this.isFav,
-    required this.rating,
-    required this.raters})
+    required this.model,
+   })
       :super(key: key);
 
   @override
   Widget build(BuildContext context) {
+     String uid = FirebaseAuth.instance.currentUser!.uid;
     return InkWell(
       child: ListView(
         shrinkWrap: true,
@@ -35,8 +33,8 @@ class GridProduct extends StatelessWidget {
                 width: MediaQuery.of(context).size.width / 2.2,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8.0),
-                  child: Image.asset(
-                    "$img",
+                  child: Image.network(
+                    model.thumbnailUrl,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -53,7 +51,7 @@ class GridProduct extends StatelessWidget {
                   child: Padding(
                     padding: EdgeInsets.all(5),
                     child: Icon(
-                      isFav
+                      model.likes.contains(uid)
                           ?Icons.favorite
                           :Icons.favorite_border,
                       color: Colors.red,
@@ -70,7 +68,7 @@ class GridProduct extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(bottom: 2.0, top: 8.0),
             child: Text(
-              "$name",
+              model.menuTitle,
               style: TextStyle(
                 fontSize: 20.0,
                 fontWeight: FontWeight.w900,
@@ -81,22 +79,26 @@ class GridProduct extends StatelessWidget {
 
           Padding(
             padding: EdgeInsets.only(bottom: 5.0, top: 2.0),
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 SmoothStarRating(
+                  borderColor: Colors.yellow,
+
                   starCount: 5,
                   color: Constants.ratingBG,
                   allowHalfRating: true,
-                  rating: rating,
-                  size: 10.0,
+                  rating: model.rating,
+                  size: 15.0,
                 ),
 
+                model.rating ==0 && model.raters.length == 0? SizedBox():
                 Text(
-                  " $rating ($raters Reviews)",
-                  style: TextStyle(
-                    fontSize: 11.0,
+                  "${model.rating % 1 == 0 ? model.rating.toStringAsFixed(0) : model.rating.toString()} (${model.raters.length.toString()} )",
+                  style: const TextStyle(
+                    fontSize: 14.0,
                   ),
-                ),
+                )
 
               ],
             ),
@@ -109,7 +111,7 @@ class GridProduct extends StatelessWidget {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (BuildContext context){
-              return ProductDetails();
+              return ProductDetails(model: model,isFav: model.likes.contains(uid),);
             },
           ),
         );

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:canteen/admin/models/items.dart';
+import 'package:canteen/models/items.dart';
 import 'package:canteen/admin/screens/item_detail_screen.dart';
 
 // ignore: must_be_immutable
@@ -63,12 +63,12 @@ class _ItemsDesignState extends State<ItemsDesign> {
           ),
         ),
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (c) => ItemDetailsScreen(model: widget.model),
-            ),
-          );
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder: (c) => ItemDetailsScreen(model: widget.model),
+          //   ),
+          // );
         });
     //   ),
     // );

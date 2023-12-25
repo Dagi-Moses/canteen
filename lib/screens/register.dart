@@ -1,9 +1,13 @@
+
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:canteen/screens/main_screen.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
+
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../util/firebase functions.dart';
-
+import '../widgets/textfield.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -11,292 +15,212 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final TextEditingController _usernameControl = new TextEditingController();
-  final TextEditingController _emailControl = new TextEditingController();
-  final TextEditingController _passwordControl = new TextEditingController();
-   bool isloading = false;
-   bool  obscure = true;
-   final _formkey = GlobalKey<FormState>();
+  final TextEditingController _usernameControl = TextEditingController();
+  final TextEditingController _emailControl = TextEditingController();
+  final TextEditingController _passwordControl = TextEditingController();
+  final TextEditingController _phoneControl = TextEditingController();
+  final TextEditingController _confirmPasswordControl = TextEditingController();
+  TextEditingController locationController = TextEditingController();
+  bool isloading = false;
+  bool obscure = true;
+  final _formkey = GlobalKey<FormState>();
+  Position? position;
+  List<Placemark>? placeMarks;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getCurrenLocation().timeout(Duration(seconds: 50));;
+  }
+
+  Future<void> getCurrenLocation() async {
+    try {
+      setState(() {
+        isloading = true;
+      });
+      bool serviceEnabled;
+      LocationPermission permission;
+
+      serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        return Future.error('Location services are disabled.');
+      }
+
+      permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          return Future.error('Location permissions are denied');
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        return Future.error(
+            'Location permissions are permanently denied, we cannot request permissions.');
+      }
+
+      Position newPosition = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      position = newPosition;
+
+      placeMarks = await placemarkFromCoordinates(
+        position!.latitude,
+        position!.longitude,
+      );
+
+      Placemark pMark = placeMarks![0];
+      setState(() {
+        // '${pMark.thoroughfare}, ${pMark.locality}, ${pMark.subAdministrativeArea}, ${pMark.administrativeArea}, ${pMark.country}';
+
+        String? completeAddress =
+            '${pMark.subThoroughfare} ${pMark.thoroughfare}, ${pMark.locality}, ${pMark.subAdministrativeArea}, ${pMark.administrativeArea}, ${pMark.country}';
+        locationController.text = completeAddress;
+      });
+    } catch (e) {
+      print(e.toString());
+    } finally {
+      isloading = false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final app = AppLocalizations.of(context)!;
     return Padding(
-      padding: EdgeInsets.fromLTRB(20.0,0,20,0),
-      child: Form(
-        key: _formkey,
-        child: ListView(
-          shrinkWrap: true,
-          children: <Widget>[
-      
-            SizedBox(height: 10.0),
-            Container(
-              alignment: Alignment.center,
-              margin: EdgeInsets.only(
-                top: 25.0,
-              ),
-              child: Text(
-                "Create an account",
-                style: TextStyle(
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.w700,
-                  color: Theme.of(context).accentColor,
+      padding: const EdgeInsets.fromLTRB(20.0, 0, 20, 0),
+      child: SingleChildScrollView(
+        child: Form(
+          key: _formkey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const SizedBox(height: 10.0),
+              Container(
+                alignment: Alignment.center,
+                margin: const EdgeInsets.only(
+                  top: 25.0,
                 ),
-              ),
-            ),
-      
-            SizedBox(height: 30.0),
-      
-            Card(
-              elevation: 3.0,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(5.0),
-                  ),
-                ),
-                child: TextFormField(
-                  validator: (val){
-                    return val!.length < 3? 'username must me more than two char': null;
-                  },
+                child: Text(
+                  app.createAnAccount,
                   style: TextStyle(
-                    fontSize: 15.0,
-                    color: Colors.black,
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.red,
                   ),
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.all(10.0),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                      borderSide: BorderSide(color: Colors.white,),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white,),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    hintText: "Username",
-                    prefixIcon: Icon(
-                      Icons.perm_identity,
-                      color: Colors.black,
-                    ),
-                    hintStyle: TextStyle(
-                      fontSize: 15.0,
-                      color: Colors.black,
-                    ),
-                  ),
-                  maxLines: 1,
-                  controller: _usernameControl,
                 ),
               ),
-            ),
-      
-            SizedBox(height: 10.0),
-      
-            Card(
-              elevation: 3.0,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(5.0),
-                  ),
-                ),
-                child: TextFormField(
-                   validator: (val){
-                    return val!.length < 5? 'not a valid email': null;
-                  },
-                  style: TextStyle(
-                    fontSize: 15.0,
-                    color: Colors.black,
-                  ),
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.all(10.0),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                      borderSide: BorderSide(color: Colors.white,),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white,),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    hintText: "Email",
-                    prefixIcon: Icon(
-                      Icons.mail_outline,
-                      color: Colors.black,
-                    ),
-                    hintStyle: TextStyle(
-                      fontSize: 15.0,
-                      color: Colors.black,
-                    ),
-                  ),
-                  maxLines: 1,
-                  controller: _emailControl,
-                ),
-              ),
-            ),
-      
-            SizedBox(height: 10.0),
-      
-            Card(
-              elevation: 3.0,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(5.0),
-                  ),
-                ),
-                child: TextFormField(
-                   validator: (val){
-                    return val!.length < 4? 'password must be more than 4 char': null;
-                  },
-                  style: TextStyle(
-                    fontSize: 15.0,
-                    color: Colors.black,
-                  ),
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.all(10.0),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                      borderSide: BorderSide(color: Colors.white,),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white,),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    hintText: "Password",
-                    suffix: null,
-                      // suffixIcon: GestureDetector(
-                      // onTap:(){
-                      //   setState(() {
-                      //     obscure = !obscure;
-                      //   });
-                      // },
-                      // child: obscure? Icon( Icons.visibility) : Icon( Icons.visibility_off)),
-                    prefixIcon: Icon(
-                      Icons.lock_outline,
-                      color: Colors.black,
-                    ),
-                    hintStyle: TextStyle(
-                      fontSize: 15.0,
-                      color: Colors.black,
-                    ),
-                  ),
-                  obscureText:  true,
-                  
-                  maxLines: 1,
-                  controller: _passwordControl,
-                ),
-              ),
-            ),
-      
-      
-            SizedBox(height: 40.0),
-      
-            Container(
-              height: 50.0,
-              child: ElevatedButton(
-                child:!isloading? Text(
-                  "Register".toUpperCase(),
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ): SizedBox(
-                  height: 30,
-                  width: 30,
-                  child: CircularProgressIndicator()),
-                onPressed: ()async{
-      
-               if(_formkey.currentState!.validate()){
-                     setState(() {
-            isloading = true;
-            
-          });
-        try{
-       await signUpAndStoreUserData(
-            _usernameControl.text,
-           // _phoneController.text,
-            _emailControl.text,
-            _passwordControl.text,
-            
-            context,
-            
-          );
-            setState(() {
-            isloading = false;
-            
-          });
-
-          
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (BuildContext context){
-                        return MainScreen();
-                      },
-                    ),
-                  );
-        }catch (e){
-       
-            setState(() {
-            isloading = false;
-            
-          });
-        }
-               }
+              const SizedBox(height: 30.0),
+              TextInput(
+                controller: _usernameControl,
+                icon: Icons.perm_identity,
+                hintText: app.username,
+                validator: (val) {
+                  return val!.length < 3
+                      ? app.char
+                      : null;
                 },
-               style: ElevatedButton.styleFrom(
-                 backgroundColor: Theme.of(context).accentColor,
-               ),
               ),
-            ),
-      
-            SizedBox(height: 10.0),
-            Divider(color: Theme.of(context).accentColor,),
-            SizedBox(height: 10.0),
-      
-      
-            Center(
-              child: Container(
-                width: MediaQuery.of(context).size.width/2,
-                child: Row(
-                  children: <Widget>[
-                    RawMaterialButton(
-                      onPressed: (){},
-                      fillColor: Colors.blue[800],
-                      shape: CircleBorder(),
-                      elevation: 4.0,
-                      child: Padding(
-                        padding: EdgeInsets.all(15),
-                        child: Icon(
-                          FontAwesomeIcons.facebookF,
-                          color: Colors.white,
-      //              size: 24.0,
-                        ),
-                      ),
-                    ),
-      
-                    RawMaterialButton(
-                      onPressed: (){},
-                      fillColor: Colors.white,
-                      shape: CircleBorder(),
-                      elevation: 4.0,
-                      child: Padding(
-                        padding: EdgeInsets.all(15),
-                        child: Icon(
-                          FontAwesomeIcons.google,
-                          color: Colors.blue[800],
-      //              size: 24.0,
-                        ),
-                      ),
-                    ),
-                  ],
+              const SizedBox(height: 10.0),
+              TextInput(
+                icon: Icons.mail_outline,
+                controller: _emailControl,
+                hintText: app.email,
+                validator: (val) {
+                  return val!.length < 5 ? app.invalidEmail : null;
+                },
+              ),
+              const SizedBox(height: 10.0),
+              TextInput(
+                icon: Icons.phone_outlined,
+                controller: _phoneControl,
+                hintText: app.phoneNumber,
+                validator: (val) {
+                  if (val == null || val.isEmpty) {
+                    return app.required;
+                  }
+
+                  return null;
+                },
+              ),
+              const SizedBox(height: 10.0),
+              TextInput(
+                icon: Icons.home_outlined,
+                controller: locationController,
+                hintText: app.address,
+                obscureText: false,
+                validator: (val) {
+                  return val!.length < 4 ? app.inputAddress : null;
+                },
+              ),
+              const SizedBox(height: 10.0),
+              TextInput(
+                controller: _passwordControl,
+                icon: Icons.lock_outline,
+                hintText: app.password,
+                obscureText: true,
+                validator: (val) {
+                  return val!.length < 4
+                      ? app.password + app.char
+                      : null;
+                },
+              ),
+              const SizedBox(height: 10.0),
+              TextInput(
+                icon: Icons.lock_outline,
+                controller: _confirmPasswordControl,
+                hintText: app.confirm,
+                obscureText: true,
+              ),
+              const SizedBox(height: 40.0),
+              SizedBox(
+                height: 50.0,
+                child: ElevatedButton(
+                  child: !isloading
+                      ? Text(
+                          app.register.toUpperCase(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                          ),
+                        )
+                      : const SizedBox(
+                          height: 30,
+                          width: 30,
+                          child: CircularProgressIndicator()),
+                  onPressed: () async {
+                    if (_formkey.currentState!.validate()) {
+                      try {
+                        await signUpAndStoreUserData(
+                          _usernameControl.text,
+                          // _phoneController.text,
+                          _emailControl.text,
+                          _passwordControl.text,
+                          _phoneControl.text,
+                          context,
+
+                          locationController.text,
+
+                          (loading) {
+                            setState(() {
+                              isloading = loading;
+                            });
+                          },
+                        );
+                      } catch (e) {
+                        Fluttertoast.showToast(msg: e.toString());
+                      }
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                  ),
                 ),
               ),
-            ),
-      
-            SizedBox(height: 20.0),
-      
-      
-          ],
+            ],
+          ),
         ),
       ),
     );
