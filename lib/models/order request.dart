@@ -45,11 +45,11 @@ class OrderRequestModel {
     return OrderRequestModel(
         status: json['status'],
         itemCount: json['itemCount'],
-        menuTitle: json["orderName"],
+        menuTitle: json["menuTitle"],
         buyersAddress: json["buyersAddress"],
         menuID: json['menuID'],
         menuPrice: json['menuPrice'],
-        orderDate: json['orderDate'],
+        orderDate: json['orderDate'].toDate(),
         thumbnailUrl: json['thumbnailUrl'],
         delivered: json['delivered'],
         userId: json['userId'],

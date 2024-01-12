@@ -1,3 +1,4 @@
+import 'package:canteen/util/firebase%20functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:canteen/screens/details.dart';
@@ -44,7 +45,9 @@ class GridProduct extends StatelessWidget {
                 right: -10.0,
                 bottom: 3.0,
                 child: RawMaterialButton(
-                  onPressed: (){},
+                  onPressed: (){
+                    likePost(postId: model.menuID, likes: model.likes, likesCount: model.likesCount);
+                  },
                   fillColor: Colors.white,
                   shape: CircleBorder(),
                   elevation: 4.0,

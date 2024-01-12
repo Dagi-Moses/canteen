@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -18,6 +19,17 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor:
+          Colors.transparent ,// Set your desired status bar color
+      systemNavigationBarColor: Colors.transparent
+     
+    ));
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,9 +61,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: GestureDetector(
                   child: Container(
                     padding: const EdgeInsets.all(8),
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.black,
+                        width: 2.0,
+                      ),
                       shape: BoxShape.circle,
-                      color: Colors.red,
+                      color: Colors.white,
                     ),
                     child: const Icon(Icons.add),
                   ),

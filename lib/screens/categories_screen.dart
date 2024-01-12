@@ -83,7 +83,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                   Map cat = app.categories[index];
                   bool isSelected = cat['name'] == menuProvider.category;
                   return HomeCategory(
-                   len: widget.len,
+               
                     isSelected:isSelected,  
                     icon: cat['icon'],
                     title: cat['name'],

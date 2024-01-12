@@ -41,7 +41,7 @@ class _InfoDesignWidgetState extends State<InfoDesignWidget> {
       },
       direction: DismissDirection.endToStart,
       onDismissed: (direction) {
-        deleteProductFromCart(menuId: widget.model!.menuID);
+        deleteMenu(widget.model!.menuID);
       },
       key: Key(widget.model!.menuID),
       background: Container(

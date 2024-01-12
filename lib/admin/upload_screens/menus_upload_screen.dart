@@ -132,6 +132,7 @@ class _MenusUploadScreenState extends State<MenusUploadScreen> {
         context: mcontext,
         builder: (c) {
           return SimpleDialog(
+            backgroundColor: Colors.white,
             title: const Text(
               "Menu Image",
               style:
@@ -141,14 +142,14 @@ class _MenusUploadScreenState extends State<MenusUploadScreen> {
               SimpleDialogOption(
                 child: const Text(
                   "Capture with Camera",
-                  style: TextStyle(color: Colors.grey),
+                  style: TextStyle(color: Colors.black),
                 ),
                 onPressed: captureImageWithCamera,
               ),
               SimpleDialogOption(
                 child: const Text(
                   "Select from Gallery",
-                  style: TextStyle(color: Colors.grey),
+                  style: TextStyle(color: Colors.black),
                 ),
                 onPressed: pickImageFromGallery,
               ),

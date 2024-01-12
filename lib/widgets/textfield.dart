@@ -12,7 +12,7 @@ class TextInput extends StatefulWidget {
 }
 
 class _TextInputState extends State<TextInput> {
-  bool obscure = false;
+  bool obscure = true;
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -52,7 +52,7 @@ class _TextInputState extends State<TextInput> {
                         obscure = !obscure;
                       });
                     },
-                    child: obscure? const Icon( Icons.visibility) : const Icon( Icons.visibility_off)) : null,
+                    child: obscure? const Icon( Icons.visibility_off) : const Icon( Icons.visibility)) : null,
                     prefixIcon: Icon(
                       widget.icon,
                       color: Colors.black,

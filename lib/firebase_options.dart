@@ -23,9 +23,15 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        return ios;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for ios - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -45,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyAK9t7XSuHPHBzVjuCXM_CeXb2qo9F35yY',
-    appId: '1:475813580405:web:f4099292e57e6f9980323c',
+    appId: '1:475813580405:web:f4bf26b498533c4980323c',
     messagingSenderId: '475813580405',
     projectId: 'my-final-year-project-8fe11',
     authDomain: 'my-final-year-project-8fe11.firebaseapp.com',
@@ -54,27 +60,9 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBsS9euYmeBF_lq49Gsk2A5r6h0iWiSqU0',
-    appId: '1:475813580405:android:bbea95557a38578280323c',
+    appId: '1:475813580405:android:38aa1e3d34aa23ae80323c',
     messagingSenderId: '475813580405',
     projectId: 'my-final-year-project-8fe11',
     storageBucket: 'my-final-year-project-8fe11.appspot.com',
-  );
-
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAfnYi5Cevh_5K0cTX8Qj7KpuIETooK5WM',
-    appId: '1:475813580405:ios:7acdaa32da660f1080323c',
-    messagingSenderId: '475813580405',
-    projectId: 'my-final-year-project-8fe11',
-    storageBucket: 'my-final-year-project-8fe11.appspot.com',
-    iosBundleId: 'com.example.canteen',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyAfnYi5Cevh_5K0cTX8Qj7KpuIETooK5WM',
-    appId: '1:475813580405:ios:7acdaa32da660f1080323c',
-    messagingSenderId: '475813580405',
-    projectId: 'my-final-year-project-8fe11',
-    storageBucket: 'my-final-year-project-8fe11.appspot.com',
-    iosBundleId: 'com.example.canteen',
   );
 }

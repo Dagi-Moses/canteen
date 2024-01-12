@@ -9,7 +9,7 @@ class HomeCategory extends StatefulWidget {
   final IconData icon;
   final String title;
   final String items;
-  final int len;
+
   bool isSelected;
   Function? onTap;
   final bool isHome;
@@ -21,7 +21,7 @@ class HomeCategory extends StatefulWidget {
     required this.items,
     required this.isHome,
     this.onTap,
-    this.isSelected = false, required this.len,
+    this.isSelected = false,
   }) : super(key: key);
 
   @override
@@ -33,10 +33,13 @@ class _HomeCategoryState extends State<HomeCategory> {
   Widget build(BuildContext context) {
     final app = AppLocalizations.of(context)!;
     final menuProvider = Provider.of<MenuProvider>(context, listen: true);
-    // final len = menuProvider.getMenusByCategory(widget.title).length;
+    // int len = menuProvider.menus
+    //     .where((menu) => menu.category == widget.title)
+    //     .length;
+    final len = menuProvider.getMenusListByCategory(widget.title);
 
     // Filter menus by category directly inside the build method
-    
+
     return GestureDetector(
       behavior: HitTestBehavior.deferToChild,
       onTap: () {
@@ -45,7 +48,7 @@ class _HomeCategoryState extends State<HomeCategory> {
             MaterialPageRoute(
               builder: (BuildContext context) {
                 return CategoriesScreen(
-                  len: widget.len,
+                  len: len,
                   catie: widget.title,
                 );
               },
@@ -89,14 +92,14 @@ class _HomeCategoryState extends State<HomeCategory> {
                 children: <Widget>[
                   SizedBox(height: 10.0),
                   Text(
-                    "${widget.title}",
+                    widget.title,
                     style: TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 17,
                     ),
                   ),
                   Text(
-                    widget.len.toString() + '' + app.items,
+                   app.items,
                     style: TextStyle(
                       fontWeight: FontWeight.w400,
                       fontSize: 10,

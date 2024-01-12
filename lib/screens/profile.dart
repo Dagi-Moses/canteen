@@ -1,4 +1,6 @@
+import 'package:canteen/admin/screens/dashboard.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:canteen/providers/app_provider.dart';
 
@@ -6,7 +8,6 @@ import 'package:canteen/util/const.dart';
 
 import '../admin/functions.dart';
 
-import '../admin/screens/home_screen.dart';
 import '../admin/widgets/simple_dialog.dart';
 import '../providers/provider.dart';
 import 'join.dart';
@@ -65,7 +66,7 @@ class _ProfileState extends State<Profile> {
                         },
                         child: CircleAvatar(
                           backgroundColor: Colors.grey[600],
-                          backgroundImage: userProvider.profileImage != ''
+                          backgroundImage: userProvider.profileImage != ""
                               ? NetworkImage(userProvider.profileImage!)
                               : null,
                           child: userProvider.profileImage == ''
@@ -109,98 +110,96 @@ class _ProfileState extends State<Profile> {
                       ],
                     ),
                     const SizedBox(height: 20.0),
-                    LayoutBuilder(
-                      builder: (context, constraints) {
-                        return Flex(
-                         
-                          direction: constraints.maxWidth > 150 ?  Axis.vertical : Axis.horizontal,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            uid == Constants.admin
-                                ? GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (c) => const HomeScreen(),
+                    LayoutBuilder(builder: (context, constraints) {
+                      return Flex(
+                        direction: constraints.maxWidth > 150
+                            ? Axis.vertical
+                            : Axis.horizontal,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          uid == Constants.admin
+                              ? GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (c) => const DashBoard(),
+                                      ),
+                                    );
+                                  },
+                                  child: Card(
+                                    elevation: 6.0,
+                                    child: Container(
+                                      constraints: BoxConstraints(
+                                        maxWidth:
+                                            190, // Set your desired maximum width
+                                      ),
+                                      width: double.infinity,
+                                      padding: const EdgeInsets.all(6),
+                                      decoration: const BoxDecoration(
+                                        color: Colors.blue,
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(5.0),
                                         ),
-                                      );
-                                    },
-                                    child: Card(
-                                      elevation: 6.0,
-                                      child: Container(
-                                        constraints: BoxConstraints(
-                                          maxWidth:
-                                              190, // Set your desired maximum width
-                                        ),
-                                        width: double.infinity,
-                                        padding: const EdgeInsets.all(6),
-                                        decoration: const BoxDecoration(
-                                          color: Colors.blue,
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(5.0),
-                                          ),
-                                        ),
-                                        child: Text(
-                                          app.viewAdminApp,
-                                          style: TextStyle(
-                                            overflow: TextOverflow.ellipsis,
-                                            color: Colors.white,
-                                          ),
+                                      ),
+                                      child: Text(
+                                        app.viewAdminApp,
+                                        style: TextStyle(
+                                          overflow: TextOverflow.ellipsis,
+                                          color: Colors.white,
                                         ),
                                       ),
                                     ),
-                                  )
-                                : const SizedBox(),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            InkWell(
-                              onTap: () async {
-                                signout(
-                                    context: context,
-                                    onTap: () {
-                                      firebaseAuth.signOut().then((value) {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (c) => JoinApp(),
-                                          ),
-                                        );
-                                      });
-                                    });
-                              },
-                              child: Card(
-                                elevation: 6.0,
-                                child: Container(
-                                    constraints: BoxConstraints(
-                                          maxWidth:
-                                              100, // Set your desired maximum width
-                                        ),
-                                  padding: const EdgeInsets.all(6),
-                                  decoration: const BoxDecoration(
-                                    color: Colors.red,
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(5.0),
-                                    ),
                                   ),
-                                  child: Text(
-                                    app.logOut,
-                                    style: TextStyle(
-                                      overflow:TextOverflow.ellipsis,
-                                      fontSize: 13.0,
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.white,
-                                    ),
+                                )
+                              : const SizedBox(),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          InkWell(
+                            onTap: () async {
+                              signout(
+                                  context: context,
+                                  onTap: () async {
+                                    await firebaseAuth.signOut();
+                                    Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => JoinApp(canPop: false,)),
+                                      (route) => false,
+                                    );
+                                  });
+                            },
+                            child: Card(
+                              elevation: 6.0,
+                              child: Container(
+                                constraints: BoxConstraints(
+                                  maxWidth:
+                                      100, // Set your desired maximum width
+                                ),
+                                padding: const EdgeInsets.all(6),
+                                decoration: const BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(5.0),
+                                  ),
+                                ),
+                                child: Text(
+                                  app.logOut,
+                                  style: TextStyle(
                                     overflow: TextOverflow.ellipsis,
+                                    fontSize: 13.0,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.white,
                                   ),
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                             ),
-                          ],
-                        );
-                      }
-                    ),
+                          ),
+                        ],
+                      );
+                    }),
                   ],
                 ),
               ],
@@ -269,8 +268,11 @@ class _ProfileState extends State<Profile> {
                   iconSize: 30,
                   value: selectedObject,
                   onChanged: (String? newValue) {
-                    setState(() {
-                      selectedObject = newValue;
+                  
+                      SchedulerBinding.instance.addPostFrameCallback((_) {
+                      setState(() {
+                        selectedObject = newValue;
+                      });
                     });
                     if (newValue == 'English') {
                       prov.setPreferredLanguage('en');

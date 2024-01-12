@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -7,7 +8,6 @@ import 'package:canteen/admin/widgets/simple_app_bar.dart';
 import 'package:intl/intl.dart';
 
 import '../../models/menus.dart';
-
 
 class ItemDetailsScreen extends StatefulWidget {
   final Menus? model;
@@ -21,6 +21,11 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
   TextEditingController counterTextEditingController = TextEditingController();
 
   deleteItem(String itemID) {
+    FirebaseStorage.instance
+        .ref()
+        .child("menus")
+        .child(widget.model!.menuID + ".jpg")
+        .delete();
     FirebaseFirestore.instance
         .collection("menus")
         .doc(widget.model!.menuID)
@@ -199,8 +204,8 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                           ),
                           const SizedBox(height: 5),
                           Text(
-                             DateFormat('dd/MM/yyyy HH:mm:ss')
-                                  .format(widget.model!.publishDate),
+                            DateFormat('dd/MM/yyyy HH:mm:ss')
+                                .format(widget.model!.publishDate),
                             textAlign: TextAlign.justify,
                             style: GoogleFonts.lato(
                               textStyle: TextStyle(
@@ -251,7 +256,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                                       borderRadius: BorderRadius.all(
                                           Radius.circular(15)))),
                               onPressed: () {
-                                 deleteItem(widget.model!.menuID);
+                                deleteItem(widget.model!.menuID);
                               },
                               child: Row(children: [
                                 Text(

@@ -1,3 +1,4 @@
+import 'package:canteen/admin/widgets/orders.dart';
 import 'package:canteen/models/order%20request.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,6 @@ class NewOrdersScreen extends StatefulWidget {
 }
 
 class _NewOrdersScreenState extends State<NewOrdersScreen> {
- 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,21 +36,20 @@ class _NewOrdersScreenState extends State<NewOrdersScreen> {
         child: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
               .collection("orders")
-              .orderBy("publishDate", descending: true)
+              .orderBy("orderDate", descending: true)
               .snapshots(),
           builder: (c, snapshot) {
             return snapshot.hasData && snapshot.data != null
                 ? ListView.builder(
                     itemCount: snapshot.data!.docs.length,
                     itemBuilder: (c, index) {
+                      DocumentSnapshot document = snapshot.data!.docs[index];
+
                       OrderRequestModel model =
                           OrderRequestModel.getModelFromJson(
-                              json: snapshot.data!.docs[index]
-                                  as Map<String, dynamic>);
+                              json: document.data() as Map<String, dynamic>);
                       return snapshot.hasData
-                          ? OrderCardDesign(
-                              model: model,
-                            )
+                          ? OrdersWidget( context: context, model: model,)
                           : Center(
                               child: //circularProgress()
                                   Text('No data Available'));

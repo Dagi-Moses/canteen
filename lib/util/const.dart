@@ -18,7 +18,7 @@ class Constants {
 //the rest
   static String apiKey = 'sk_live_f113140e0dd9cd86cd6ae6fc117e7da19622f314';
   static String appName = "Noel's Canteen";
-  static String admin = '55qKXCk0RaU5S3GZ3jaLNGR09AT2';
+  static String admin = '1UuGd7EeZFcYZZmmvpYgWevOcGH3';
 
   //Colors for theme
 //  Color(0xfffcfcff);

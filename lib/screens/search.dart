@@ -112,27 +112,24 @@ class _SearchScreenState extends State<SearchScreen> {
           floating: false,
           pinned: true,
         ),
-        SliverFillRemaining(
-          hasScrollBody: false,
+        SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
             child: Column(
               children: <Widget>[
+              _searchControl.text.isEmpty?  Center(child: Text("History"),) : SizedBox(),
                 _searchControl.text.isEmpty
                     ? _buildSearchHistory()
-                    : Expanded(
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          primary: false,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: searchResults.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return HistoryWidget(
-                              focusNode: focusNode,
-                              menu: searchResults[index],
-                            );
-                          },
-                        ),
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        primary: false,
+                        itemCount: searchResults.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return HistoryWidget(
+                            focusNode: focusNode,
+                            menu: searchResults[index],
+                          );
+                        },
                       ),
                 const SizedBox(height: 30),
               ],
@@ -153,32 +150,31 @@ class _SearchScreenState extends State<SearchScreen> {
           return Text('Error: ${snapshot.error}');
         } else {
           List<Menus> historyData = snapshot.data!;
-          return SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                final document = historyData[index];
+          return ListView.builder(
+            shrinkWrap: true,
+            primary: false,
+            itemCount: historyData.length,
+            itemBuilder: (BuildContext context, int index) {
+              final document = historyData[index];
 
-                return Dismissible(
-                  key: Key(index.toString()),
-                  direction: DismissDirection.horizontal,
-                  background: Container(
-                    color: Colors.red,
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    alignment: AlignmentDirectional.centerEnd,
-                    child: const Icon(Icons.delete, color: Colors.white),
-                  ),
-                  onDismissed: (direction) {
-                    _history
-                        .deleteMenuFromSharedPreferences(document.menuTitle);
-                  },
-                  child: HistoryWidget(
-                    focusNode: focusNode,
-                    menu: document,
-                  ),
-                );
-              },
-              childCount: historyData.length,
-            ),
+              return Dismissible(
+                key: Key(index.toString()),
+                direction: DismissDirection.horizontal,
+                background: Container(
+                  color: Colors.red,
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  alignment: AlignmentDirectional.centerEnd,
+                  child: const Icon(Icons.delete, color: Colors.white),
+                ),
+                onDismissed: (direction) {
+                  _history.deleteMenuFromSharedPreferences(document.menuTitle);
+                },
+                child: HistoryWidget(
+                  focusNode: focusNode,
+                  menu: document,
+                ),
+              );
+            },
           );
         }
       },

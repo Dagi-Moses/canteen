@@ -25,21 +25,11 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  List<T> map<T>(List list, Function handler) {
-    List<T> result = [];
-
-    for (var i = 0; i < list.length; i++) {
-      result.add(handler(i, list[i]));
-    }
-
-    return result;
-  }
-
   @override
   Widget build(BuildContext context) {
     int _current = 0;
     final app = AppLocalizations.of(context)!;
- final menuProvider = Provider.of<MenuProvider>(context, listen: true);
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -147,14 +137,8 @@ class _HomeState extends State<Home> {
                   itemCount: app.categories.length,
                   itemBuilder: (BuildContext context, int index) {
                     Map cat = app.categories[index];
-                    List<Menus> filteredMenus = menuProvider.menus
-                        .where((menu) => menu.category == cat['name'])
-                        .toList();
-
-                    int len = filteredMenus.length;
 
                     return HomeCategory(
-                      len: len,
                       icon: cat['icon'],
                       title: cat['name'],
                       items: cat['items'].toString(),

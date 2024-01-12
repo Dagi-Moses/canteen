@@ -1,4 +1,4 @@
-package com.example.canteen
+package com.dagi_moses.canteen
 
 import io.flutter.embedding.android.FlutterActivity
 

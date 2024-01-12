@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:475813580405:android:bbea95557a38578280323c",
+        "mobilesdk_app_id": "1:475813580405:android:38aa1e3d34aa23ae80323c",
         "android_client_info": {
-          "package_name": "com.example.canteen"
+          "package_name": "com.dagi_moses.canteen"
         }
       },
       "oauth_client": [

@@ -44,7 +44,7 @@ class _IconBadgeState extends State<IconBadge> {
             child: Padding(
               padding: EdgeInsets.only(top: 1),
               child:Text(
-                cartMenu.cartMenus.length.toString(),
+                cartMenu.cartNo.toString(),
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 8,

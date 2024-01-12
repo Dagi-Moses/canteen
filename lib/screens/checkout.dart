@@ -1,4 +1,5 @@
 import 'package:canteen/models/menus.dart';
+import 'package:canteen/util/firebase%20functions.dart';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -29,7 +30,6 @@ class _CheckoutState extends State<Checkout> {
     final app = AppLocalizations.of(context)!;
     final userProvider = Provider.of<UserProvider>(context, listen: true);
     return Scaffold(
-      
       appBar: AppBar(
         backgroundColor: Colors.red,
         automaticallyImplyLeading: false,
@@ -82,14 +82,14 @@ class _CheckoutState extends State<Checkout> {
                 title: Text(
                   userProvider.name,
                   style: const TextStyle(
-        //                    fontSize: 15,
+                    //                    fontSize: 15,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
                 subtitle: Text(userProvider.address),
               ),
               const SizedBox(height: 10.0),
-             Text(
+              Text(
                 app.paymentMethod,
                 style: TextStyle(
                   fontSize: 15,
@@ -98,12 +98,12 @@ class _CheckoutState extends State<Checkout> {
               ),
               Card(
                 color: Colors.white,
-          shadowColor: Colors.grey[900],
-          surfaceTintColor: Colors.white,
+                shadowColor: Colors.grey[900],
+                surfaceTintColor: Colors.white,
                 elevation: 4.0,
                 child: ListTile(
                   title: Text(userProvider.name),
-                  subtitle:  Text(
+                  subtitle: Text(
                     app.payStack,
                     style: TextStyle(
                       fontSize: 13,
@@ -124,7 +124,7 @@ class _CheckoutState extends State<Checkout> {
                 ),
               ),
               const SizedBox(height: 20.0),
-               Text(
+              Text(
                 app.items,
                 style: TextStyle(
                   fontSize: 15,
@@ -137,7 +137,7 @@ class _CheckoutState extends State<Checkout> {
                 itemCount: cartMenu.cartMenus.length,
                 itemBuilder: (BuildContext context, int index) {
                   final food = cartMenu.cartMenus[index];
-        
+
                   return CartItem(
                     menu: food,
                   );
@@ -148,7 +148,7 @@ class _CheckoutState extends State<Checkout> {
         ),
       ),
       bottomSheet: Padding(
-        padding:EdgeInsets.only( bottom:MediaQuery.of(context).padding.bottom),
+        padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
         child: Card(
           color: Colors.white,
           shadowColor: Colors.grey[900],
@@ -157,7 +157,6 @@ class _CheckoutState extends State<Checkout> {
           child: SizedBox(
             height: 130,
             child: ListView(
-           
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.all(10),
@@ -210,7 +209,7 @@ class _CheckoutState extends State<Checkout> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                           Text(
+                          Text(
                             app.total,
                             style: TextStyle(
                               fontSize: 13,
@@ -236,8 +235,8 @@ class _CheckoutState extends State<Checkout> {
                               ),
                             ),
                           ])),
-                           Text(
-                           app.deliveryCharges ,
+                          Text(
+                            app.deliveryCharges,
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w400,
@@ -261,7 +260,9 @@ class _CheckoutState extends State<Checkout> {
                           ),
                         ),
                         onPressed: () {
+                          // buyAllItemsInCart(context: context);
                           Navigator.push(context, MaterialPageRoute(builder: (_){
+
                             return PaymentPage();
                           }));
                         },

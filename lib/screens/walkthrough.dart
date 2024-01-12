@@ -58,7 +58,7 @@ class _WalkthroughState extends State<Walkthrough> {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (BuildContext context){
-                      return JoinApp();
+                      return JoinApp(canPop: true,);
                     },
                   ),
                 );
@@ -67,7 +67,7 @@ class _WalkthroughState extends State<Walkthrough> {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (BuildContext context){
-                      return JoinApp();
+                      return JoinApp(canPop: true,);
                     },
                   ),
                 );

@@ -8,6 +8,8 @@ import 'package:canteen/screens/search.dart';
 import 'package:canteen/util/const.dart';
 import 'package:canteen/widgets/badge.dart';
 import 'package:provider/provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import "package:firebase_auth/firebase_auth.dart";
 
 import '../../models/menus.dart';
 import '../providers/app_provider.dart';
@@ -19,14 +21,27 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  final prov = MenuProvider();
   PageController? _pageController;
   int _page = 0;
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+    fetchCartData();
+  }
+
+  Future<void> fetchCartData() async {
+    CollectionReference cartCollection = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("cart");
+    QuerySnapshot querySnapshot = await cartCollection.get();
+    prov.updateCartNo(querySnapshot.docs.length);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final cartMenu = Provider.of<MenuProvider>(
-      context,
-    );
     final app = AppLocalizations.of(context)!;
     return WillPopScope(
       onWillPop: () => Future.value(false),
@@ -42,7 +57,7 @@ class _MainScreenState extends State<MainScreen> {
                 automaticallyImplyLeading: false,
                 centerTitle: true,
                 title: Text(
-                  Constants.appName,
+                  app.appName,
                   style: TextStyle(color: Colors.red),
                 ),
                 elevation: 0.0,
@@ -151,12 +166,6 @@ class _MainScreenState extends State<MainScreen> {
 
   void navigationTapped(int page) {
     _pageController!.jumpToPage(page);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController();
   }
 
   @override

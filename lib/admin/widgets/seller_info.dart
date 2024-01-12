@@ -86,7 +86,7 @@ class _SellerInfoState extends State<SellerInfo> {
                       Padding(
                         padding: const EdgeInsets.all(5),
                         child: Text(
-                          "Earnings: ",
+                          "Earnings:",
                           style: GoogleFonts.lato(
                             textStyle: const TextStyle(
                                 fontSize: 20,
@@ -104,7 +104,7 @@ class _SellerInfoState extends State<SellerInfo> {
                               style: TextStyle(
                                   fontSize: 23,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.green),
+                                  color: Colors.black),
                             ),
                             Text(
                               userProvider.sellerTotalEarnings.toString(),
@@ -113,7 +113,7 @@ class _SellerInfoState extends State<SellerInfo> {
                                 textStyle: TextStyle(
                                     fontSize: 25,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.green.shade500),
+                                    color: Colors.black),
                               ),
                             ),
                           ],
@@ -136,9 +136,10 @@ class _SellerInfoState extends State<SellerInfo> {
                       height: 100,
                       width: 100,
                       child: CircleAvatar(
+
                         backgroundColor: userProvider.profileImage == ''
-                            ? Colors.yellow
-                            : Colors.black,
+                            ? Colors.grey[300]
+                            : Colors.transparent,
                         backgroundImage: userProvider.profileImage != ''
                             ? NetworkImage(userProvider.profileImage!)
                             : null,

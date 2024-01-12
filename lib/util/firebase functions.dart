@@ -68,9 +68,9 @@ signUpAndStoreUserData(
   } catch (e) {
     setIsLoading(false);
     if (e is TimeoutException) {
-      Fluttertoast.showToast(msg: 'Check your internet connection');
+      Fluttertoast.showToast(toastLength: Toast.LENGTH_LONG, msg: 'Check your internet connection');
     } else {
-      Fluttertoast.showToast(msg: e.toString());
+      Fluttertoast.showToast( toastLength: Toast.LENGTH_LONG, msg: e.toString());
     }
   }
 }
@@ -102,9 +102,12 @@ Future<void> signInUser({
   } catch (e) {
     setIsLoading(false);
     if (e is TimeoutException) {
-      Fluttertoast.showToast(msg: 'Check your internet connection');
+      Fluttertoast.showToast(
+          toastLength: Toast.LENGTH_LONG,
+          msg: 'Check your internet connection');
     } else {
       Fluttertoast.showToast(
+        toastLength: Toast.LENGTH_LONG,
         msg: e.toString(),
       );
     }
@@ -153,6 +156,7 @@ Future deleteProductFromCart({required String menuId}) async {
       .collection("cart")
       .doc(menuId)
       .delete();
+  MenuProvider().minusCartNo();
 }
 
 Future buyAllItemsInCart({required BuildContext context}) async {
@@ -193,6 +197,9 @@ Future sendOrderRequest(
     orderDate: DateTime.now(),
     userId: userProvider.id,
     username: userProvider.name,
+    thumbnailUrl: model.thumbnailUrl,
+    itemCount: 1,
+    delivered: false,
   );
   await _firestore.collection("orders").add(orderRequestModel.getJson());
   final menuProvider = Provider.of<MenuProvider>(context, listen: false);

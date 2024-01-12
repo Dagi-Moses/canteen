@@ -37,7 +37,7 @@ class Menus {
       menuPrice: json["menuPrice"],
       menuInfo: json["menuInfo"],
       menuTitle: json["menuTitle"],
-      publishDate:json['publishDate'].toDate(),
+      publishDate: json['publishDate'].toDate(),
       status: json["status"],
       rating: json['rating'],
       raters: json['raters'],
@@ -73,11 +73,12 @@ class MenuProvider extends ChangeNotifier {
   List<Menus> _cartMenus = [];
   List<Menus> _categoryMenus = [];
   String _category = '';
+  int _cartNo = 0;
 
   String get category => _category;
 
   double _totalCartPrice = 0;
-
+  int get cartNo => _cartNo;
   double get totalCartPrice => _totalCartPrice;
 
   List<Menus> get menus => _menus;
@@ -96,6 +97,7 @@ class MenuProvider extends ChangeNotifier {
     }).toList();
 
     _menus = updatedMenus;
+
     notifyListeners();
   }
 
@@ -110,12 +112,26 @@ class MenuProvider extends ChangeNotifier {
     }
     _cartMenus = updatedMenus;
     _totalCartPrice = total;
-
+    _cartNo = updatedMenus.length ;
     notifyListeners();
   }
 
-  List<Menus> getMenusByCategory(String category) {
-    return _menus.where((menu) => menu.category == _category).toList();
+  int getMenusListByCategory(String category) {
+    int categoryLength =
+        _menus.where((menu) => menu.category == category).length;
+
+    // Notify listeners when the state changes
+    notifyListeners();
+
+    return categoryLength;
+  }
+  void updateCartNo(int No){
+    _cartNo = No;
+   notifyListeners();
+  }
+  void minusCartNo(){
+    _cartNo = _cartNo -1;
+    notifyListeners();
   }
 
   void updateCategory(String newCategory) {

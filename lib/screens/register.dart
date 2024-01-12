@@ -1,7 +1,6 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
 
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -31,14 +30,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getCurrenLocation().timeout(Duration(seconds: 50));;
+    getCurrenLocation().timeout(Duration(seconds: 50));
+    ;
   }
 
   Future<void> getCurrenLocation() async {
     try {
-      setState(() {
-        isloading = true;
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        setState(() {
+          isloading = true;
+        });
       });
+
       bool serviceEnabled;
       LocationPermission permission;
 
@@ -72,17 +75,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
       );
 
       Placemark pMark = placeMarks![0];
-      setState(() {
-        // '${pMark.thoroughfare}, ${pMark.locality}, ${pMark.subAdministrativeArea}, ${pMark.administrativeArea}, ${pMark.country}';
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        setState(() {
+          // '${pMark.thoroughfare}, ${pMark.locality}, ${pMark.subAdministrativeArea}, ${pMark.administrativeArea}, ${pMark.country}';
 
-        String? completeAddress =
-            '${pMark.subThoroughfare} ${pMark.thoroughfare}, ${pMark.locality}, ${pMark.subAdministrativeArea}, ${pMark.administrativeArea}, ${pMark.country}';
-        locationController.text = completeAddress;
+          String? completeAddress =
+              '${pMark.subThoroughfare} ${pMark.thoroughfare}, ${pMark.locality}, ${pMark.subAdministrativeArea}, ${pMark.administrativeArea}, ${pMark.country}';
+          locationController.text = completeAddress;
+        });
       });
     } catch (e) {
-      print(e.toString());
     } finally {
-      isloading = false;
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        setState(() {
+          isloading = false;
+        });
+      });
     }
   }
 
@@ -119,9 +127,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 icon: Icons.perm_identity,
                 hintText: app.username,
                 validator: (val) {
-                  return val!.length < 3
-                      ? app.char
-                      : null;
+                  return val!.length < 3 ? app.char : null;
                 },
               ),
               const SizedBox(height: 10.0),
@@ -163,9 +169,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 hintText: app.password,
                 obscureText: true,
                 validator: (val) {
-                  return val!.length < 4
-                      ? app.password + app.char
-                      : null;
+                  return val!.length < 4 ? app.password + app.char : null;
                 },
               ),
               const SizedBox(height: 10.0),

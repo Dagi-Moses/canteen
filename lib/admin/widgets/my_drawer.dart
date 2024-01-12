@@ -1,3 +1,4 @@
+import 'package:canteen/admin/screens/dashboard.dart';
 import 'package:canteen/admin/widgets/simple_dialog.dart';
 import 'package:canteen/screens/main_screen.dart';
 import 'package:flutter/material.dart';
@@ -49,8 +50,8 @@ class MyDrawer extends StatelessWidget {
                             },
                             child: CircleAvatar(
                               backgroundColor: userProvider.profileImage == ''
-                                  ? Colors.yellow
-                                  : Colors.black,
+                                  ? Colors.grey[400]
+                                  : Colors.transparent,
                               backgroundImage: userProvider.profileImage != ''
                                   ? NetworkImage(userProvider.profileImage!)
                                   : null,
@@ -69,7 +70,8 @@ class MyDrawer extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    userProvider.name,
+                    // userProvider.name,
+                    "noel",
                     style: GoogleFonts.lato(
                       textStyle: const TextStyle(
                         fontSize: 25,
@@ -126,12 +128,12 @@ class MyDrawer extends StatelessWidget {
                   ),
                   ListTile(
                     leading: const Icon(
-                      Icons.reorder,
+                      Icons.dashboard,
                       color: Colors.black,
                       size: 30,
                     ),
                     title: Text(
-                      'New Orders',
+                      'DashBoard',
                       style: GoogleFonts.lato(
                         textStyle: const TextStyle(
                           color: Colors.black,
@@ -144,7 +146,7 @@ class MyDrawer extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (c) => const NewOrdersScreen(),
+                          builder: (c) => const DashBoard(),
                         ),
                       );
                     },
@@ -184,31 +186,6 @@ class MyDrawer extends StatelessWidget {
                     color: Colors.white,
                     thickness: 2,
                   ),
-                  ListTile(
-                    leading: const Icon(
-                      Icons.person,
-                      color: Colors.black,
-                      size: 30,
-                    ),
-                    title: Text(
-                      'View Users App',
-                      style: GoogleFonts.lato(
-                        textStyle: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (c) => MainScreen(),
-                        ),
-                      );
-                    },
-                  ),
                   const Divider(
                     height: 10,
                     color: Colors.white,
@@ -235,11 +212,11 @@ class MyDrawer extends StatelessWidget {
                           context: context,
                           onTap: () {
                             firebaseAuth.signOut().then((value) {
-                              Navigator.push(
+                              Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (c) => JoinApp(),
-                                ),
+                                    builder: (context) => JoinApp( canPop: false,)),
+                                (route) => false,
                               );
                               _controller.clear();
                             });

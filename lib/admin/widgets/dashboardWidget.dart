@@ -1,39 +1,39 @@
 import 'package:canteen/providers/app_provider.dart';
-import 'package:canteen/util/const.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class LanguageWidget extends StatefulWidget {
+class DashBoardWidget extends StatefulWidget {
   final int index;
-  final String languageName;
-  final String languageCode;
+  final Map<String, dynamic> cat;
 
-  LanguageWidget({
+  DashBoardWidget({
     super.key,
     required this.index,
-    required this.languageName,
-    required this.languageCode,
+    required this.cat,
   });
 
   @override
-  State<LanguageWidget> createState() => _LanguageWidgetState();
+  State<DashBoardWidget> createState() => _DashBoardWidgetState();
 }
 
-class _LanguageWidgetState extends State<LanguageWidget> {
+class _DashBoardWidgetState extends State<DashBoardWidget> {
   @override
   Widget build(BuildContext context) {
     final app = Provider.of<AppProvider>(context, listen: true);
 
     return InkWell(
       onTap: () {
-        app.setPreferredLanguage(widget.languageCode);
+        Navigator.of(context)
+            .pushReplacement(MaterialPageRoute(builder: ((context) {
+          return widget.cat['nav'];
+        })));
       },
       child: Container(
         padding: EdgeInsets.all(10),
-        margin: EdgeInsets.all(5),
+        margin: EdgeInsets.all(12),
         decoration: BoxDecoration(
-            color: Colors.white,
+            color: const Color.fromARGB(255, 138, 32, 32),
             borderRadius: BorderRadius.circular(10),
             boxShadow: [
               BoxShadow(
@@ -46,17 +46,15 @@ class _LanguageWidgetState extends State<LanguageWidget> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              app.selectedLanguageIndex == widget.index
-                  ? Icon(
-                      Icons.check_circle,
-                      color: Colors.red,
-                      size: 20,
-                    )
-                  : SizedBox(),
+              Icon(
+                widget.cat['icon'],
+                color: Colors.white,
+                size: 20,
+              ),
               SizedBox(
                 height: 5,
               ),
-              Text(widget.languageName)
+              Text(widget.cat['name'], style: TextStyle(color: Colors.white),)
             ],
           ),
         ),

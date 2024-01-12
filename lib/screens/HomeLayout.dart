@@ -1,3 +1,4 @@
+import 'package:canteen/admin/screens/dashboard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/material.dart';
@@ -9,7 +10,7 @@ import '../util/const.dart';
 import 'main_screen.dart';
 
 class HomeLayout extends StatefulWidget {
-  String ? uid;
+  String? uid;
   HomeLayout({super.key, required this.uid});
 
   @override
@@ -17,9 +18,6 @@ class HomeLayout extends StatefulWidget {
 }
 
 class _HomeLayoutState extends State<HomeLayout> {
-  
-  
-
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<DocumentSnapshot>(
@@ -32,11 +30,11 @@ class _HomeLayoutState extends State<HomeLayout> {
         Map<String, dynamic>? userData =
             snapshot.data?.data() as Map<String, dynamic>?;
 
-        Provider.of<UserProvider>(context, listen: false)
-            .setUserFromSnapshot(userData ?? {});
+        Provider.of<UserProvider>(context)
+            .setUserFromSnapshot(userData!);
 
         if (widget.uid == Constants.admin) {
-          return const HomeScreen();
+          return const DashBoard();
         } else {
           return MainScreen();
         }
