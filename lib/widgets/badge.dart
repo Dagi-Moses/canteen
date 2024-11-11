@@ -21,7 +21,7 @@ class _IconBadgeState extends State<IconBadge> {
   @override
   Widget build(BuildContext context) {
      final cartMenu = Provider.of<MenuProvider>(
-      context,
+      context, listen: true
     );
     return Stack(
       children: <Widget>[

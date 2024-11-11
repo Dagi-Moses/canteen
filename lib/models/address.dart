@@ -1,4 +1,4 @@
-class Address {
+class Address1{
   String? name;
   String? phoneNumber;
   String? flatNumber;
@@ -8,7 +8,7 @@ class Address {
   double? lat;
   double? lng;
 
-  Address({
+  Address1({
     this.name,
     this.phoneNumber,
     this.flatNumber,
@@ -19,7 +19,7 @@ class Address {
     this.lng,
   });
 
-  Address.fromJson(Map<String, dynamic> json) {
+  Address1.fromJson(Map<String, dynamic> json) {
     name = json['name'];
     phoneNumber = json['phoneNumber'];
     flatNumber = json['flatNumber'];

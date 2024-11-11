@@ -1,15 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:canteen/screens/checkout.dart';
-
+import '../../models/menus.dart';
+import '../../models/order request.dart';
 import 'package:canteen/widgets/cart_item.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../../models/menus.dart';
+
 import '../providers/app_provider.dart';
 import '../util/const.dart';
-
+import '../util/firebase functions.dart';
 class CartScreen extends StatefulWidget {
   @override
   _CartScreenState createState() => _CartScreenState();
@@ -20,12 +21,13 @@ class _CartScreenState extends State<CartScreen>
   @override
   Widget build(BuildContext context) {
    final app = AppLocalizations.of(context)!;
+   final prov = Provider.of<AppProvider>(context, listen: false);
     final cartMenu = Provider.of<MenuProvider>(
       context,
     );
 
     return Scaffold(
-      appBar: AppBar(
+      appBar:cartMenu.cartMenus.length==0 ? null : AppBar(
         backgroundColor:
             Provider.of<AppProvider>(context).theme == Constants.lightTheme
                 ? Colors.white
@@ -85,6 +87,8 @@ class _CartScreenState extends State<CartScreen>
         backgroundColor: Colors.red,
         tooltip: app.checkOut,
         onPressed: () {
+          
+             prov.setPreferredLanguage('en');
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (BuildContext context) {

@@ -1,3 +1,4 @@
+import 'package:canteen/util/categories.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/material.dart';
@@ -19,12 +20,18 @@ import '../util/const.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+
+// Inside your state class
+
+
+
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
+  
   @override
   Widget build(BuildContext context) {
     int _current = 0;
@@ -134,9 +141,9 @@ class _HomeState extends State<Home> {
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   shrinkWrap: true,
-                  itemCount: app.categories.length,
+                  itemCount: categories(context).length,
                   itemBuilder: (BuildContext context, int index) {
-                    Map cat = app.categories[index];
+                    Map cat = categories(context)[index];
 
                     return HomeCategory(
                       icon: cat['icon'],

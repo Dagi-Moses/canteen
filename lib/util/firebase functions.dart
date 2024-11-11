@@ -1,26 +1,31 @@
 import 'dart:async';
 import 'dart:convert';
-
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
+import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import '../../models/geopoint.dart';
 import '../../models/menus.dart';
 import '../../models/order request.dart';
 import '../../models/paystack_auth_response.dart';
 import '../../models/review.dart';
 import '../../models/transaction.dart';
 import '../providers/provider.dart';
+
 import '../screens/HomeLayout.dart';
 import 'const.dart';
 
+var uuid = Uuid();
 final _firestore = FirebaseFirestore.instance;
 final _auth = FirebaseAuth.instance;
+
 Future<void> storeAuthToken(String authToken) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.setString('auth_token', authToken);
@@ -68,9 +73,11 @@ signUpAndStoreUserData(
   } catch (e) {
     setIsLoading(false);
     if (e is TimeoutException) {
-      Fluttertoast.showToast(toastLength: Toast.LENGTH_LONG, msg: 'Check your internet connection');
+      Fluttertoast.showToast(
+          toastLength: Toast.LENGTH_LONG,
+          msg: 'Check your internet connection');
     } else {
-      Fluttertoast.showToast( toastLength: Toast.LENGTH_LONG, msg: e.toString());
+      Fluttertoast.showToast(toastLength: Toast.LENGTH_LONG, msg: e.toString());
     }
   }
 }
@@ -159,7 +166,10 @@ Future deleteProductFromCart({required String menuId}) async {
   MenuProvider().minusCartNo();
 }
 
-Future buyAllItemsInCart({required BuildContext context}) async {
+Future buyAllItemsInCart(
+    {required PaymentMethod paymentMethod,
+    required BuildContext context,
+    required String note}) async {
   QuerySnapshot<Map<String, dynamic>> snapshot = await _firestore
       .collection("users")
       .doc(firebaseAuth.currentUser!.uid)
@@ -169,52 +179,166 @@ Future buyAllItemsInCart({required BuildContext context}) async {
   for (int i = 0; i < snapshot.docs.length; i++) {
     Menus model = Menus.fromJson(json: snapshot.docs[i].data());
 
-    addProductToOrders(model: model, context: context);
-    await deleteProductFromCart(menuId: model.menuID);
+     await addProductToOrders(model: model, context: context, note: note, paymentMethod: paymentMethod);
+     deleteProductFromCart(menuId: model.menuID);
+    
   }
 }
 
 Future addProductToOrders(
-    {required Menus model, required BuildContext context}) async {
+    {required PaymentMethod paymentMethod,
+    required Menus model,
+    required BuildContext context,
+    required String note}) async {
   await _firestore
       .collection("users")
       .doc(firebaseAuth.currentUser!.uid)
       .collection("orders")
       .add(model.toJson());
-  sendOrderRequest(model: model, context: context);
+  sendOrderRequest(
+      model: model, context: context, note: note, paymentMethod: paymentMethod);
   Fluttertoast.showToast(msg: 'order placed');
 }
 
+Future<Map> getCurrenLocation() async {
+  Map locationData = {};
+  try {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+    List<Placemark> placeMarks = await placemarkFromCoordinates(
+      position.latitude,
+      position.longitude,
+    );
+
+    Placemark pMark = placeMarks[0];
+    locationData['lat'] = position.latitude;
+    locationData['long']= position.longitude;
+    locationData['state'] = pMark.administrativeArea ?? "";
+    String? city;
+    if(pMark.subAdministrativeArea != null){
+city = pMark.subAdministrativeArea;
+    }
+    else if (pMark.subLocality != null) {
+      city = pMark.subLocality!;
+    } else if (pMark.locality != null) {
+      city = pMark.locality!;
+    } else {
+      // Handle the case where both subLocality and locality are null
+      city = ""; // Or any default value you prefer
+    }
+    locationData['city'] = city;
+   
+
+    locationData['street'] = pMark.street ?? "";
+  } catch (e) {
+    Fluttertoast.showToast(
+        toastLength: Toast.LENGTH_LONG,
+        msg: 'Check your internet & and allow location permission');
+  }
+   
+    return locationData;
+}
+Map formatCoordinates(double latitude, double longitude) {
+  Map data = {};
+  String latDirection = latitude >= 0 ? 'N' : 'S';
+  String lonDirection = longitude >= 0 ? 'E' : 'W';
+  data['lat'] = '${latitude.abs().toStringAsFixed(10)}° $latDirection';
+  data['long']= '${longitude.abs().toStringAsFixed(10)}° $lonDirection';
+  return  data;
+}
 Future sendOrderRequest(
-    {required Menus model, required BuildContext context}) async {
+    {required PaymentMethod paymentMethod,
+    required Menus model,
+    required BuildContext context,
+    required String note}) async {
+ 
   final userProvider = Provider.of<UserProvider>(context, listen: false);
+   final ud = uuid.v1();
+  print('starting');
+
+  final locationData =  await getCurrenLocation();
+    String state = locationData['state']!;
+  String city = locationData['city']!;
+  String street = locationData['street']!;
+  
+final cord = formatCoordinates(
+      locationData['lat']!, locationData['long']!);
+
+      GeoPoin geoPoin = GeoPoin(cord['lat'], cord['long']);
+print(cord);
+  Address address = Address(
+      state: state,
+      city: city,
+      street: street,
+      mobile: userProvider.phoneNumber,
+      geoPoint: geoPoin);
+      print(address);
   OrderRequestModel orderRequestModel = OrderRequestModel(
-    status: 'ordered',
+    id: userProvider.id,
+    date: DateTime.now().millisecondsSinceEpoch,
+    pickupOption: PickupOption.delivery,
+    paymentMethod: paymentMethod.toString(),
+    address: address,
+    userId: userProvider.id,
+    userName: userProvider.name,
+    userImage: userProvider.profileImage ?? '',
+    userPhone: userProvider.phoneNumber,
+    userNote: note,
+    employeeCancelNote: "",
+    deliveryStatus: DeliveryStatus.pending,
+    deliveryId: ud,
+    deliveryGeoPoint: geoPoin,
     menuTitle: model.menuTitle,
-    buyersAddress: userProvider.address,
     menuID: model.menuID,
     menuPrice: model.menuPrice,
-    orderDate: DateTime.now(),
-    userId: userProvider.id,
-    username: userProvider.name,
-    thumbnailUrl: model.thumbnailUrl,
-    itemCount: 1,
-    delivered: false,
   );
-  await _firestore.collection("orders").add(orderRequestModel.getJson());
+  await _firestore.collection("orders").doc(ud).set(orderRequestModel.toJson());
   final menuProvider = Provider.of<MenuProvider>(context, listen: false);
-  await _firestore
-      .collection("earnings")
-      .doc('totalEarnings')
-      .get()
-      .then((snap) {
-    double earnings = double.parse(snap.data()!["earnings"]);
-    double TotalEarnings = earnings + menuProvider.totalCartPrice;
-    _firestore
-        .collection("earnings")
-        .doc('totalEarnings')
-        .set({"earnings": TotalEarnings});
-  });
+  // await _firestore
+  //     .collection("earnings")
+  //     .doc('totalEarnings')
+  //     .get()
+  //     .then((snap) {
+  //   double earnings = double.parse(snap.data()!["earnings"]);
+  //   double TotalEarnings = earnings + menuProvider.totalCartPrice;
+  //   _firestore
+  //       .collection("earnings")
+  //       .doc('totalEarnings')
+  //       .set({"earnings": TotalEarnings});
+  // });
+  final earningsDocRef = _firestore.collection("earnings").doc('totalEarnings');
+  final earningsSnapshot = await earningsDocRef.get();
+  if (earningsSnapshot.exists) {
+    double earnings = double.parse(earningsSnapshot.data()!["earnings"] ?? '0');
+    double totalEarnings = earnings + menuProvider.totalCartPrice;
+    await earningsDocRef.update({"earnings": totalEarnings});
+  } else {
+
+    await earningsDocRef.set({"earnings": menuProvider.totalCartPrice});
+  }
+
 }
 
 Future<String> getUserImage() async {

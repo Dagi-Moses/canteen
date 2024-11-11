@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+ import 'package:flutter/material.dart';
 import 'package:canteen/screens/cart.dart';
 import 'package:canteen/screens/favorite_screen.dart';
 import 'package:canteen/screens/home.dart';
@@ -7,10 +7,10 @@ import 'package:canteen/screens/profile.dart';
 import 'package:canteen/screens/search.dart';
 import 'package:canteen/util/const.dart';
 import 'package:canteen/widgets/badge.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:firebase_auth/firebase_auth.dart";
-
 import '../../models/menus.dart';
 import '../providers/app_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -27,6 +27,10 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent, // Set your desired status bar color
+      // Set your desired navigation bar color
+    ));
     _pageController = PageController();
     fetchCartData();
   }
@@ -43,8 +47,9 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     final app = AppLocalizations.of(context)!;
-    return WillPopScope(
-      onWillPop: () => Future.value(false),
+    return PopScope(
+      canPop: false,
+     // onWillPop: () => Future.value(false),
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: _page == 3

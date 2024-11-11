@@ -15,28 +15,42 @@ class AppProvider extends ChangeNotifier {
 
   int get selectedLanguageIndex => _selectedLanguageIndex;
 
-  void setPreferredLanguage(String languageCode) {
-    prefs.setString('languageCode', languageCode);
+  // void setPreferredLanguage(String languageCode) async {
+  //  await  prefs.setString('languageCode', languageCode);
 
+  //   _preferredLocale = Locale(languageCode);
+
+  //   if (languageCode == 'en') {
+  //     _selectedLanguageIndex = 0;
+  //   } else if (languageCode == 'fr') {
+  //     _selectedLanguageIndex = 1;
+  //   } else if (languageCode == 'yo') {
+  //     _selectedLanguageIndex = 2;
+  //   } else {
+  //     _selectedLanguageIndex = 3;
+  //   }
+
+  //   notifyListeners();
+  // }
+  void setPreferredLanguage(String languageCode) async {
+  
     _preferredLocale = Locale(languageCode);
-
-    if (languageCode == 'en') {
-      _selectedLanguageIndex = 0;
-    } else if (languageCode == 'fr') {
-      _selectedLanguageIndex = 1;
-    } else if (languageCode == 'yo') {
-      _selectedLanguageIndex = 2;
-    } else {
-      _selectedLanguageIndex = 3;
-    }
-
     notifyListeners();
+
+    prefs.setString('languageCode', languageCode);
+    _selectedLanguageIndex = languageCodes.indexOf(languageCode);
   }
+
 
   AppProvider() {
+      _initPrefs();
     checkTheme();
   }
-
+  
+  Future<void> _initPrefs() async {
+    prefs =
+        await SharedPreferences.getInstance(); // Ensure prefs is initialized
+  }
   ThemeData theme = Constants.lightTheme;
 
   Key key = UniqueKey();

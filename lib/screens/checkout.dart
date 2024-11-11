@@ -1,4 +1,5 @@
 import 'package:canteen/models/menus.dart';
+import 'package:canteen/models/order%20request.dart';
 import 'package:canteen/util/firebase%20functions.dart';
 
 import 'package:flutter/material.dart';
@@ -7,7 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:canteen/widgets/cart_item.dart';
 import 'package:provider/provider.dart';
-
+import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import '../admin/screens/paymentPage.dart';
 import '../providers/provider.dart';
 
@@ -20,7 +21,9 @@ class Checkout extends StatefulWidget {
 }
 
 class _CheckoutState extends State<Checkout> {
-  final TextEditingController _couponlControl = new TextEditingController();
+  final TextEditingController deliveryNote = new TextEditingController();
+
+  String? selectedObject;
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +32,7 @@ class _CheckoutState extends State<Checkout> {
     );
     final app = AppLocalizations.of(context)!;
     final userProvider = Provider.of<UserProvider>(context, listen: true);
+    List<String> category = [app.cash, app.payStack];
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.red,
@@ -102,24 +106,18 @@ class _CheckoutState extends State<Checkout> {
                 surfaceTintColor: Colors.white,
                 elevation: 4.0,
                 child: ListTile(
-                  title: Text(userProvider.name),
-                  subtitle: Text(
-                    app.payStack,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w900,
-                    ),
+                  title: CustomDropdown<String>(
+                    hintText: 'select a payment method',
+                    items: category,
+                    initialItem: category[1],
+                    onChanged: (value) {
+                      selectedObject = value;
+                    },
                   ),
                   leading: Icon(
                     FontAwesomeIcons.creditCard,
                     size: 50.0,
                     color: Colors.red,
-                  ),
-                  trailing: IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.keyboard_arrow_down,
-                    ),
                   ),
                 ),
               ),
@@ -186,9 +184,9 @@ class _CheckoutState extends State<Checkout> {
                           ),
                           borderRadius: BorderRadius.circular(5.0),
                         ),
-                        hintText: app.couponCode,
+                        hintText: "add a delivery note",
                         prefixIcon: Icon(
-                          Icons.redeem,
+                          Icons.note,
                           color: Colors.red,
                         ),
                         hintStyle: const TextStyle(
@@ -197,7 +195,7 @@ class _CheckoutState extends State<Checkout> {
                         ),
                       ),
                       maxLines: 1,
-                      controller: _couponlControl,
+                      controller: deliveryNote,
                     ),
                   ),
                 ),
@@ -259,12 +257,22 @@ class _CheckoutState extends State<Checkout> {
                             color: Colors.white,
                           ),
                         ),
-                        onPressed: () {
-                          // buyAllItemsInCart(context: context);
-                          Navigator.push(context, MaterialPageRoute(builder: (_){
+                        onPressed: () async {
+                          if (selectedObject == app.cash) {
+                            await buyAllItemsInCart(
+                                context: context,
+                                note: deliveryNote.text,
+                                paymentMethod: PaymentMethod.cash);
 
-                            return PaymentPage();
-                          }));
+                            Navigator.pop(context);
+                          } else {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (_) {
+                              return PaymentPage(
+                                note: deliveryNote.text,
+                              );
+                            }));
+                          }
                         },
                       ),
                     ),

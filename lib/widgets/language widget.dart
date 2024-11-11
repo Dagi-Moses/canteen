@@ -1,5 +1,6 @@
 import 'package:canteen/providers/app_provider.dart';
 import 'package:canteen/util/const.dart';
+import 'package:canteen/widgets/regularText.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -56,7 +57,15 @@ class _LanguageWidgetState extends State<LanguageWidget> {
               SizedBox(
                 height: 5,
               ),
-              Text(widget.languageName)
+            //  Text(widget.languageName)
+             CustomText(
+                text: widget.languageName,
+                fontWeight: FontWeight.bold, // Custom font weight
+               // Custom text color
+              ),
+
+              
+
             ],
           ),
         ),

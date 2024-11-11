@@ -2,22 +2,41 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:ui';
 
 //import 'package:shared_preferences/shared_preferences.dart';
 
 
+
+const Color kPrimaryColor = Color.fromRGBO(21, 181, 114, 1);
+const Color kBackgroundColor = Color.fromRGBO(7, 17, 26, 1);
+const Color kDangerColor = Color.fromRGBO(249, 77, 30, 1);
+const Color kCaptionColor = Color.fromRGBO(166, 177, 187, 1);
 
 
 final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 String uid = firebaseAuth.currentUser!.uid;
 FirebaseFirestore firestore = FirebaseFirestore.instance;
  late SharedPreferences prefs;
+
+  final List<String> languageNames = [
+  "English",
+  "Français",
+  "Yorùbá",
+  "Igbo",
+];
+final List<String> languageCodes = [
+  "en",
+  "fr",
+  "yo",
+  "ig",
+];
 class Constants {
  
-
+ 
 //the rest
   static String apiKey = 'sk_live_f113140e0dd9cd86cd6ae6fc117e7da19622f314';
-  static String appName = "Noel's Canteen";
+  static String appName = "Canteen App";
   static String admin = '1UuGd7EeZFcYZZmmvpYgWevOcGH3';
 
   //Colors for theme
@@ -31,10 +50,7 @@ class Constants {
   static Color ratingBG = Colors.yellow[600]!;
 
   static ThemeData lightTheme = ThemeData(
-    backgroundColor: lightBG,
     primaryColor: lightPrimary,
-    colorScheme:  ColorScheme.fromSwatch()
-.copyWith(secondary: lightAccent),
     // cursorColor: lightAccent,
     scaffoldBackgroundColor: lightBG,
     appBarTheme: AppBarTheme(
@@ -45,7 +61,8 @@ class Constants {
           fontSize: 18.0,
           fontWeight: FontWeight.w800,
         ),
-      ),
+      ), colorScheme: ColorScheme.fromSwatch()
+.copyWith(secondary: lightAccent).copyWith(surface: lightBG),
 //      iconTheme: IconThemeData(
 //        color: lightAccent,
 //      ),
@@ -54,12 +71,7 @@ class Constants {
 
   static ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
-    backgroundColor: darkBG,
     primaryColor: darkPrimary,
-     colorScheme: ColorScheme.dark(
-    primary: darkPrimary,
-    secondary: darkAccent,
-  ),
     
     scaffoldBackgroundColor: darkBG,
     //cursorColor: darkAccent,
@@ -69,10 +81,28 @@ class Constants {
           fontSize: 18.0,
           fontWeight: FontWeight.w800,
         ),
-      ),
+      ), colorScheme: ColorScheme.dark(
+    primary: darkPrimary,
+    secondary: darkAccent,
+  ).copyWith(surface: darkBG),
 //      iconTheme: IconThemeData(
 //        color: darkAccent,
 //      ),
     
   );
+}
+
+
+
+
+class HexColor extends Color {
+  static int _getColorFromHex(String hexColor) {
+    hexColor = hexColor.toUpperCase().replaceAll("#", "");
+    if (hexColor.length == 6) {
+      hexColor = "FF" + hexColor;
+    }
+    return int.parse(hexColor, radix: 16);
+  }
+
+  HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
 }

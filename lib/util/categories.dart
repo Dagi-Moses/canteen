@@ -1,29 +1,36 @@
+
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-List categories = [
+List categories(BuildContext context) {
+  final app = AppLocalizations.of(context)!;
+
+return [
   {
-    "name": "Drinks",
+    "name": app.categoryDrinks,
     "icon": FontAwesomeIcons.wineBottle,
     "items": 5
   },
   {
-    "name": "Miscellaneous",
+    "name": app.categoryMiscellaneous,
     "icon": FontAwesomeIcons.cannabis,
     "items": 20
   },
   {
-    "name": "Desert",
-    "icon": FontAwesomeIcons.birthdayCake,
+    "name": app.categoryDesert,
+    "icon": FontAwesomeIcons.cakeCandles,
     "items": 9
   },
   {
-    "name": "Fast Food",
+    "name": app.categoryFastFood,
     "icon": FontAwesomeIcons.pizzaSlice,
     "items": 5
   },
   {
-    "name": "Meals",
+    "name": app.categoryMeals,
     "icon": FontAwesomeIcons.breadSlice,
     "items": 15
   },
 ];
+}

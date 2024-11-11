@@ -25,6 +25,7 @@ class _ProductDetailsState extends State<ProductDetails> {
   @override
   Widget build(BuildContext context) {
     final app = AppLocalizations.of(context)!;
+      final prov = MenuProvider();
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom ),
       child: Scaffold(
@@ -304,6 +305,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                   ),
                   onPressed: () {
                     addProductToCart(menu: widget.model);
+                     prov.updateCartNo(prov.cartNo +1);
                   },
                 ),
               ),

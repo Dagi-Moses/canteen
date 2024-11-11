@@ -4,14 +4,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../admin/screens/home_screen.dart';
+
 import '../providers/provider.dart';
 import '../util/const.dart';
 import 'main_screen.dart';
 
 class HomeLayout extends StatefulWidget {
   String? uid;
-  HomeLayout({super.key, required this.uid});
+  HomeLayout({super.key, this.uid});
 
   @override
   State<HomeLayout> createState() => _HomeLayoutState();
@@ -42,3 +42,4 @@ class _HomeLayoutState extends State<HomeLayout> {
     );
   }
 }
+

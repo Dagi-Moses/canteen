@@ -1,4 +1,5 @@
 import 'package:canteen/models/menus.dart';
+import 'package:canteen/util/categories.dart';
 import 'package:flutter/material.dart';
 import 'package:canteen/screens/notifications.dart';
 
@@ -78,9 +79,9 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 shrinkWrap: true,
-                itemCount: app.categories.length,
+                itemCount: categories(context).length,
                 itemBuilder: (BuildContext context, int index) {
-                  Map cat = app.categories[index];
+                  Map cat = categories(context)[index];
                   bool isSelected = cat['name'] == menuProvider.category;
                   return HomeCategory(
                

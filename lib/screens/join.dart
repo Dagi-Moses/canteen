@@ -1,7 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:canteen/screens/login.dart';
@@ -11,7 +12,7 @@ class JoinApp extends StatefulWidget {
   final bool canPop;
   const JoinApp({
     Key? key,
-    required this.canPop,
+    this.canPop = false,
   }) : super(key: key);
   @override
   _JoinAppState createState() => _JoinAppState();

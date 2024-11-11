@@ -1,10 +1,12 @@
+import 'package:canteen/models/order%20request.dart';
 import 'package:flutter/material.dart';
 
 import 'package:webview_flutter/webview_flutter.dart';
 import '../../util/firebase functions.dart';
 
 class PaymentPage extends StatefulWidget {
-  const PaymentPage({super.key});
+  final String note;
+PaymentPage({super.key, required this.note});
 
   @override
   State<PaymentPage> createState() => _PaymentPageState();
@@ -39,7 +41,7 @@ class _PaymentPageState extends State<PaymentPage> {
                                     await verifyPaystackTransaction(reference);
 
                                 if (isTransactionSuccessful) {
-                                  buyAllItemsInCart(context: context);
+                                  buyAllItemsInCart(context: context, note: widget.note, paymentMethod: PaymentMethod.paystack);
                                 }
                               },
                               onWebResourceError: (WebResourceError error) {},
