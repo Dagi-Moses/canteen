@@ -1,6 +1,8 @@
-import 'package:canteen/models/menus.dart';
+
 import 'package:canteen/models/order%20request.dart';
-import 'package:canteen/util/firebase%20functions.dart';
+import 'package:canteen/providers/menusProvider.dart';
+import 'package:canteen/providers/firebase%20functions.dart';
+import 'package:canteen/util/routes.dart';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -9,18 +11,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:canteen/widgets/cart_item.dart';
 import 'package:provider/provider.dart';
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
-import '../admin/screens/paymentPage.dart';
-import '../providers/provider.dart';
 
-class Checkout extends StatefulWidget {
-  const Checkout({
+import '../providers/userProvider.dart';
+
+class Checkout extends StatelessWidget {
+   Checkout({
     super.key,
   });
-  @override
-  _CheckoutState createState() => _CheckoutState();
-}
-
-class _CheckoutState extends State<Checkout> {
   final TextEditingController deliveryNote = new TextEditingController();
 
   String? selectedObject;
@@ -29,6 +26,9 @@ class _CheckoutState extends State<Checkout> {
   Widget build(BuildContext context) {
     final cartMenu = Provider.of<MenuProvider>(
       context,
+    );
+    final firebaseFunctions = Provider.of<FirebaseFunctions>(
+      context, listen: false
     );
     final app = AppLocalizations.of(context)!;
     final userProvider = Provider.of<UserProvider>(context, listen: true);
@@ -84,13 +84,13 @@ class _CheckoutState extends State<Checkout> {
               const SizedBox(height: 10.0),
               ListTile(
                 title: Text(
-                  userProvider.name,
+                  userProvider.user!.firstName!,
                   style: const TextStyle(
                     //                    fontSize: 15,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
-                subtitle: Text(userProvider.address),
+                subtitle: Text(userProvider.user!.address ?? ""),
               ),
               const SizedBox(height: 10.0),
               Text(
@@ -107,7 +107,7 @@ class _CheckoutState extends State<Checkout> {
                 elevation: 4.0,
                 child: ListTile(
                   title: CustomDropdown<String>(
-                    hintText: 'select a payment method',
+                    hintText: app.selectPaymentMethod,
                     items: category,
                     initialItem: category[1],
                     onChanged: (value) {
@@ -132,12 +132,12 @@ class _CheckoutState extends State<Checkout> {
               ListView.builder(
                 primary: false,
                 shrinkWrap: true,
-                itemCount: cartMenu.cartMenus.length,
+                itemCount: cartMenu.cartMenus?.length,
                 itemBuilder: (BuildContext context, int index) {
-                  final food = cartMenu.cartMenus[index];
+                  final food = cartMenu.cartMenus?[index];
 
                   return CartItem(
-                    menu: food,
+                    menu: food!,
                   );
                 },
               ),
@@ -184,7 +184,7 @@ class _CheckoutState extends State<Checkout> {
                           ),
                           borderRadius: BorderRadius.circular(5.0),
                         ),
-                        hintText: "add a delivery note",
+                        hintText: app.deliveryNote,
                         prefixIcon: Icon(
                           Icons.note,
                           color: Colors.red,
@@ -259,19 +259,17 @@ class _CheckoutState extends State<Checkout> {
                         ),
                         onPressed: () async {
                           if (selectedObject == app.cash) {
-                            await buyAllItemsInCart(
+                            await firebaseFunctions.buyAllItemsInCart(
                                 context: context,
                                 note: deliveryNote.text,
-                                paymentMethod: PaymentMethod.cash);
+                                paymentMethod: PaymentMethod.cash, app:app);
 
                             Navigator.pop(context);
                           } else {
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (_) {
-                              return PaymentPage(
-                                note: deliveryNote.text,
-                              );
-                            }));
+                             Navigator.pushNamed(
+                                context, Routes.paymentPage,
+                                arguments: deliveryNote.text);
+                           
                           }
                         },
                       ),

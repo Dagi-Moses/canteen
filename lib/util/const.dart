@@ -1,10 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:ui';
-
-//import 'package:shared_preferences/shared_preferences.dart';
 
 
 
@@ -12,6 +10,11 @@ const Color kPrimaryColor = Color.fromRGBO(21, 181, 114, 1);
 const Color kBackgroundColor = Color.fromRGBO(7, 17, 26, 1);
 const Color kDangerColor = Color.fromRGBO(249, 77, 30, 1);
 const Color kCaptionColor = Color.fromRGBO(166, 177, 187, 1);
+
+Color primaryRed = Colors.red;
+Color primaryBlack = Colors.black;
+Color primaryWhite = Colors.white;
+Color linkBlue = Colors.blue;
 
 
 final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
@@ -31,14 +34,21 @@ final List<String> languageCodes = [
   "yo",
   "ig",
 ];
+
+// const String serverUrl= "http://192.168.1.118:3000";
+
+
+const String serverUrl = kIsWeb ? 'http://localhost:3000' : 'http://10.0.2.2:3000';
+
+
 class Constants {
  
  
 //the rest
   static String apiKey = 'sk_live_f113140e0dd9cd86cd6ae6fc117e7da19622f314';
-  static String appName = "Canteen App";
-  static String admin = '1UuGd7EeZFcYZZmmvpYgWevOcGH3';
 
+  static String admin = '1UuGd7EeZFcYZZmmvpYgWevOcGH3';
+  
   //Colors for theme
 //  Color(0xfffcfcff);
   static Color lightPrimary = Color(0xfffcfcff);

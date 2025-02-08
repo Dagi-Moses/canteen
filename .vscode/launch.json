@@ -5,6 +5,7 @@
     "version": "0.2.0",
     "configurations": [
 
+
         
         
 
@@ -22,23 +23,29 @@
             "flutterMode": "release"
         },
         {
-            "name":"pixel",
+            "name":"Pixel",
             "request":"launch",
             "type":"dart",
             "deviceId": "emulator-5556"
         },
         {
-            "name":"tab",
+            "name":"Tab",
             "request":"launch",
             "type":"dart",
             "deviceId": "emulator-5554"
+        },
+        {
+            "name":"Chrome",
+            "request":"launch",
+            "type":"dart",
+            "deviceId": "chrome"
         }
     ],
     "compounds":[
         {
             "name": "all mobile",
             "configurations": [
-                "pixel", "tab"
+            "Tab","Pixel"
             ]
         }
     ]

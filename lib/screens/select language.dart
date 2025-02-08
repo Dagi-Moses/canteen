@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../util/const.dart';
+
 
 class SelectLanguge extends StatefulWidget {
   const SelectLanguge({super.key});
@@ -59,7 +59,7 @@ class _SelectLangugeState extends State<SelectLanguge>
               top: 15.0,
             ),
             child: Text(
-              "${Constants.appName}",
+             app.appName,
               style: TextStyle(
                 fontSize: 25.0,
                 fontWeight: FontWeight.w700,

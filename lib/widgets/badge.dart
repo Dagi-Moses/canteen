@@ -1,33 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import '../../models/menus.dart';
 
-class IconBadge extends StatefulWidget {
+class IconBadge extends StatelessWidget {
 
   final IconData icon;
   final double size;
+  final int data;
 
-  IconBadge({ Key ?key, required this.icon, required this.size})
+  IconBadge({ Key ?key, required this.icon, this.size = 24, required this.data})
       : super(key: key);
 
 
   @override
-  _IconBadgeState createState() => _IconBadgeState();
-}
-
-class _IconBadgeState extends State<IconBadge> {
-  
-  @override
   Widget build(BuildContext context) {
-     final cartMenu = Provider.of<MenuProvider>(
-      context, listen: true
-    );
+    
     return Stack(
       children: <Widget>[
         Icon(
-          widget.icon,
-          size: widget.size,
+          icon,
+          size: size,
         ),
         Positioned(
           right: 0.0,
@@ -44,7 +35,7 @@ class _IconBadgeState extends State<IconBadge> {
             child: Padding(
               padding: EdgeInsets.only(top: 1),
               child:Text(
-                cartMenu.cartNo.toString(),
+               data.toString(),
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 8,

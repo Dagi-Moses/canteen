@@ -1,5 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
+
 
 class Menus {
   final String menuID;
@@ -15,6 +14,8 @@ class Menus {
   final int likesCount;
   final List raters;
   final String category;
+  int quantity;
+  int? availableQuantity;
 
   Menus({
     required this.likesCount,
@@ -29,6 +30,8 @@ class Menus {
     required this.raters,
     required this.likes,
     required this.thumbnailUrl,
+     this.quantity = 1, 
+     this.availableQuantity
   });
 
   factory Menus.fromJson({required Map<String, dynamic> json}) {
@@ -45,6 +48,8 @@ class Menus {
       thumbnailUrl: json["thumbnailUrl"],
       category: json['category'],
       likesCount: json['likesCount'],
+      quantity: json['quantity'] ?? 1,
+      availableQuantity: json['availableQuantity'] ?? 50,
     );
   }
 
@@ -64,80 +69,9 @@ class Menus {
     data['likes'] = likes;
     data['category'] = category;
     data["thumbnailUrl"] = thumbnailUrl;
+    data["quantity"] = quantity;
+    data["availableQquantity"] = availableQuantity;
+    
     return data;
-  }
-}
-
-class MenuProvider extends ChangeNotifier {
-  List<Menus> _menus = [];
-  List<Menus> _cartMenus = [];
-  List<Menus> _categoryMenus = [];
-  String _category = '';
-  int _cartNo = 0;
-
-  String get category => _category;
-
-  double _totalCartPrice = 0;
-  int get cartNo => _cartNo;
-  double get totalCartPrice => _totalCartPrice;
-
-  List<Menus> get menus => _menus;
-  List<Menus> get categoryMenus => _categoryMenus;
-  List<Menus> get cartMenus => _cartMenus;
-
-  set menus(List<Menus> menus) {
-    _menus = menus;
-
-    notifyListeners();
-  }
-
-  void updateMenusFromSnapshot(QuerySnapshot snapshot) {
-    final updatedMenus = snapshot.docs.map((doc) {
-      return Menus.fromJson(json: doc.data() as Map<String, dynamic>);
-    }).toList();
-
-    _menus = updatedMenus;
-
-    notifyListeners();
-  }
-
-  void updateCartMenusFromSnapshot(QuerySnapshot snapshot) {
-    final updatedMenus = snapshot.docs.map((doc) {
-      return Menus.fromJson(json: doc.data() as Map<String, dynamic>);
-    }).toList();
-
-    double total = 0.0;
-    for (Menus cartMenu in updatedMenus) {
-      total += cartMenu.menuPrice + 500;
-    }
-    _cartMenus = updatedMenus;
-    _totalCartPrice = total;
-    _cartNo = updatedMenus.length ;
-    notifyListeners();
-  }
-
-  int getMenusListByCategory(String category) {
-    int categoryLength =
-        _menus.where((menu) => menu.category == category).length;
-
-    // Notify listeners when the state changes
-    notifyListeners();
-
-    return categoryLength;
-  }
-  void updateCartNo(int No){
-    _cartNo = No;
-   notifyListeners();
-  }
-  void minusCartNo(){
-    _cartNo = _cartNo -1;
-    notifyListeners();
-  }
-
-  void updateCategory(String newCategory) {
-    _category = newCategory;
-    _categoryMenus =
-        _menus.where((menu) => menu.category == newCategory).toList();
-    notifyListeners(); // Notify listeners when the state changes
   }
 }

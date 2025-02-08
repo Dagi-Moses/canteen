@@ -1,11 +1,14 @@
 import 'package:canteen/models/menus.dart';
+import 'package:canteen/providers/menusProvider.dart';
 import 'package:canteen/util/categories.dart';
+import 'package:canteen/util/routes.dart';
+import 'package:canteen/widgets/slider_item.dart';
 import 'package:flutter/material.dart';
-import 'package:canteen/screens/notifications.dart';
+
 
 
 import 'package:canteen/widgets/badge.dart';
-import 'package:canteen/widgets/grid_product.dart';
+
 import 'package:canteen/widgets/home_category.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -54,17 +57,12 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         actions: <Widget>[
           IconButton(
             icon: IconBadge(
+              data: 111,
               icon: Icons.notifications,
               size: 22.0,
             ),
             onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (BuildContext context) {
-                    return Notifications();
-                  },
-                ),
-              );
+                Navigator.pushNamed(context, Routes.notifications);
             },
           ),
         ],
@@ -113,11 +111,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                 childAspectRatio: MediaQuery.of(context).size.width /
                     (MediaQuery.of(context).size.height / 1.25),
               ),
-              itemCount: menuProvider.categoryMenus.length,
+              itemCount: menuProvider.categoryMenus!.length,
               itemBuilder: (BuildContext context, int index) {
-                final food = menuProvider.categoryMenus[index];
+                final food = menuProvider.categoryMenus![index];
                 // Menus Menu = Menus.fromJson(json: food as Map<String, dynamic>)  ;
-                return GridProduct(
+                return SliderItem(
                   model: food,
                 );
               },

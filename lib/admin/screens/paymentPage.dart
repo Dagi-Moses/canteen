@@ -1,8 +1,9 @@
 import 'package:canteen/models/order%20request.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import '../../util/firebase functions.dart';
+import '../../providers/firebase functions.dart';
 
 class PaymentPage extends StatefulWidget {
   final String note;
@@ -15,10 +16,14 @@ PaymentPage({super.key, required this.note});
 class _PaymentPageState extends State<PaymentPage> {
   @override
   Widget build(BuildContext context) {
+    final firebaseFunctions =
+        Provider.of<FirebaseFunctions>(context, listen: false);
+
+      final app = AppLocalizations.of(context)!;
     return Scaffold(
       body: SafeArea(
           child: FutureBuilder(
-              future: initializeTransaction(context: context),
+              future: firebaseFunctions.initializeTransaction(context: context),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<String> parts = snapshot.data!.split('|');
@@ -38,10 +43,10 @@ class _PaymentPageState extends State<PaymentPage> {
                               onPageStarted: (String url) {},
                               onPageFinished: (String url) async {
                                 bool isTransactionSuccessful =
-                                    await verifyPaystackTransaction(reference);
+                                    await firebaseFunctions.verifyPaystackTransaction(reference);
 
                                 if (isTransactionSuccessful) {
-                                  buyAllItemsInCart(context: context, note: widget.note, paymentMethod: PaymentMethod.paystack);
+                                  firebaseFunctions.buyAllItemsInCart(context: context, note: widget.note, paymentMethod: PaymentMethod.paystack, app:app);
                                 }
                               },
                               onWebResourceError: (WebResourceError error) {},

@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:provider/provider.dart';
 
-import '../../providers/provider.dart';
+import '../../providers/userProvider.dart';
 
 class SellerInfo extends StatefulWidget {
   const SellerInfo({Key? key}) : super(key: key);
@@ -58,7 +58,7 @@ class _SellerInfoState extends State<SellerInfo> {
                         ),
                         const SizedBox(width: 5),
                         Text(
-                          userProvider.name,
+                          userProvider.user!.firstName!,
                           style: GoogleFonts.lato(
                             textStyle: const TextStyle(
                               fontSize: 17,
@@ -72,7 +72,7 @@ class _SellerInfoState extends State<SellerInfo> {
                   Padding(
                     padding: const EdgeInsets.all(5),
                     child: Text(
-                      userProvider.email,
+                      userProvider.user!.email!,
                       style: GoogleFonts.lato(
                         textStyle: TextStyle(
                             fontSize: 15,
@@ -137,13 +137,13 @@ class _SellerInfoState extends State<SellerInfo> {
                       width: 100,
                       child: CircleAvatar(
 
-                        backgroundColor: userProvider.profileImage == ''
+                        backgroundColor: userProvider.user!.profileImage == ''
                             ? Colors.grey[300]
                             : Colors.transparent,
-                        backgroundImage: userProvider.profileImage != ''
-                            ? NetworkImage(userProvider.profileImage!)
+                        backgroundImage: userProvider.user!.profileImage != ''
+                            ? NetworkImage(userProvider.user!.profileImage!)
                             : null,
-                        child: userProvider.profileImage == ''
+                        child: userProvider.user!.profileImage == ''
                             ? Icon(
                                 Icons.person,
                                 size: 100,

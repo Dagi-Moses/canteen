@@ -1,16 +1,16 @@
 import 'package:canteen/admin/screens/dashboard.dart';
 import 'package:canteen/admin/widgets/simple_dialog.dart';
-import 'package:canteen/screens/main_screen.dart';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:canteen/admin/screens/history_screen.dart';
 import 'package:canteen/admin/screens/home_screen.dart';
-import 'package:canteen/admin/screens/new_orders_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:provider/provider.dart';
 
-import '../../providers/provider.dart';
+import '../../providers/userProvider.dart';
 import '../../util/const.dart';
 import '../functions.dart';
 import '/screens/join.dart';
@@ -23,7 +23,7 @@ class MyDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context, listen: true);
-
+   
     return Drawer(
       child: Container(
         child: ListView(
@@ -49,13 +49,13 @@ class MyDrawer extends StatelessWidget {
                               takeImage(context: context);
                             },
                             child: CircleAvatar(
-                              backgroundColor: userProvider.profileImage == ''
+                              backgroundColor: userProvider.user!.profileImage == ''
                                   ? Colors.grey[400]
                                   : Colors.transparent,
-                              backgroundImage: userProvider.profileImage != ''
-                                  ? NetworkImage(userProvider.profileImage!)
+                              backgroundImage: userProvider.user!.profileImage != ''
+                                  ? NetworkImage(userProvider.user!.profileImage!)
                                   : null,
-                              child: userProvider.profileImage == ''
+                              child: userProvider.user!.profileImage == ''
                                   ? Icon(
                                       Icons.person,
                                       size: 100,

@@ -2,20 +2,20 @@ import 'package:flutter/material.dart';
 
 class CustomText extends StatelessWidget {
   final String text;
-  final double fontSize;
-  final FontWeight fontWeight;
-  final Color color;
-  final double letterSpacing;
-  final TextAlign textAlign;
+  final double? fontSize;
+  final FontWeight? fontWeight;
+  final Color? color;
+  final double? letterSpacing;
+  final TextAlign? textAlign;
 
   const CustomText({
     Key? key,
     required this.text,
-    this.fontSize = 16.0, // Default font size
-    this.fontWeight = FontWeight.w100, // Default font weight
-    this.color = Colors.black87, // Default color
-    this.letterSpacing = 1.2, // Default letter spacing
-    this.textAlign = TextAlign.center, // Default text alignment
+    this.fontSize,
+    this.fontWeight,
+    this.color,
+    this.letterSpacing,
+    this.textAlign,
   }) : super(key: key);
 
   @override
@@ -23,12 +23,13 @@ class CustomText extends StatelessWidget {
     return Text(
       text,
       style: TextStyle(
-        fontSize: fontSize,
-        fontWeight: fontWeight,
-        color: color,
-        letterSpacing: letterSpacing,
+        fontSize: fontSize ?? 16.0, // Default font size
+        fontWeight: fontWeight ?? FontWeight.w100, // Default font weight
+        color: color ?? Colors.black87, // Default color
+        letterSpacing: letterSpacing ?? 1.2, // Default letter spacing
       ),
-      textAlign: textAlign,
+      textAlign: textAlign ?? TextAlign.center, // Default text alignment
     );
   }
 }
+

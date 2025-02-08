@@ -1,8 +1,10 @@
+import 'package:canteen/util/routes.dart';
+import 'package:canteen/widgets/slider_item.dart';
 import 'package:flutter/material.dart';
-import 'package:canteen/screens/notifications.dart';
+
 import 'package:canteen/util/foods.dart';
 import 'package:canteen/widgets/badge.dart';
-import 'package:canteen/widgets/grid_product.dart';
+
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../models/menus.dart';
 
@@ -33,17 +35,16 @@ class _DishesScreenState extends State<DishesScreen> {
         actions: <Widget>[
           IconButton(
             icon: IconBadge(
+              data: 111,
               icon: Icons.notifications,
               size: 22.0,
             ),
             onPressed: (){
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (BuildContext context){
-                    return Notifications();
-                  },
-                ),
+              Navigator.pushNamed(
+                context,
+                Routes.notifications,
               );
+             
             },
           ),
         ],
@@ -77,7 +78,7 @@ class _DishesScreenState extends State<DishesScreen> {
               itemBuilder: (BuildContext context, int index) {
               Map food = foods[index];
                 Menus menu = Menus.fromJson(json: food as Map<String, dynamic>);
-                return GridProduct(
+                return SliderItem(
                 model: menu,
                
                 );
@@ -108,7 +109,7 @@ class _DishesScreenState extends State<DishesScreen> {
               itemBuilder: (BuildContext context, int index) {
                Map food = foods[index];
                 Menus menu = Menus.fromJson(json: food as Map<String, dynamic>);
-                return GridProduct(
+                return SliderItem(
                 model: menu,
               
                 );
@@ -139,7 +140,7 @@ class _DishesScreenState extends State<DishesScreen> {
               itemBuilder: (BuildContext context, int index) {
                 Map food = foods[index];
                 Menus menu = Menus.fromJson(json: food as Map<String, dynamic>);
-                return GridProduct(
+                return SliderItem(
                 model: menu,
                 
                 );

@@ -3,25 +3,44 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 
 class LocationProvider extends ChangeNotifier {
-  Position? _position;
-  List<Placemark>? _placeMarks;
-  String? _completeAddress;
-  bool _isLoading = false;
-
-  Position? get position => _position;
-  List<Placemark>? get placeMarks => _placeMarks;
-  bool get isLoading => _isLoading;
-  String? get completeAddress => _completeAddress;
-
 
   LocationProvider() {
     getCurrentLocation();
- 
   }
 
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
+  //location variables
+
+  Position? _position;
+  Position? get position => _position;
+
+  List<Placemark>? _placeMarks;
+  List<Placemark>? get placeMarks => _placeMarks;
+
+  String? _completeAddress;
+  String? get completeAddress => _completeAddress;
+
+  String? _country;
+  String? get country => _country;
+
+  String? _state;
+  String? get state => _state;
+  
+  String? _city;
+  String? get city => _city;
+
+  String? _address;
+  String? get address => _address;
+
+  String? _zipCode;
+  String? get zipCode => _zipCode;
+
+
+
   Future<void> getCurrentLocation() async {
-
-
+    
     print("started location service");
     _isLoading = true;
     notifyListeners();
@@ -57,10 +76,22 @@ class LocationProvider extends ChangeNotifier {
    
       if (_placeMarks != null && _placeMarks!.isNotEmpty) {
         Placemark pMark = _placeMarks![0];
+        _country = pMark.country ;
+        _state = pMark.administrativeArea ;
+        _city = pMark.locality ;
+        _address =
+            "${pMark.subThoroughfare ?? ""} ${pMark.thoroughfare ?? ""}".trim();
+              _zipCode = pMark.postalCode;
         _completeAddress =
             '${pMark.subThoroughfare} ${pMark.thoroughfare}, ${pMark.locality}, ${pMark.subAdministrativeArea}, ${pMark.administrativeArea}, ${pMark.country}';
       } else {
+
+         _country = "Unknown Country";
+        _state = "Unknown State";
+        _city = "Unknown City";
+        _address = "Unknown Address";
         _completeAddress = "Address unavailable";
+        _zipCode = null;
       }
   print("complete address " + _completeAddress!);
 

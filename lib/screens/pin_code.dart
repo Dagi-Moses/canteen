@@ -1,11 +1,11 @@
 import 'dart:async';
-
-import 'package:canteen/screens/login.dart';
+import 'package:canteen/providers/emailProvider.dart';
 import 'package:canteen/util/const.dart';
 import 'package:canteen/util/fadeAnimation.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:flutter/material.dart';
-
+import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PinCodeVerificationScreen extends StatefulWidget {
   final String? phoneNumber;
@@ -53,28 +53,21 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
 
   @override
   Widget build(BuildContext context) {
+       final app = AppLocalizations.of(context)!;
+      final emailProvider = Provider.of<EmailProvider>(context);
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            stops: const [0.1, 0.4, 0.7, 0.9],
+         //   stops: const [0.1, 0.4, 0.7, 0.9],
             colors: [
-              HexColor("#4b4293").withOpacity(0.8),
-              HexColor("#4b4293"),
-              HexColor("#08418e"),
-              HexColor("#08418e")
+               primaryRed,
+              primaryRed.withOpacity(0.8),
             ],
           ),
-          image: DecorationImage(
-            fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(
-                HexColor("#fff").withOpacity(0.2), BlendMode.dstATop),
-            image: const NetworkImage(
-              'https://mir-s3-cdn-cf.behance.net/project_modules/fs/01b4bd84253993.5d56acc35e143.jpg',
-            ),
-          ),
+          
         ),
         child: Center(
           child: SingleChildScrollView(
@@ -83,7 +76,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
               children: [
                 Card(
                   elevation: 5,
-                  color: const Color.fromARGB(255, 171, 211, 250).withOpacity(0.4),
+                      color: primaryWhite,
                   child: Container(
                     width: 500,
                     padding: const EdgeInsets.all(30.0),
@@ -93,13 +86,10 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        FadeAnimation(
-                          delay: 0.8,
-                          child: Image.network(
-                            "https://cdni.iconscout.com/illustration/premium/thumb/job-starting-date-2537382-2146478.png",
-                            width: 100,
-                            height: 100,
-                          ),
+                          Icon(
+                          Icons.fastfood,
+                          size: 50.0,
+                          color: primaryRed,
                         ),
                         const SizedBox(
                           height: 10,
@@ -107,19 +97,19 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                         FadeAnimation(
                           delay: 1,
                           child: Text(
-                            "Let us help you",
+                            app.letUsHelpU,
                             style: TextStyle(
-                                color: Colors.white.withOpacity(0.9),
+                                color: Colors.black,
                                 letterSpacing: 0.5),
                           ),
                         ),
                         const SizedBox(
                           height: 20,
                         ),
-                        const Padding(
+                         Padding(
                           padding: EdgeInsets.symmetric(vertical: 8.0),
                           child: Text(
-                            'Phone Number Verification',
+                            app.otpVerification,
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 22),
                             textAlign: TextAlign.center,
@@ -130,7 +120,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                               horizontal: 30.0, vertical: 8),
                           child: RichText(
                             text: TextSpan(
-                                text: "Enter the code sent to ",
+                                text: app.enterTheCode,
                                 children: [
                                   TextSpan(
                                       text: "${widget.phoneNumber}",
@@ -165,13 +155,14 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                             ),
                             blinkWhenObscuring: true,
                             animationType: AnimationType.fade,
-                            validator: (v) {
-                              if (v!.length < 3) {
-                                return "Validate me";
-                              } else {
-                                return null;
+                           
+                              validator: (value) {
+                              if (value == null || value.length < 6) {
+                                return app.validOtp;
                               }
+                              return null;
                             },
+                            
                             pinTheme: PinTheme(
                                 shape: PinCodeFieldShape.box,
                                 borderRadius: BorderRadius.circular(5),
@@ -185,6 +176,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                             enableActiveFill: true,
                             errorAnimationController: errorController,
                             controller: textEditingController,
+
                             keyboardType: TextInputType.number,
                             boxShadows: const [
                               BoxShadow(
@@ -194,7 +186,13 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                               )
                             ],
                             onCompleted: (v) {
-                              debugPrint("Completed");
+                               emailProvider.verifyOtp(
+                                widget.phoneNumber!,
+                                currentText,
+                                context,
+                                errorController,
+                                app
+                              );
                             },
                             // onTap: () {
                             //   print("Pressed");
@@ -206,18 +204,20 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                               });
                             },
                             beforeTextPaste: (text) {
-                              debugPrint("Allowing to paste $text");
+                              //debugPrint("Allowing to paste $text");
                               //if you return true then it will show the paste confirmation dialog. Otherwise if false, then nothing will happen.
                               //but you can show anything you want here, like your pop up saying wrong paste format or etc
                               return true;
                             },
                           ),
                         ),
+                      
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 30.0),
                           child: Text(
-                            hasError
-                                ? "*Please fill up all the cells properly"
+                            hasError ||  (emailProvider.errorMessage?.isNotEmpty ??
+                                        false)
+                                ?emailProvider.errorMessage?? app.fillUpAllCells
                                 : "",
                             style: const TextStyle(
                                 color: Colors.red,
@@ -225,23 +225,32 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                                 fontWeight: FontWeight.w400),
                           ),
                         ),
-                        const SizedBox(
-                          height: 20,
-                        ),
+                        
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text(
-                              "Didn't receive the code? ",
+                           Text(
+                              app.didntRecieve,
                               style: TextStyle(
-                                  color: Colors.black54, fontSize: 15),
+                                  color: Colors.black, fontSize: 15),
                             ),
                             TextButton(
-                              onPressed: () => snackBar("OTP resend!!"),
-                              child: const Text(
-                                "RESEND",
+                              onPressed: ()async {
+                                await   emailProvider.sendOtp(
+                                
+                               resendController: textEditingController,
+                                 isResend: true,
+                                  email: widget.phoneNumber!,
+                                  context: context,
+                                  app: app
+                              
+                              );
+                                snackBar(app.otpResent);
+                                },
+                              child:  Text(
+                               app.resend,
                                 style: TextStyle(
-                                    color: Color(0xFF91D3B3),
+                                    color: Colors.blue,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16),
                               ),
@@ -251,43 +260,46 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                         const SizedBox(
                           height: 25,
                         ),
-                        FadeAnimation(
-                          delay: 1,
-                          child: TextButton(
-                              onPressed: () {
-                                formKey.currentState!.validate();
-                                // conditions for validating
-                                if (currentText.length != 6 ||
-                                    currentText != "123456") {
-                                  errorController!.add(ErrorAnimationType
-                                      .shake); // Triggering error shake animation
-                                  setState(() => hasError = true);
-                                } else {
-                                  setState(
-                                    () {
-                                      hasError = false;
-                                      snackBar("OTP Verified!!");
-                                    },
-                                  );
-                                }
-                              },
-                              style: TextButton.styleFrom(
-                                  backgroundColor: const Color(0xFF2697FF),
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 14.0, horizontal: 80),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(12.0))),
-                              child: const Text(
-                                "Verify",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  letterSpacing: 0.5,
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              )),
-                        ),
+                         ElevatedButton(
+                           child:   emailProvider.isLoading
+                                           ? SizedBox(
+                                             height: 30,
+                                             width: 30,
+                                             child: CircularProgressIndicator()): Text(
+                             app.verify,
+                              style: TextStyle(
+                                color: Colors.white,
+                                letterSpacing: 0.5,
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                         
+                             onPressed: () {
+                              formKey.currentState!.validate();
+                              // conditions for validating
+                              if (currentText.length != 6
+                                  ) {
+                                errorController!.add(ErrorAnimationType
+                                    .shake); // Triggering error shake animation
+                               
+                              } else {
+                             emailProvider.verifyOtp(
+                                widget.phoneNumber!,
+                                currentText,
+                                context,
+                                errorController,
+                                app
+                              );
+                              }
+                            },
+                         
+                           style: ElevatedButton.styleFrom(
+                             minimumSize: Size(200, 50),
+                             backgroundColor: Colors.red,
+                           ),
+                         ),
+                       
                       ],
                     ),
                   ),
@@ -305,22 +317,19 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Text("Want to try again? ",
+                      Text(app.wantToTryAgain,
                           style: TextStyle(
-                            color: Colors.grey,
+                            color: Colors.white,
                             letterSpacing: 0.5,
                           )),
                       GestureDetector(
                         onTap: () {
                           Navigator.pop(context);
-                          Navigator.of(context)
-                              .push(MaterialPageRoute(builder: (context) {
-                            return LoginScreen();
-                          }));
+                       
                         },
-                        child: Text("Sign in",
+                        child: Text(app.signIn,
                             style: TextStyle(
-                                color: Colors.white.withOpacity(0.9),
+                                color: Colors.blue,
                                 fontWeight: FontWeight.bold,
                                 letterSpacing: 0.5,
                                 fontSize: 14)),

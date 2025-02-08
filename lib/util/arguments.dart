@@ -9,7 +9,7 @@ class CategoriesScreenArguments {
 
 class ProductDetailsArguments {
   final Menus model;
-  final bool isFav;
+ 
 
-  ProductDetailsArguments({required this.model, required this.isFav});
+  ProductDetailsArguments({required this.model, });
 }

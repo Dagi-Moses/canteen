@@ -4,6 +4,7 @@ import 'package:introduction_screen/introduction_screen.dart';
 import 'package:canteen/screens/join.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class Walkthrough extends StatefulWidget {
   
   @override
@@ -25,9 +26,10 @@ class _WalkthroughState extends State<Walkthrough> {
       child: Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(
-          child: Padding(
+          child:  Padding(
             padding: EdgeInsets.all(10.0),
             child: IntroductionScreen(
+              allowImplicitScrolling: true,
               pages: pages,
               onDone: () {
                 Navigator.of(context).push(
@@ -78,8 +80,26 @@ class _WalkthroughState extends State<Walkthrough> {
 
   _buildPageModel(PageInfo item){
     return PageViewModel(
+
       title: item.title,
-      body: item.body,
+      //body: item.body,
+      bodyWidget: LayoutBuilder(
+      builder: (context, constraints) {
+        return Container(
+          width: double.infinity,
+          alignment: Alignment.center,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: 850), // Adjust max width as needed
+            child: Text(
+              item.body,
+              style: TextStyle(fontSize: 15.0), // Keep body text style
+              textAlign: TextAlign.center, // Center align for better readability
+            ),
+          ),
+        );
+      },
+    ),
+
       image: Image.asset(
         item.img,
         height: 185.0,

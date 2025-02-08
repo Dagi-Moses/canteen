@@ -5,8 +5,8 @@ import 'package:rating_dialog/rating_dialog.dart';
 
 import '../../models/menus.dart';
 import '../../models/review.dart';
-import '../providers/provider.dart';
-import '../util/firebase functions.dart';
+import '../providers/userProvider.dart';
+import '../providers/firebase functions.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class ReviewDialog extends StatelessWidget {
   final String menuID;
@@ -15,6 +15,9 @@ class ReviewDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final firebaseFunctions =
+        Provider.of<FirebaseFunctions>(context, listen: false);
+
       final app = AppLocalizations.of(context)!;
     return RatingDialog(
       title:  Text(
@@ -31,15 +34,15 @@ class ReviewDialog extends StatelessWidget {
       commentHint: app.typeHere,
 
       onSubmitted: (RatingDialogResponse res) async {
-        String image = await getUserImage();
-        uploadReview(
+        String image = await firebaseFunctions.getUserImage();
+      firebaseFunctions.uploadReview(
             menuId: menuID,
             model: Review(
               reviewDate: DateTime.now(),
               raterImage: image,
               raterId: FirebaseAuth.instance.currentUser!.uid,
               senderName:
-                  Provider.of<UserProvider>(context, listen: false).name,
+                  Provider.of<UserProvider>(context, listen: false).user!.firstName!,
               description: res.comment,
               rating:res.rating,
             ), menu: menu);

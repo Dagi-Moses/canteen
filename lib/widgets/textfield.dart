@@ -5,7 +5,9 @@ class TextInput extends StatefulWidget {
   final bool obscureText;
   final TextEditingController controller;
   final String hintText;
-  TextInput({super.key, this.hintText = '', required this.controller, this.obscureText = false, this.validator, required this.icon});
+   final FocusNode? focusNode; // Add focusNode as a parameter
+  final ValueChanged<String>? onSubmitted;
+  TextInput({super.key, this.hintText = '', required this.controller, this.obscureText = false, this.validator, required this.icon, this.focusNode, this.onSubmitted});
 
   @override
   State<TextInput> createState() => _TextInputState();
@@ -25,6 +27,9 @@ class _TextInputState extends State<TextInput> {
                   ),
                 ),
                 child: TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  focusNode: widget.focusNode,
+                  onFieldSubmitted: widget.onSubmitted,
                   validator: widget.validator,
                   style: const TextStyle(
                     fontSize: 15.0,

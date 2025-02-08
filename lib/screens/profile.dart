@@ -1,4 +1,5 @@
-import 'package:canteen/admin/screens/dashboard.dart';
+
+import 'package:canteen/util/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
@@ -9,8 +10,8 @@ import 'package:canteen/util/const.dart';
 import '../admin/functions.dart';
 
 import '../admin/widgets/simple_dialog.dart';
-import '../providers/provider.dart';
-import 'join.dart';
+import '../providers/userProvider.dart';
+
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Profile extends StatefulWidget {
@@ -73,10 +74,11 @@ class _ProfileState extends State<Profile> {
                           },
                           child: CircleAvatar(
                             backgroundColor: Colors.grey[600],
-                            backgroundImage: userProvider.profileImage != ""
-                                ? NetworkImage(userProvider.profileImage!)
+                            backgroundImage: userProvider.user!.profileImage != ""
+                                ? NetworkImage(userProvider.user!.profileImage!
+                                )
                                 : null,
-                            child: userProvider.profileImage == ''
+                            child: userProvider.user!.profileImage == ''
                                 ? const Icon(
                                     Icons.person,
                                     size: 100,
@@ -95,7 +97,7 @@ class _ProfileState extends State<Profile> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Text(
-                            userProvider.name,
+                            userProvider.user!.firstName ?? "",
                             style: const TextStyle(
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.bold,
@@ -108,7 +110,7 @@ class _ProfileState extends State<Profile> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Text(
-                            userProvider.email,
+                            userProvider.user!.email ??"",
                             style: const TextStyle(
                               fontSize: 14.0,
                               fontWeight: FontWeight.bold,
@@ -127,12 +129,8 @@ class _ProfileState extends State<Profile> {
                             uid == Constants.admin
                                 ? GestureDetector(
                                     onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (c) => const DashBoard(),
-                                        ),
-                                      );
+                                      Navigator.pushNamed(context, Routes.dashboard);
+                                     
                                     },
                                     child: Card(
                                       elevation: 6.0,
@@ -169,14 +167,18 @@ class _ProfileState extends State<Profile> {
                                     context: context,
                                     onTap: () async {
                                       await firebaseAuth.signOut();
-                                      Navigator.pushAndRemoveUntil(
+
+                                      Navigator.pushNamedAndRemoveUntil(
                                         context,
-                                        MaterialPageRoute(
-                                            builder: (context) => JoinApp(
-                                                  canPop: false,
-                                                )),
-                                        (route) => false,
+                                        Routes.join, // The named route for the JoinApp screen
+                                        (route) =>
+                                            false, // Removes all the previous routes
+                                        arguments: {
+                                          'canPop': false
+                                        }, // Pass arguments if needed
                                       );
+
+                                    
                                     });
                               },
                               child: Card(
@@ -228,7 +230,7 @@ class _ProfileState extends State<Profile> {
               ),
               _buildEditableField(
                 label: app.fullName,
-                provider: userProvider.name,
+                provider: userProvider.user!.firstName,
                 hintText: app.noName,
                 onSubmitted: (String value) {
                   if (value.trim().isNotEmpty) {
@@ -238,7 +240,7 @@ class _ProfileState extends State<Profile> {
               ),
               _buildEditableField(
                 label: app.email,
-                provider: userProvider.email,
+                provider: userProvider.user!.email,
                 hintText: app.noEmail,
                 onSubmitted: (String value) {
                   if (value.trim().isNotEmpty) {
@@ -248,7 +250,7 @@ class _ProfileState extends State<Profile> {
               ),
               _buildEditableField(
                 label: app.phone,
-                provider: userProvider.phoneNumber,
+                provider: userProvider.user!.phoneNumber,
                 hintText: app.noPhoneNumber,
                 onSubmitted: (String value) {
                   if (value.trim().isNotEmpty) {
@@ -258,7 +260,7 @@ class _ProfileState extends State<Profile> {
               ),
               _buildEditableField(
                 label: app.address,
-                provider: userProvider.address,
+                provider: userProvider.user!.address,
                 hintText: app.noAddress,
                 onSubmitted: (String value) {
                   if (value.trim().isNotEmpty) {

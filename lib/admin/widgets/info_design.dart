@@ -8,7 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:canteen/models/menus.dart';
 import 'package:intl/intl.dart';
 
-import '../../util/firebase functions.dart';
+import '../../providers/firebase functions.dart';
 import '../screens/item_detail_screen.dart';
 
 class InfoDesignWidget extends StatefulWidget {

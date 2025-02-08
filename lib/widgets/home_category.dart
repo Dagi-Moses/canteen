@@ -1,4 +1,5 @@
 import 'package:canteen/models/menus.dart';
+import 'package:canteen/providers/menusProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:canteen/screens/categories_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -48,7 +49,7 @@ class _HomeCategoryState extends State<HomeCategory> {
             MaterialPageRoute(
               builder: (BuildContext context) {
                 return CategoriesScreen(
-                  len: len,
+                  len: len!,
                   catie: widget.title,
                 );
               },

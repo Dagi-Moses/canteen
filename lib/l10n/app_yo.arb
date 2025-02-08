@@ -53,9 +53,9 @@
   "verifyEmail": "Jọwọ ṣii imèlà rẹ",
   "createAnAccount": "Ṣẹ̀dá àkókò",
   "username": "Orukọ èdá",
-  "char": "gbogbo ní èyí kọọkan",
+
   "phoneNumber": "Nọmbà tẹlifóònù",
-  "required": "nọmbà tẹlifóònù wa gbogbo",
+ 
   "inputAddress": "sí adírẹsì rẹ",
   "confirm": "tókàn",
   "search": "Wọle..",
@@ -64,6 +64,14 @@
   "typeReview": "Pẹ̀lú àkọ́ọ́rù fún ìtẹmì ní yí ìlà-ẹ̀kọ",
   "send": "Tọ",
   "next": "Tẹ̀lé",
+
+  "required": "jẹ dandan",
+  "passwordsDoNotMatch": "Ọrọigbaniwọle ko baramu",
+
+
+  "char": "Gbọdọ ju awọn ohun kikọ mẹfa lọ",
+
+
   "appName": "Node-Tech Ìyá Àwọn Oúnjẹ",
   "cash": "Owó",
   "continueText": "Tẹsiwaju",
@@ -83,5 +91,40 @@
   "categoryMiscellaneous": "Orisirisi",
   "categoryDesert": "Desati",
   "categoryFastFood": "Ounjẹ Kápàkápà",
-  "categoryMeals": "Ounjẹ"
+  "categoryMeals": "Ounjẹ",
+  "cantLogin": "Ṣe o ko le wọle? Lo OTP",
+  "letUsHelpU": "Ẹ jẹ́ ká ran yín lọ́wọ́",
+  "otpVerification": "Ẹ̀rí OTP",
+  "enterTheCode": "Tẹ kóòdù tí wọ́n rán sí ",
+  "validOtp": "Ẹ jọ̀ọ́ tẹ OTP tó yẹ",
+  "fillUpAllCells": "*Ẹ jọ̀ọ́ kún gbogbo àkọsílẹ̀ náà dáadáa",
+  "failedToSendOtp": "Kò ṣeé ránṣẹ́ OTP. Ẹ jọ̀ọ́ tún gbìyànjú.",
+  "noAccountFound": "Ko sí àkọọ́lẹ̀ fún èmíìlì yìí.",
+  "anError": "Àṣìṣe kan ṣẹlẹ̀. Ẹ jọ̀ọ́ tún gbìyànjú.",
+  "failedCustomToken": "Kò ṣeé wọlé pẹ̀lú tọọ́kìnì tó ṣeé títúnṣe.",
+  "invalidOtp": "OTP kò tọ́́ nínú tàbí ò tiẹ̀ wáyé mọ́.",
+  "otpResent": "OTP ti tún ránṣẹ́!",
+  "resend": "TÚN RÁNSẸ́",
+  "verify": "Ṣàyẹ̀wò",
+  "wantToTryAgain": "Ṣé o fẹ́ tún gbìyànjú? ",
+  "signIn": "Wọlé",
+  "selectPaymentMethod": "yàn ẹ̀kọ́ ìsanwó",
+  "deliveryNote": "fi akọsilẹ̀ ìfiránṣẹ́ sílẹ̀",
+  "errorLoadingData": "Àṣìṣe nígbàtí ó ń gbé data wọlé",
+  "noMenusFound": "Kò sí àkójọ onjẹ tó rí",
+  "noUserData": "Ko si data olumulo",
+  "error": "Àṣìṣe",
+  "didntRecieve": "Ṣé o kò rí kóòdù náà? ",
+  "history": "Ìtàn",
+  "checkUrInternet": "Ṣayẹwo asopọ intanẹẹti rẹ",
+  "addedToCart": "fi kun kẹrìrín",
+  "orderPlaced": "Aṣẹ ti gbe",
+  "linkSentText": "Aṣẹ ni a fi ranṣẹ, ti imeeli naa ba ti forukọsilẹ pẹlu wa, iwọ yoo gba asopọ lati tun ọrọ igbaniwọle rẹ ṣe.",
+  "emailAlreadyInUse": "Adirẹsi imeeli yii ti wa ni lilo tẹlẹ.",
+  "weakPassword": "Ọrọ aṣínà rẹ rọ. Jọwọ lo ọrọ aṣínà to lagbara.",
+  "wrongPassword": "Ọrọ aṣínà ko tọ. Jọwọ gbiyanju lẹẹkan si.",
+  "userNotFound": "Ko si olumulo pẹlu imeeli yii.",
+  "networkRequestFailed": "Jọwọ ṣayẹwo asopọ intanẹẹti rẹ.",
+  "unexpectedError": "Aṣiṣe kan waye. Jọwọ gbiyanju lẹẹkansi.",
+  "invalidPhoneNumber": "Nọmba foonu ti ko tọ"
 }

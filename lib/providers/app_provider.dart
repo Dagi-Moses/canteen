@@ -7,7 +7,7 @@ import 'package:canteen/util/const.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppProvider extends ChangeNotifier {
-  Locale _preferredLocale = Locale('en');
+  Locale _preferredLocale =   Locale('en', 'US');
 
   Locale get preferredLocale => _preferredLocale; // Default to English
 
@@ -15,23 +15,7 @@ class AppProvider extends ChangeNotifier {
 
   int get selectedLanguageIndex => _selectedLanguageIndex;
 
-  // void setPreferredLanguage(String languageCode) async {
-  //  await  prefs.setString('languageCode', languageCode);
-
-  //   _preferredLocale = Locale(languageCode);
-
-  //   if (languageCode == 'en') {
-  //     _selectedLanguageIndex = 0;
-  //   } else if (languageCode == 'fr') {
-  //     _selectedLanguageIndex = 1;
-  //   } else if (languageCode == 'yo') {
-  //     _selectedLanguageIndex = 2;
-  //   } else {
-  //     _selectedLanguageIndex = 3;
-  //   }
-
-  //   notifyListeners();
-  // }
+  
   void setPreferredLanguage(String languageCode) async {
   
     _preferredLocale = Locale(languageCode);

@@ -5,7 +5,7 @@ import 'package:canteen/widgets/regularText.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../widgets/language widget.dart';
-
+import 'package:responsive_framework/responsive_wrapper.dart';
 class LanguageScreen extends StatefulWidget {
   const LanguageScreen({super.key});
 
@@ -29,6 +29,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
 
     return Scaffold(
       body: SafeArea( 
+        bottom: true,
         child: ScreenHelper(
           mobile: _buildMobileContent(),
           tablet: _buildTabletContent(),
@@ -47,10 +48,12 @@ class _LanguageScreenState extends State<LanguageScreen> {
   }
 Widget _buildFloatingActionButton() {
     return FloatingActionButton(
+
       child: Text(app.next),
       backgroundColor: Colors.red,
       onPressed: () {
-        Navigator.pushReplacementNamed(context, Routes.walkThrough);
+      
+       Navigator.pushReplacementNamed(context, Routes.walkThrough);
       },
     );
   }
@@ -72,6 +75,7 @@ Widget _buildFloatingActionButton() {
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width,
                         child: Column(
+                          
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
@@ -80,8 +84,10 @@ Widget _buildFloatingActionButton() {
                             _selectLanguageText(),
                             SizedBox(height: 10),
                             _buildGrid(),
-                            SizedBox(height: 60),
-                            _changeLanguageText()
+                            SizedBox(height: MediaQuery.of(context).size.height < 700
+                                    ? 8
+                                    : 60),
+                            _changeLanguageText(12)
                           ],
                         ),
                       ),
@@ -97,45 +103,54 @@ Widget _buildFloatingActionButton() {
   }
 
   Widget _buildTabletContent() {
-    return Padding(
-      padding: _commonPadding(),
-      child: Center(
-        child: Column(
-          children: [
-            Expanded(
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(),
-                    Column(
-                      children: [
-                        _buildIcon(),
-                        SizedBox(height: 30),
-                        _selectLanguageText(),
-                        SizedBox(height: 25),
-                        _buildGrid(),
-                      ],
+    return Center(
+      child: ResponsiveWrapper(
+        maxWidth: 1000,
+        
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: SizedBox(
+           height: MediaQuery.of(context).size.height,
+           child: Stack(
+             alignment: Alignment.center,
+             children: [
+             
+               Column(
+                 mainAxisSize: MainAxisSize.min,
+                 children: [
+                   _buildIcon(),
+                   SizedBox(height: 30),
+                   _selectLanguageText(),
+                   SizedBox(height: 25),
+                   _buildGrid(),
+                       SizedBox(height: 150),
+                 ],
+               ),
+            
+               SafeArea(
+                 bottom: true,
+                 child: Align(
+                   alignment: Alignment.bottomCenter,
+                   child: Padding(
+                     padding:  EdgeInsets.only(bottom: 80),
+                     child: _changeLanguageText(16),
+                   ),
+                 ),
+               ),
+             ],
+           ),
                     ),
-                    SizedBox(),
-                    Padding(
-                        padding: const EdgeInsets.only(bottom: 15),
-                        child: _changeLanguageText()),
-                  ],
-                ),
-              ),
-            ),
-          ],
         ),
       ),
     );
   }
 
+
+
   Widget _buildIcon() {
     return Icon(
       Icons.fastfood,
+
       size: 110.0,
       color: Colors.red,
     );
@@ -154,11 +169,14 @@ Widget _buildFloatingActionButton() {
     );
   }
 
-  Widget _changeLanguageText() {
-    return CustomText(
-      text: app.changeLanguage,
-      fontWeight: FontWeight.bold,
-      color: Colors.blue,
+  Widget _changeLanguageText(double? fontsize) {
+    return Flexible(
+      child: CustomText(
+fontSize: fontsize,
+        text: app.changeLanguage,
+        fontWeight: FontWeight.bold,
+        color: Colors.blue,
+      ),
     );
   }
 

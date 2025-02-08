@@ -1,12 +1,12 @@
+import 'package:canteen/util/arguments.dart';
+import 'package:canteen/util/routes.dart';
 import 'package:flutter/material.dart';
-
 import 'package:canteen/util/const.dart';
 import 'package:canteen/widgets/smooth_star_rating.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
+import 'package:provider/provider.dart';
 import '../../models/menus.dart';
-import '../screens/details.dart';
-import '../util/firebase functions.dart';
+import '../providers/firebase functions.dart';
 
 class CartItem extends StatefulWidget {
   Menus menu;
@@ -23,6 +23,9 @@ class CartItem extends StatefulWidget {
 class _CartItemState extends State<CartItem> {
   @override
   Widget build(BuildContext context) {
+    final firebaseFunctions =
+        Provider.of<FirebaseFunctions>(context, listen: false);
+
     final app = AppLocalizations.of(context)!;
     return Dismissible(
       confirmDismiss: (direction) async {
@@ -30,9 +33,9 @@ class _CartItemState extends State<CartItem> {
       },
       direction: DismissDirection.endToStart,
       onDismissed: (direction) {
-        deleteProductFromCart(menuId: widget.menu.menuID);
+       firebaseFunctions.deleteProductFromCart(menuId: widget.menu!.menuID);
       },
-      key: Key(widget.menu.menuID),
+      key: Key(widget.menu!.menuID),
       background: Container(
         width: double.infinity,
         decoration: const BoxDecoration(
@@ -56,14 +59,11 @@ class _CartItemState extends State<CartItem> {
           padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
           child: InkWell(
             onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (BuildContext context) {
-                    return ProductDetails(
-                      model: widget.menu,
-                      isFav: widget.menu.likes.contains(uid),
-                    );
-                  },
+              Navigator.pushNamed(
+                context,
+                Routes.productDetails,
+                arguments: ProductDetailsArguments(
+                  model: widget.menu!,
                 ),
               );
             },
