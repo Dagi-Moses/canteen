@@ -1,4 +1,4 @@
-import 'package:canteen/models/menus.dart';
+
 import 'package:canteen/providers/menusProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:canteen/screens/categories_screen.dart';
@@ -56,14 +56,14 @@ class _HomeCategoryState extends State<HomeCategory> {
             ),
           );
         } else {
-          menuProvider.updateCategory(widget.title);
+          menuProvider.category = widget.title;
 
-          setState(() {});
+        //  setState(() {});
         }
       },
       child: Card(
         surfaceTintColor: Colors.white,
-        color: Colors.white,
+       color: widget.isSelected ? Colors.red.shade100 : Colors.white,
         // color: widget.isSelected && !widget.isHome
         //     ? Colors.red.shade100
         //     : Colors.white,
@@ -74,7 +74,7 @@ class _HomeCategoryState extends State<HomeCategory> {
         child: Container(
           margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
           decoration: BoxDecoration(
-            color: Colors.white,
+           color: widget.isSelected ? Colors.red.shade100 : Colors.white,
             borderRadius: BorderRadius.circular(10),
           ),
           child: Row(
@@ -99,13 +99,14 @@ class _HomeCategoryState extends State<HomeCategory> {
                       fontSize: 17,
                     ),
                   ),
-                  Text(
-                   app.items,
+                 Text(
+                    "$len ${len == 1 ? app.item : app.items}", // Choose singular or plural
                     style: TextStyle(
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w500,
                       fontSize: 10,
                     ),
                   ),
+
                   SizedBox(height: 5),
                 ],
               ),

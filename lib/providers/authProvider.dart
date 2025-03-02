@@ -5,6 +5,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthenticationProvider extends ChangeNotifier {
+
+
+
+  
 final AppProvider appProvider = AppProvider();
 
 
@@ -33,6 +37,7 @@ final AppProvider appProvider = AppProvider();
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       _user = user;
       isLoading = false;
+      print("Auth state changed: ${user?.uid}");
       notifyListeners(); // Notify UI about auth state change
     });
   }
@@ -44,8 +49,9 @@ Future<void> _loadPreferences() async {
 
     await Future.delayed(const Duration(seconds: 1)); // Simulated delay
 print("... finished loading preferences");
+print("... uid");
     isLoading = false;
- 
+ notifyListeners();
     if (_languageCode != null && _languageCode!.isNotEmpty) {
      
       appProvider.setPreferredLanguage(_languageCode!);

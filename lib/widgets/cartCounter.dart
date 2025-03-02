@@ -2,18 +2,18 @@ import 'package:canteen/providers/cartProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-
 const kDefaultPaddin = 20.0;
 
 class CartCounter extends StatelessWidget {
-   final String menuID;
-  const CartCounter({super.key, required this.menuID});
+  final String menuID;
+  bool isCart;
+  CartCounter({super.key, required this.menuID, this.isCart = false});
 
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
     return Padding(
-      padding: EdgeInsets.only(top: 10),
+      padding: EdgeInsets.only(top: 5, right: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
@@ -21,30 +21,36 @@ class CartCounter extends StatelessWidget {
             width: 40,
             height: 32,
             child: OutlinedButton(
-              
               style: OutlinedButton.styleFrom(
                 elevation: 5,
-            side: 
-        const BorderSide(color: Colors.black, ), // Correctly applies red border
-         
+                side: const BorderSide(
+                  color: Colors.black,
+                ), // Correctly applies red border
+
                 padding: EdgeInsets.zero,
-                 shape: RoundedRectangleBorder(
-                   
+                shape: RoundedRectangleBorder(
                   borderRadius:
                       BorderRadius.circular(3), // Sharp edges (0 radius)
                 ),
               ),
               onPressed: () {
-                 cartProvider.removeQuantity(menuID);
+                if (isCart) {
+                  cartProvider.removeCartQuantity(menuID);
+                } else {
+                  cartProvider.removeQuantity(menuID);
+                }
               },
-              child: const Icon(Icons.remove, color: Colors.red,),
+              child: const Icon(
+                Icons.remove,
+                color: Colors.red,
+              ),
             ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: kDefaultPaddin / 2),
             child: Text(
-              // if our item is less  then 10 then  it shows 01 02 like that
-            cartProvider.getQuantity(menuID).toString(),
+              isCart?cartProvider.getCartQuantity(menuID).toString() :
+              cartProvider.getQuantity(menuID).toString(),
               style: Theme.of(context).textTheme.titleMedium,
             ),
           ),
@@ -53,8 +59,8 @@ class CartCounter extends StatelessWidget {
             height: 32,
             child: OutlinedButton(
               style: OutlinedButton.styleFrom(
-                 elevation: 5,
-            side: const BorderSide(
+                elevation: 5,
+                side: const BorderSide(
                   color: Colors.black,
                 ),
                 padding: EdgeInsets.zero,
@@ -64,9 +70,16 @@ class CartCounter extends StatelessWidget {
                 ),
               ),
               onPressed: () {
-              cartProvider.addQuantity(menuID);
+                if (isCart) {
+                  cartProvider.addCartQuantity(menuID);
+                } else {
+                  cartProvider.addQuantity(menuID);
+                }
               },
-              child: const Icon(Icons.add, color: Colors.red,),
+              child: const Icon(
+                Icons.add,
+                color: Colors.red,
+              ),
             ),
           ),
         ],

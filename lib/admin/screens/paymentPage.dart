@@ -1,9 +1,10 @@
 import 'package:canteen/models/order%20request.dart';
+import 'package:canteen/providers/cartProvider.dart';
+import 'package:canteen/providers/userProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import '../../providers/firebase functions.dart';
 
 class PaymentPage extends StatefulWidget {
   final String note;
@@ -16,14 +17,15 @@ PaymentPage({super.key, required this.note});
 class _PaymentPageState extends State<PaymentPage> {
   @override
   Widget build(BuildContext context) {
-    final firebaseFunctions =
-        Provider.of<FirebaseFunctions>(context, listen: false);
+    final cartProvider =
+        Provider.of<CartProvider>(context, listen: false);
+   
 
       final app = AppLocalizations.of(context)!;
     return Scaffold(
       body: SafeArea(
           child: FutureBuilder(
-              future: firebaseFunctions.initializeTransaction(context: context),
+              future: cartProvider.initializeTransaction(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<String> parts = snapshot.data!.split('|');
@@ -43,10 +45,10 @@ class _PaymentPageState extends State<PaymentPage> {
                               onPageStarted: (String url) {},
                               onPageFinished: (String url) async {
                                 bool isTransactionSuccessful =
-                                    await firebaseFunctions.verifyPaystackTransaction(reference);
+                                    await cartProvider.verifyPaystackTransaction(reference);
 
                                 if (isTransactionSuccessful) {
-                                  firebaseFunctions.buyAllItemsInCart(context: context, note: widget.note, paymentMethod: PaymentMethod.paystack, app:app);
+                                  cartProvider.buyAllItemsInCart(context: context, note: widget.note, paymentMethod: PaymentMethod.paystack, app:app);
                                 }
                               },
                               onWebResourceError: (WebResourceError error) {},

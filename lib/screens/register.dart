@@ -8,7 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../widgets/textfield.dart';
+import '../widgets/textFields/textfield.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override

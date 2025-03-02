@@ -46,7 +46,7 @@ FirebaseFunctions firebaseFunctions = FirebaseFunctions();
           await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
       if (signInMethods.isNotEmpty) {
         final response = await http.post(
-          Uri.parse('$serverUrl/send-otp'),
+          Uri.parse('${Constants.serverUrl}/send-otp'),
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode({
             'email': email,
@@ -121,7 +121,7 @@ FirebaseFunctions firebaseFunctions = FirebaseFunctions();
 
     try {
       final response = await http.post(
-        Uri.parse('$serverUrl/verify-otp'), // Backend API endpoint
+        Uri.parse('${Constants.serverUrl}/verify-otp'), // Backend API endpoint
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'email': email, 'otp': otp}),
       );

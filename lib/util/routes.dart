@@ -22,7 +22,7 @@ import 'package:canteen/util/arguments.dart';
 import 'package:flutter/material.dart';
 
 class Routes {
-  static const authState = '/';
+ static const authState = '/';
   static const splash = '/splash';
   static const mainScreen = '/home';
   static const homeLayout = '/home-layout';

@@ -2,6 +2,7 @@ import 'package:canteen/models/menus.dart';
 import 'package:canteen/providers/menusProvider.dart';
 import 'package:canteen/util/categories.dart';
 import 'package:canteen/util/routes.dart';
+import 'package:canteen/widgets/menuGridFutureBuilder.dart';
 import 'package:canteen/widgets/slider_item.dart';
 import 'package:flutter/material.dart';
 
@@ -32,7 +33,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   void initState() {
     super.initState();
     Provider.of<MenuProvider>(context, listen: false)
-        .updateCategory(widget.catie);
+        .category = widget.catie;
   }
 
   @override
@@ -68,11 +69,12 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         ],
       ),
       body: Padding(
-        padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
+        padding: EdgeInsets.all(10),
         child: ListView(
           children: <Widget>[
             SizedBox(height: 10.0),
             Container(
+              alignment: Alignment.center,
               height: 65.0,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
@@ -93,33 +95,39 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               ),
             ),
             SizedBox(height: 20.0),
-            Text(
-              "${menuProvider.category}",
-              style: TextStyle(
-                fontSize: 23,
-                fontWeight: FontWeight.w800,
+            Padding(
+              padding: const EdgeInsets.only(left: 10.0),
+              child: Text(
+                "${menuProvider.category}",
+                style: TextStyle(
+                  fontSize: 23,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
             ),
-            Divider(),
+
             SizedBox(height: 10.0),
-            GridView.builder(
-              shrinkWrap: true,
-              primary: false,
-              physics: NeverScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: MediaQuery.of(context).size.width /
-                    (MediaQuery.of(context).size.height / 1.25),
-              ),
-              itemCount: menuProvider.categoryMenus!.length,
-              itemBuilder: (BuildContext context, int index) {
-                final food = menuProvider.categoryMenus![index];
-                // Menus Menu = Menus.fromJson(json: food as Map<String, dynamic>)  ;
-                return SliderItem(
-                  model: food,
-                );
-              },
-            ),
+            Center(child: MenuGridFutureBuilder(menus: menuProvider.categoryMenus, menuProvider: menuProvider))
+            // GridView.builder(
+            //   shrinkWrap: true,
+            //   primary: false,
+            //   physics: NeverScrollableScrollPhysics(),
+            //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            //     crossAxisCount: 2,
+            //   crossAxisSpacing: 10,
+            //     childAspectRatio: MediaQuery.of(context).size.width /
+            //         (MediaQuery.of(context).size.height / 1.25),
+            //   ),
+            //   itemCount: menuProvider.categoryMenus.length,
+            //   itemBuilder: (BuildContext context, int index) {
+            //     final food = menuProvider.categoryMenus[index];
+            //     // Menus Menu = Menus.fromJson(json: food as Map<String, dynamic>)  ;
+            //     return SliderItem(
+            //       menuProvider: menuProvider,
+            //       model: food,
+            //     );
+            //   },
+            // ),
           ],
         ),
       ),

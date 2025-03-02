@@ -2,7 +2,7 @@ import 'package:canteen/providers/emailProvider.dart';
 import 'package:canteen/util/const.dart';
 import 'package:canteen/util/validators.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:canteen/widgets/custom_Textfield.dart';
+import 'package:canteen/widgets/textFields/custom_Textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

@@ -502,7 +502,6 @@ class _MenusUploadScreenState extends State<MenusUploadScreen> {
   saveInfo(String downloadUrl) {
     Menus menu = Menus(
      
-      likesCount: 0,
       category: selectedObject!,
       menuID: uniqueIdName,
       menuTitle: titleController.text,

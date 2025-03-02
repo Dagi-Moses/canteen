@@ -94,18 +94,18 @@ class OrderRequestModel {
 }
 
 class Address {
-  final String state;
-  final String city;
-  final String street;
-  final String mobile;
+  final String? state;
+  final String? city;
+  final String? street;
+  final String? mobile;
   final GeoPoin? geoPoint;
 
   Address({
-    required this.state,
-    required this.city,
-    required this.street,
-    required this.mobile,
-    required this.geoPoint,
+    this.state,
+    this.city,
+    this.street,
+    this.mobile,
+    this.geoPoint,
   });
 
   Map<String, dynamic> toJson() => {
@@ -123,15 +123,14 @@ class Address {
       street: json['street'],
       mobile: json['mobile'],
       geoPoint: json['geoPoint'] != null
-          ? GeoPoin(
-              json['geoPoint']['latitude'], json['geoPoint']['longitude'])
+          ? GeoPoin(json['geoPoint']['latitude'], json['geoPoint']['longitude'])
           : null,
     );
   }
 }
 
 enum PickupOption { delivery, pickUp, diningRoom }
+
 enum PaymentMethod { cash, paystack }
 
 enum DeliveryStatus { pending, upcoming, onTheWay, delivered, canceled }
-

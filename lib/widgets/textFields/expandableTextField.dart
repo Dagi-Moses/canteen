@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class ExpandableTextField extends StatefulWidget {
+class ExpandableTextField extends StatelessWidget {
   final FocusNode focusNode;
   final TextEditingController controller;
   final String hintText;
@@ -11,26 +11,6 @@ class ExpandableTextField extends StatefulWidget {
     required this.controller,
     required this.hintText,
   }) : super(key: key);
-
-  @override
-  State<ExpandableTextField> createState() => _ExpandableTextFieldState();
-}
-
-class _ExpandableTextFieldState extends State<ExpandableTextField> {
-  bool isFocused = false;
-
-  @override
-  void initState() {
-    super.initState();
-
-    // Listen to focus changes
-    widget.focusNode.addListener(() {
-      setState(() {
-        isFocused = widget.focusNode.hasFocus;
-      });
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Align(
@@ -44,13 +24,13 @@ class _ExpandableTextFieldState extends State<ExpandableTextField> {
           duration: const Duration(milliseconds: 900),
           curve: Curves.easeInOut,
           constraints: BoxConstraints(
-            maxWidth: isFocused ? 300 : 150, // Expand to 600 when focused
+            maxWidth: focusNode.hasFocus ? 300 : 150, // Expand to 600 when focused
           ),
           child: TextField(
             onSubmitted: (v) {
-              widget.focusNode.unfocus();
+            focusNode.unfocus();
             },
-            focusNode: widget.focusNode,
+            focusNode: focusNode,
             style: const TextStyle(
               fontSize: 15.0,
               color: Colors.black,
@@ -75,7 +55,7 @@ class _ExpandableTextFieldState extends State<ExpandableTextField> {
                 ),
                 borderRadius: BorderRadius.circular(20.0),
               ),
-              hintText: widget.hintText,
+              hintText: hintText,
               prefixIcon: const Icon(
                 Icons.search,
                 color: Colors.black,
@@ -85,7 +65,7 @@ class _ExpandableTextFieldState extends State<ExpandableTextField> {
                 color: Colors.black,
               ),
             ),
-            controller: widget.controller,
+            controller: controller,
           ),
         ),
       ),

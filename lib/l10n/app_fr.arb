@@ -23,14 +23,13 @@
   "payStack": "PayStack",
   "couponCode": "Code promo",
   "total": "Total",
-  
   "char": "Doit contenir plus de six caractères",
-
   "deliveryCharges": "Frais de livraison inclus",
   "placeOrder": "Passer commande",
   "menuDetails": "Détails de l'article",
   "productDescription": "Description du produit",
   "reviews": "Avis",
+  "review": "Avis",
   "leaveReview": "Laisser un avis",
   "addToCart": "AJOUTER AU PANIER",
   "dishes": "Plats",
@@ -56,13 +55,9 @@
   "verifyEmail": "Veuillez vérifier votre adresse e-mail",
   "createAnAccount": "Créer un compte",
   "username": "Nom d'utilisateur",
-
   "required": "est requis",
   "passwordsDoNotMatch": "Les mots de passe ne correspondent pas",
-
-
   "phoneNumber": "Numéro de téléphone",
-
   "inputAddress": "Entrer votre adresse",
   "confirm": "Confirmer",
   "search": "Rechercher...",
@@ -125,5 +120,37 @@
   "userNotFound": "Aucun utilisateur trouvé avec cet e-mail.",
   "networkRequestFailed": "Vérifiez votre connexion Internet.",
   "unexpectedError": "Une erreur inattendue s'est produite. Veuillez réessayer.",
-  "invalidPhoneNumber": "Numéro de téléphone invalide"
+  "invalidPhoneNumber": "Numéro de téléphone invalide",
+  "profile": "Profil",
+  "preferences": "Préférences",
+  "firstName": "Prénom",
+  "lastName": "Nom de famille",
+  "emailAddress": "Adresse e-mail",
+  "personalAddress": "Adresse personnelle",
+  "zipCode": "Code postal",
+  "saveChanges": "Enregistrer les modifications",
+  "@@locale": "fr",
+  "please_check_your_connection": "Veuillez vérifier votre connexion",
+  "server_error": "Erreur du serveur",
+  "access_to_location_denied": "Accès à l'emplacement refusé",
+  "allow_access_to_the_location_services": "Autoriser l'accès aux services de localisation.",
+  "access_to_location_permanently_denied": "Accès à l'emplacement refusé définitivement",
+  "allow_access_to_the_location_services_from_settings": "Autorisez l'accès aux services de localisation pour cette application à l'aide des paramètres de l'appareil.",
+  "ok": "D'accord",
+  "cant_get_current_location": "Impossible d'obtenir l'emplacement actuel",
+  "please_make_sure_you_enable_gps_and_try_again": "Veuillez vous assurer d'activer le GPS et de réessayer",
+  "search_place": "Rechercher un lieu",
+  "finding_place": "En train de trouver un lieu...",
+  "no_result_found": "Aucun résultat trouvé",
+  "unnamedPlace": "Luogo senza nome",
+  "home": "Accueil",
+  "favorites": "Favoris",
+  "cart": "Panier",
+  "deliveryNotAvailable": "Désolé, la livraison n'est actuellement pas disponible pour votre région."
+
+ 
+
+
+
+
 }

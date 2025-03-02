@@ -35,24 +35,18 @@ class UserProvider with ChangeNotifier {
         address: updatedUser.address,
         zipCode: updatedUser.zipCode,
         completeAddress: updatedUser.completeAddress,
+        email: updatedUser.email,
+        profileImage: updatedUser.profileImage,
+        
       );
 
       notifyListeners();
 
       // Firestore Update
-      await _firestore.collection('users').doc(uid).update({
-        'name': updatedUser.firstName ?? _user!.firstName,
-        'lastName': updatedUser.lastName ?? _user!.lastName,
-        'phoneNumber': updatedUser.phoneNumber ?? _user!.phoneNumber,
-        'country': updatedUser.country ?? _user!.country,
-        'state': updatedUser.state ?? _user!.state,
-        'city': updatedUser.city ?? _user!.city,
-        'address': updatedUser.address ?? _user!.address,
-        'zipCode': updatedUser.zipCode ?? _user!.zipCode,
-        'completeAddress': updatedUser.completeAddress ?? _user!.completeAddress,
-        'updatedAt': FieldValue.serverTimestamp(),
-      });
-
+       await _firestore.collection('users').doc(uid).update({
+          ...updatedUser.toMap(),
+          'updatedAt': FieldValue.serverTimestamp(), // Add update timestamp
+        });
     } catch (e) {
       print('Failed to update user in Firestore: $e');
       rethrow; // Rethrow for handling in UI
@@ -68,7 +62,9 @@ void setUser(UserModel user) {
   }
    void setUserFromSnapshot(Map<String, dynamic> userData) {
     _user = UserModel.fromMap(userData);
-    notifyListeners();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+      notifyListeners();
+    });
   }
 
 

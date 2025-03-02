@@ -1,13 +1,12 @@
- import 'package:canteen/models/menus.dart';
 import 'package:canteen/providers/app_provider.dart';
+import 'package:canteen/providers/cartProvider.dart';
 import 'package:canteen/providers/menusProvider.dart';
+import 'package:canteen/providers/navigationProvider.dart';
 import 'package:canteen/screens/account%20screen.dart';
 import 'package:canteen/util/const.dart';
 import 'package:canteen/util/routes.dart';
 import 'package:canteen/widgets/badge.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:canteen/screens/cart.dart';
 import 'package:canteen/screens/favorite_screen.dart';
@@ -17,143 +16,138 @@ import 'package:canteen/screens/search.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-
 class MainScreen extends StatefulWidget {
   @override
   _MainScreenState createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> {
-
-  final PageController _pageController = PageController();
-  int _currentPage = 0;
-
-  
+ late AppLocalizations app;
+ late  CartProvider cartMenus;
+ late  MenuProvider menus;
+ late NavigationProvider navigationProvider;
+ 
   void initState() {
     super.initState();
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent, // Set your desired status bar color
       // Set your desired navigation bar color
     ));
-  
   }
-
-  
 
   @override
   Widget build(BuildContext context) {
-    final app = AppLocalizations.of(context)!;
-    final menus = Provider.of<MenuProvider>(
-      context,
-    );
+     app = AppLocalizations.of(context)!;
+    cartMenus = Provider.of<CartProvider>(context);
+     menus = Provider.of<MenuProvider>(context);
+   navigationProvider = Provider.of<NavigationProvider>(context);
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Text(
-          app.appName,
-          style: TextStyle(color: Colors.red),
-        ),
-       // toolbarHeight: 0,
-        backgroundColor:
-            Provider.of<AppProvider>(context).theme == Constants.lightTheme
-                ? Colors.white
-                : Colors.black,
-        elevation: 0,
-        actions: _currentPage != 3
-            ?<Widget>[
-                  IconButton(
-                    color: Colors.grey,
-                    icon: IconBadge(
-                      data: menus.cartNo,
-                      icon: Icons.notifications,
-                      size: 22.0,
-                    ),
-                    onPressed: () {
-                     Navigator.of(context).pushNamed(Routes.notifications);
-                    },
-                    tooltip: app.notification,
-                  ),
-                ]
-            : null,
-      ),
+       resizeToAvoidBottomInset: false, 
+      appBar: navigationProvider.currentPage == 4
+          ? null
+          : AppBar(
+              automaticallyImplyLeading: false,
+              title: Text(
+                app.appName,
+                style: TextStyle(color: Colors.red),
+              ),
+              // toolbarHeight: 0,
+              backgroundColor: Provider.of<AppProvider>(context).theme ==
+                      Constants.lightTheme
+                  ? Colors.white
+                  : Colors.black,
+              elevation: 0,
+              actions: navigationProvider.currentPage != 3
+                  ? <Widget>[
+                      IconButton(
+                        color: Colors.grey,
+                        icon: IconBadge(
+                          data: cartMenus.cartNo,
+                          icon: Icons.notifications,
+                          size: 22.0,
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pushNamed(Routes.notifications);
+                        },
+                        tooltip: app.notification,
+                      ),
+                    ]
+                  : null,
+            ),
       body: ScreenHelper(
-        mobile: _buildMobileLayout(),
-        tablet: _buildLayout(menus),
-        desktop: _buildLayout(menus),
+        mobile: _buildMobileLayout(navigationProvider),
+        tablet: _buildLayout(menus, navigationProvider, cartMenus),
+        desktop: _buildLayout(menus, navigationProvider, cartMenus),
       ),
-    
-        bottomNavigationBar: ScreenHelper.isMobile(context)
-          ?BottomAppBar(
-          height: 60,
-          surfaceTintColor: Colors.white,
-          elevation: 4.0,
-          shadowColor: Colors.grey[300],
-          child: new Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: _bottomNavIcons(menus),
-          ),
-          shape: CircularNotchedRectangle(),
-        )
+      bottomNavigationBar: ScreenHelper.isMobile(context)
+          ? BottomAppBar(
+              height: 60,
+              surfaceTintColor: Colors.white,
+              elevation: 4.0,
+              shadowColor: Colors.grey[300],
+              child: new Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: _bottomNavIcons(menus, navigationProvider, cartMenus),
+              ),
+              shape: CircularNotchedRectangle(),
+            )
           : null,
-          floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
-      
+      floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
       floatingActionButton: ScreenHelper.isMobile(context)
-          ? FloatingActionButton(  
-           // mini: true, // Makes it a smaller circle
-             
+          ? FloatingActionButton(
+              // mini: true, // Makes it a smaller circle
+
               shape: CircleBorder(),
-              backgroundColor: _currentPage==2? Colors.red : Colors.grey[600],
-              onPressed: () => _onNavigationChanged(2),
-              child: Icon(Icons.search ,),
+              backgroundColor:
+                  navigationProvider.currentPage == 2 ? Colors.red : Colors.grey[600],
+              onPressed: () => navigationProvider.changePage(2),
+              child: Icon(
+                Icons.search,
+              ),
             )
           : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 
-  Widget _buildMobileLayout() {
+  Widget _buildMobileLayout(NavigationProvider navigationProvider) {
     return PageView(
-      controller: _pageController,
-
+      controller: navigationProvider.pageController,
       physics: NeverScrollableScrollPhysics(),
-      children:  [
-     
-
+      children: [
         Home(),
         FavoriteScreen(),
         SearchScreen(),
-       CartScreen(),
+        CartScreen(),
         SettingsScreen(),
 
-       // Profile(),
-      
+        // Profile(),
       ],
     );
   }
 
-
-  Widget _buildLayout(MenuProvider menus) {
+  Widget _buildLayout(MenuProvider menus, NavigationProvider navigationProvider, CartProvider cart) {
     return Row(
       children: [
         NavigationRail(
           
-          selectedIndex: _currentPage,
-          onDestinationSelected: _onNavigationChanged,
+          selectedIndex: navigationProvider.currentPage,
+          onDestinationSelected: navigationProvider.changePage,
           labelType: NavigationRailLabelType.all,
           indicatorColor: Colors.red,
-       //   unselectedIconTheme: IconThemeData(color: Colors.grey[600]) ,
-          
-          destinations: _navigationDestinations(menus),
+          //   unselectedIconTheme: IconThemeData(color: Colors.grey[600]) ,
+
+          destinations: _navigationDestinations(menus, cart),
         ),
         Expanded(
-          child: _buildMobileLayout(),
+          child: _buildMobileLayout(navigationProvider),
         ),
       ],
     );
   }
 
-  List<Widget> _bottomNavIcons(MenuProvider menus) {
+  List<Widget> _bottomNavIcons(MenuProvider menus,  NavigationProvider navigationProvider, CartProvider cart) {
     final icons = [
       Icons.home,
       Icons.favorite,
@@ -163,51 +157,43 @@ class _MainScreenState extends State<MainScreen> {
     ];
 
     return List.generate(icons.length, (index) {
-      final isSelected = _currentPage == index;
+      final isSelected = navigationProvider.currentPage == index;
       return IconButton(
-        
         icon: index == 3
-            ? IconBadge(icon: icons[index] , data : menus.cartNo )
-            : Icon(icons[index], size: 24.0,  color: index == 2
+            ? IconBadge(icon: icons[index], data:cart.cartNo)
+            : Icon(
+                icons[index],
+                size: 24.0,
+                color: index == 2
                     ? Theme.of(context).primaryColor
                     : (isSelected ? Colors.red : Colors.grey[600]),
               ),
         color: isSelected ? Colors.red : Colors.grey[600],
-        onPressed: () => _onNavigationChanged(index),
+        onPressed: () {navigationProvider.changePage(index);},
       );
     });
   }
 
-
-
-  List<NavigationRailDestination> _navigationDestinations(MenuProvider menus) {
+  List<NavigationRailDestination> _navigationDestinations(MenuProvider menus, CartProvider cart) {
     return [
+      NavigationRailDestination(icon: Icon(Icons.home), label: Text(app.home)),
       NavigationRailDestination(
-       
-        icon: Icon(Icons.home), label: Text("Home")),
+          icon: Icon(Icons.favorite), label: Text(app.favorites)),
       NavigationRailDestination(
-          icon: Icon(Icons.favorite), label: Text("Favorites")),
+          icon: Icon(Icons.search), label: Text(app.search)),
       NavigationRailDestination(
-          icon: Icon(Icons.search), label: Text("Search")),
-           NavigationRailDestination(
-          icon: IconBadge(icon: Icons.shopping_cart, size: 24.0, data: menus.cartNo ,), label: Text("Cart")),
+          icon: IconBadge(
+            icon: Icons.shopping_cart,
+            size: 24.0,
+            data: cart.cartNo,
+          ),
+          label: Text(app.cart)),
       // NavigationRailDestination(
       //     icon: Icon(Icons.shopping_cart), label: Text("Cart")),
       NavigationRailDestination(
-          icon: Icon(Icons.person), label: Text("Profile")),
+          icon: Icon(Icons.person), label: Text(app.profile)),
     ];
   }
 
-  void _onNavigationChanged(int index) {
-    setState(() {
-      _currentPage = index;
-    });
-    _pageController.jumpToPage(index);
-  }
 
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
 }

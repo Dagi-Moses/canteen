@@ -50,6 +50,7 @@ class SmoothStarRating extends StatelessWidget {
     }
 
     return GestureDetector(
+  
       onTap: () {
         if (onRatingChanged != null) onRatingChanged!(index + 1.0);
       },

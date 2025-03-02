@@ -1,3 +1,4 @@
+import 'package:canteen/providers/menusProvider.dart';
 import 'package:canteen/util/routes.dart';
 import 'package:canteen/widgets/slider_item.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:canteen/util/foods.dart';
 import 'package:canteen/widgets/badge.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 import '../../models/menus.dart';
 
 
@@ -17,6 +19,7 @@ class DishesScreen extends StatefulWidget {
 class _DishesScreenState extends State<DishesScreen> {
   @override
   Widget build(BuildContext context) {
+       final menuProvider = Provider.of<MenuProvider>(context);
     final app = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
@@ -79,6 +82,7 @@ class _DishesScreenState extends State<DishesScreen> {
               Map food = foods[index];
                 Menus menu = Menus.fromJson(json: food as Map<String, dynamic>);
                 return SliderItem(
+                  menuProvider: menuProvider,
                 model: menu,
                
                 );
@@ -110,6 +114,7 @@ class _DishesScreenState extends State<DishesScreen> {
                Map food = foods[index];
                 Menus menu = Menus.fromJson(json: food as Map<String, dynamic>);
                 return SliderItem(
+                  menuProvider: menuProvider,
                 model: menu,
               
                 );
@@ -141,6 +146,7 @@ class _DishesScreenState extends State<DishesScreen> {
                 Map food = foods[index];
                 Menus menu = Menus.fromJson(json: food as Map<String, dynamic>);
                 return SliderItem(
+                  menuProvider: menuProvider,
                 model: menu,
                 
                 );

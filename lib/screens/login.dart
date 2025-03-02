@@ -1,6 +1,6 @@
 import 'package:canteen/providers/firebase%20functions.dart';
 import 'package:canteen/util/routes.dart';
-import 'package:canteen/widgets/custom_Textfield.dart';
+import 'package:canteen/widgets/textFields/custom_Textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';

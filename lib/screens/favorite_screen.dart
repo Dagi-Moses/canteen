@@ -29,7 +29,9 @@ class _FavoriteScreenState extends State<FavoriteScreen>
    
     return Scaffold(
       body: RefreshIndicator(
-        onRefresh: menuProvider.getFavoriteMenus,
+    onRefresh: () async {
+          menuProvider.fetchMenus();
+        },
         child: Padding(
           padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
           child: ListView(
@@ -44,7 +46,7 @@ class _FavoriteScreenState extends State<FavoriteScreen>
               ),
               SizedBox(height: 10.0),
                   MenuGridFutureBuilder(
-                future: menuProvider.favoritesFuture!,
+                 menuProvider: menuProvider, menus: menuProvider.favoriteMenus, 
              
               ),
               

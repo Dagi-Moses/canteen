@@ -1,4 +1,5 @@
 
+import 'package:canteen/providers/userProvider.dart';
 import 'package:canteen/util/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -10,7 +11,7 @@ import 'package:canteen/util/const.dart';
 import '../admin/functions.dart';
 
 import '../admin/widgets/simple_dialog.dart';
-import '../providers/userProvider.dart';
+
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

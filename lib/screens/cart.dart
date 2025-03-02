@@ -1,16 +1,12 @@
-import 'package:canteen/providers/menusProvider.dart';
+import 'package:canteen/providers/cartProvider.dart';
 import 'package:canteen/util/routes.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:canteen/util/screenHelper.dart';
 import 'package:flutter/material.dart';
-import 'package:canteen/screens/checkout.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../../models/menus.dart';
-
 import 'package:canteen/widgets/cart_item.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import '../providers/app_provider.dart';
-import '../util/const.dart';
 
 class CartScreen extends StatefulWidget {
   @override
@@ -21,74 +17,39 @@ class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     final app = AppLocalizations.of(context)!;
-   // final prov = Provider.of<AppProvider>(context, listen: false);
-    final cartMenu = Provider.of<MenuProvider>(
-      context,
-    );
-
+    final cartProvider = Provider.of<CartProvider>(context);
     return Scaffold(
-      appBar: cartMenu.cartMenus!.length == 0
-          ? null
-          : AppBar(
-              backgroundColor: Provider.of<AppProvider>(context).theme ==
-                      Constants.lightTheme
-                  ? Colors.white
-                  : Colors.black,
-              automaticallyImplyLeading: false,
-              centerTitle: true,
-              title: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 26),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15)),
-                    elevation: 1,
-                    backgroundColor: Colors.red),
-                child: Text(
-                    ' ${app.proceed + cartMenu.cartMenus!.length.toString()} ${cartMenu.cartMenus!.length == 1 ? app.item : app.items}'),
-                onPressed: () {
-                  Navigator.pushNamed(context, Routes.checkOut);
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
+        child: cartProvider.cartMenus.isEmpty
+            ? Center(child: Text(app.noCartItems))
+            : GridView.builder(
+                shrinkWrap: true,
+                primary: false,
+                physics: NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: ScreenHelper.isMobile(context) ? 1 : 3,
+                  childAspectRatio: ScreenHelper.isMobile(context) ? 2.2 : 2.2,
+                ),
+                itemCount: cartProvider.cartMenus.length,
+                itemBuilder: (BuildContext context, int index) {
+                  Menus menu = cartProvider.cartMenus[index];
+                  return CartItem(menu: menu);
                 },
               ),
-              elevation: 0.0,
-            ),
-      body: Padding(
-          padding: const EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
-          child: StreamBuilder(
-              stream: FirebaseFirestore.instance
-                  .collection("users")
-                  .doc(firebaseAuth.currentUser!.uid)
-                  .collection("cart")
-                  .orderBy('publishDate', descending: true)
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return ListView.builder(
-                    itemCount: snapshot.data!.docs.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      cartMenu.updateCartMenusFromSnapshot(snapshot.data!);
-
-                      DocumentSnapshot document = snapshot.data!.docs[index];
-                      Menus menu = Menus.fromJson(
-                          json: document.data() as Map<String, dynamic>);
-                      return CartItem(
-                        menu: menu,
-                      );
-                    },
-                  );
-                } else if (!snapshot.hasData) {
-                  return Center(
-                    child: Text(app.noCartItems),
-                  );
-                } else {
-                  return CircularProgressIndicator.adaptive();
-                }
-              })),
+      ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.red,
         tooltip: app.checkOut,
         onPressed: () {
-      //    prov.setPreferredLanguage('en');
+          if (!cartProvider.cartMenus.isEmpty) {
             Navigator.pushNamed(context, Routes.checkOut);
+          } else {
+            Fluttertoast.showToast(
+              toastLength: Toast.LENGTH_LONG,
+              msg: app.noCartItems,
+            );
+          }
         },
         child: const Icon(
           Icons.arrow_forward,

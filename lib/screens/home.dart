@@ -1,7 +1,7 @@
 import 'package:canteen/providers/menusProvider.dart';
 import 'package:canteen/util/categories.dart';
 import 'package:canteen/util/screenHelper.dart';
-import 'package:canteen/widgets/custom_image_placeholder.dart';
+import 'package:canteen/widgets/placeHolders.dart/custom_image_placeholder.dart';
 import 'package:canteen/widgets/menuGridFutureBuilder.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -14,7 +14,7 @@ import 'package:canteen/widgets/home_category.dart';
 import 'package:canteen/widgets/slider_item.dart';
 
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/scheduler.dart';
+
 
 import 'package:provider/provider.dart';
 
@@ -52,7 +52,7 @@ class _HomeState extends State<Home> {
       backgroundColor: Colors.white,
       body:  RefreshIndicator(
         onRefresh:  ()async {
-          menuProvider.refreshHomeMenuData();
+          menuProvider.fetchMenus();
         },
         child: SingleChildScrollView(
         
@@ -79,13 +79,12 @@ class _HomeState extends State<Home> {
                 ),
         
                 SizedBox(height: 10.0),
-                FutureBuilder<List<Menus>>(
-          future:  menuProvider.popularMenusFuture,
-          builder: (context, snapshot) {
-         if (snapshot.connectionState == ConnectionState.waiting) {
-                      return SizedBox(
-                        height: MediaQuery.of(context).size.height /
-                            2.1, // Same height as CarouselSlider
+             Consumer<MenuProvider>(
+                  builder: (context, menuProvider, child) {
+         if (menuProvider.isLoading) {
+                      return Expanded(
+                        // height: MediaQuery.of(context).size.height /
+                        //     2.1, // Same height as CarouselSlider
                         child: GridView.builder(
                           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount:
@@ -105,15 +104,14 @@ class _HomeState extends State<Home> {
                           },
                         ),
                       );
-                    } else if (snapshot.hasError) {
-        return Center(child: Text('Error loading data'));
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    }  else if (menuProvider.popularMenus.isEmpty) {
         return SizedBox();
             } else {
         // Using CarouselSlider with the fetched menus
-        final carouselItems = snapshot.data!.map((menu) {
+        final carouselItems = menuProvider.popularMenus.map((menu) {
           return SliderItem(
             model: menu,
+            menuProvider: menuProvider,
           
           );
         }).toList();
@@ -194,7 +192,7 @@ class _HomeState extends State<Home> {
                 ),
         
                 SizedBox(height: 10.0),
-            MenuGridFutureBuilder(future: menuProvider.recentMenusFuture!, shouldUpdateMenus: true,),
+            MenuGridFutureBuilder( menuProvider: menuProvider, menus: menuProvider.recentMenus, ),
                 
         
         

@@ -8,29 +8,37 @@ import 'menus.dart';
 
 class SearchManager {
   static const String _historyKey = 'search_history';
+void saveMenusToSharedPreferences(Menus menu) async {
+    try {
+      print("starting to save");
+      List<String>? existingMenusJson = prefs.getStringList(_historyKey);
+      List<Map<String, dynamic>> existingMenus = [];
 
-  void saveMenusToSharedPreferences(Menus menu) async {
-    List<String>? existingMenusJson = prefs.getStringList(_historyKey);
-    List<Map<String, dynamic>> existingMenus = [];
-
-    if (existingMenusJson != null) {
-      existingMenus = existingMenusJson
-          .map((json) => jsonDecode(json))
-          .cast<Map<String, dynamic>>()
-          .toList();
-    }
-    existingMenus.add(menu.toJson());
-    List<String> updatedMenusJson = existingMenus.map((json) {
-      // json['publishDate'] = (json['publishDate'] as DateTime).toIso8601String();
-      if (json['publishDate'] is DateTime) {
-        json['publishDate'] =
-            (json['publishDate'] as DateTime).toIso8601String();
+      if (existingMenusJson != null) {
+        existingMenus = existingMenusJson
+            .map((json) => jsonDecode(json))
+            .cast<Map<String, dynamic>>()
+            .toList();
       }
-      return jsonEncode(json);
-    }).toList();
 
-    prefs.setStringList(_historyKey, updatedMenusJson);
+      existingMenus.add(menu.toJson());
+
+      List<String> updatedMenusJson = existingMenus.map((json) {
+        if (json['publishDate'] is DateTime) {
+          json['publishDate'] =
+              (json['publishDate'] as DateTime).toIso8601String();
+        }
+        return jsonEncode(json);
+      }).toList();
+
+      prefs.setStringList(_historyKey, updatedMenusJson);
+      print("Saved history successfully: ${updatedMenusJson.length}");
+    } catch (e, stackTrace) {
+      print("Error saving history: $e");
+      print(stackTrace);
+    }
   }
+
 
   Future<List<Menus>> getMenusFromSharedPreferences() async {
     List<String>? existingMenusJson = prefs.getStringList(_historyKey);
@@ -50,6 +58,7 @@ class SearchManager {
         menusList.add(menu);
       }
     }
+print("Fetched history: ${menusList.length}");
 
     return menusList;
   }

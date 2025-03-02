@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -20,7 +21,7 @@ Color linkBlue = Colors.blue;
 final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 String uid = firebaseAuth.currentUser!.uid;
 FirebaseFirestore firestore = FirebaseFirestore.instance;
- late SharedPreferences prefs;
+late SharedPreferences prefs;
 
   final List<String> languageNames = [
   "English",
@@ -34,23 +35,12 @@ final List<String> languageCodes = [
   "yo",
   "ig",
 ];
-
-// const String serverUrl= "http://192.168.1.118:3000";
-
-
-const String serverUrl = kIsWeb ? 'http://localhost:3000' : 'http://10.0.2.2:3000';
-
-
 class Constants {
- 
- 
-//the rest
-  static String apiKey = 'sk_live_f113140e0dd9cd86cd6ae6fc117e7da19622f314';
-
+  static String payStackApiKey = dotenv.env['PAY_STACK_API_KEY'] ?? '';
   static String admin = '1UuGd7EeZFcYZZmmvpYgWevOcGH3';
-  
-  //Colors for theme
-//  Color(0xfffcfcff);
+  static double STORE_LAT = double.parse(dotenv.env['STORE_LAT'] ?? '6.5244');
+  static double STORE_LONG = double.parse(dotenv.env['STORE_LONG'] ?? '3.3792');
+  static String serverUrl = kIsWeb ? 'http://localhost:3000' : 'http://10.0.2.2:3000';
   static Color lightPrimary = Color(0xfffcfcff);
   static Color darkPrimary = Colors.black;
   static Color lightAccent = Colors.red;
@@ -63,8 +53,12 @@ class Constants {
     primaryColor: lightPrimary,
     // cursorColor: lightAccent,
     scaffoldBackgroundColor: lightBG,
+    textTheme: TextTheme(
+      bodyLarge: TextStyle(color: Colors.black),
+      bodyMedium: TextStyle(color: Colors.black),
+      bodySmall: TextStyle(color: Colors.black),
+    ),
     appBarTheme: AppBarTheme(
-      
        titleTextStyle: 
          TextStyle(
           color: darkBG,
@@ -82,7 +76,6 @@ class Constants {
   static ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
     primaryColor: darkPrimary,
-    
     scaffoldBackgroundColor: darkBG,
     //cursorColor: darkAccent,
     appBarTheme: AppBarTheme(
@@ -91,14 +84,19 @@ class Constants {
           fontSize: 18.0,
           fontWeight: FontWeight.w800,
         ),
-      ), colorScheme: ColorScheme.dark(
+      ),
+       colorScheme: ColorScheme.dark(
+          onPrimary:
+          Colors.red, 
     primary: darkPrimary,
     secondary: darkAccent,
-  ).copyWith(surface: darkBG),
-//      iconTheme: IconThemeData(
-//        color: darkAccent,
-//      ),
     
+  ).copyWith(surface: darkBG),
+
+    iconTheme: IconThemeData(
+    
+      color: Colors.black, 
+    ),
   );
 }
 

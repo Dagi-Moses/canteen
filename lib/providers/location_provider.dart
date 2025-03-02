@@ -1,9 +1,11 @@
+import 'package:canteen/models/geopoint.dart';
+import 'package:canteen/models/order%20request.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 
 class LocationProvider extends ChangeNotifier {
-
   LocationProvider() {
     getCurrentLocation();
   }
@@ -27,7 +29,7 @@ class LocationProvider extends ChangeNotifier {
 
   String? _state;
   String? get state => _state;
-  
+
   String? _city;
   String? get city => _city;
 
@@ -37,10 +39,7 @@ class LocationProvider extends ChangeNotifier {
   String? _zipCode;
   String? get zipCode => _zipCode;
 
-
-
   Future<void> getCurrentLocation() async {
-    
     print("started location service");
     _isLoading = true;
     notifyListeners();
@@ -64,36 +63,33 @@ class LocationProvider extends ChangeNotifier {
             'Location permissions are permanently denied, cannot request permissions.');
       }
 
-      _position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      );
-
+      _position = await Geolocator.getCurrentPosition();
+      // Reverse geocode the coordinates
+      print("Starting reverse geocoding...");
       _placeMarks = await placemarkFromCoordinates(
         _position!.latitude,
         _position!.longitude,
       );
 
-   
       if (_placeMarks != null && _placeMarks!.isNotEmpty) {
         Placemark pMark = _placeMarks![0];
-        _country = pMark.country ;
-        _state = pMark.administrativeArea ;
-        _city = pMark.locality ;
+        _country = pMark.country;
+        _state = pMark.administrativeArea;
+        _city = pMark.locality;
         _address =
             "${pMark.subThoroughfare ?? ""} ${pMark.thoroughfare ?? ""}".trim();
-              _zipCode = pMark.postalCode;
+        _zipCode = pMark.postalCode;
         _completeAddress =
             '${pMark.subThoroughfare} ${pMark.thoroughfare}, ${pMark.locality}, ${pMark.subAdministrativeArea}, ${pMark.administrativeArea}, ${pMark.country}';
       } else {
-
-         _country = "Unknown Country";
+        _country = "Unknown Country";
         _state = "Unknown State";
         _city = "Unknown City";
         _address = "Unknown Address";
         _completeAddress = "Address unavailable";
         _zipCode = null;
       }
-  print("complete address " + _completeAddress!);
+      print("complete address " + _completeAddress!);
 
       notifyListeners(); // Notify that new data is available
     } catch (e) {
@@ -103,54 +99,9 @@ class LocationProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
 }
 
 
 
 
-
-// Future<void> getCurrenLocation() async {
-//   try {
-//     bool serviceEnabled;
-//     LocationPermission permission;
-
-//     serviceEnabled = await Geolocator.isLocationServiceEnabled();
-//     if (!serviceEnabled) {
-//       return Future.error('Location services are disabled.');
-//     }
-
-//     permission = await Geolocator.checkPermission();
-//     if (permission == LocationPermission.denied) {
-//       permission = await Geolocator.requestPermission();
-//       if (permission == LocationPermission.denied) {
-//         return Future.error('Location permissions are denied');
-//       }
-//     }
-
-//     if (permission == LocationPermission.deniedForever) {
-//       return Future.error(
-//           'Location permissions are permanently denied, we cannot request permissions.');
-//     }
-
-//     Position newPosition = await Geolocator.getCurrentPosition(
-//       desiredAccuracy: LocationAccuracy.high,
-//     );
-
-//     position = newPosition;
-
-//     placeMarks = await placemarkFromCoordinates(
-//       position!.latitude,
-//       position!.longitude,
-//     );
-
-//     Placemark pMark = placeMarks![0];
-//     SchedulerBinding.instance.addPostFrameCallback((_) {
-//       // '${pMark.thoroughfare}, ${pMark.locality}, ${pMark.subAdministrativeArea}, ${pMark.administrativeArea}, ${pMark.country}';
-
-//       String? completeAddress =
-//           '${pMark.subThoroughfare} ${pMark.thoroughfare}, ${pMark.locality}, ${pMark.subAdministrativeArea}, ${pMark.administrativeArea}, ${pMark.country}';
-//       locationController.text = completeAddress;
-//     });
-//   } catch (e) {
-//   } finally {}
-// }

@@ -28,6 +28,7 @@
   "menuDetails": "Ìtẹm ìkànrọ",
   "productDescription": "Àkọ́ọ́rù Kọọkan",
   "reviews": "Àkọ́ọ́rù",
+  "review": "Atunwo",
   "leaveReview": "Fọwọsi Àkọ́ọ́rù",
   "addToCart": "Tún Ìkànrọ Lọ",
   "dishes": "Ẹ̀dá",
@@ -53,9 +54,7 @@
   "verifyEmail": "Jọwọ ṣii imèlà rẹ",
   "createAnAccount": "Ṣẹ̀dá àkókò",
   "username": "Orukọ èdá",
-
   "phoneNumber": "Nọmbà tẹlifóònù",
- 
   "inputAddress": "sí adírẹsì rẹ",
   "confirm": "tókàn",
   "search": "Wọle..",
@@ -64,14 +63,9 @@
   "typeReview": "Pẹ̀lú àkọ́ọ́rù fún ìtẹmì ní yí ìlà-ẹ̀kọ",
   "send": "Tọ",
   "next": "Tẹ̀lé",
-
   "required": "jẹ dandan",
   "passwordsDoNotMatch": "Ọrọigbaniwọle ko baramu",
-
-
   "char": "Gbọdọ ju awọn ohun kikọ mẹfa lọ",
-
-
   "appName": "Node-Tech Ìyá Àwọn Oúnjẹ",
   "cash": "Owó",
   "continueText": "Tẹsiwaju",
@@ -126,5 +120,37 @@
   "userNotFound": "Ko si olumulo pẹlu imeeli yii.",
   "networkRequestFailed": "Jọwọ ṣayẹwo asopọ intanẹẹti rẹ.",
   "unexpectedError": "Aṣiṣe kan waye. Jọwọ gbiyanju lẹẹkansi.",
-  "invalidPhoneNumber": "Nọmba foonu ti ko tọ"
+  "invalidPhoneNumber": "Nọmba foonu ti ko tọ",
+  "profile": "Profaili",
+  "preferences": "Àwọn Ifẹ",
+  "firstName": "Orukọ Akọkọ",
+  "lastName": "Orukọ Idile",
+  "emailAddress": "Adirẹsi Imeeli",
+  "personalAddress": "Adirẹsi Ti Ara",
+  "zipCode": "Koodu Zip",
+  "saveChanges": "Fipamọ Àtúnṣe",
+  "@@locale": "yo",
+  "please_check_your_connection": "Jọwọ ṣayẹwo asopọ rẹ",
+  "server_error": "Aṣiṣe olupin",
+  "access_to_location_denied": "Iwọle si ipo ti kọ",
+  "allow_access_to_the_location_services": "Gba laaye iwọle si iṣẹ ipo.",
+  "access_to_location_permanently_denied": "Iwọle si ipo ti kọ patapata",
+  "allow_access_to_the_location_services_from_settings": "Gba iṣẹ ipo laaye fun App yii nipa lilo eto ẹrọ.",
+  "ok": "O dára",
+  "cant_get_current_location": "Ko le gba ipo lọwọlọwọ",
+  "please_make_sure_you_enable_gps_and_try_again": "Jọwọ rii daju pe o ti mu GPS ṣiṣẹ ki o gbiyanju lẹẹkansi",
+  "search_place": "Wa ipo",
+  "finding_place": "N wa ipo...",
+  "no_result_found": "Ko si esi ti a rii",
+  "unnamedPlace": "Ipo laisi orukọ",
+  "home": "Ile",
+  "favorites": "Ayebaye",
+  "cart": "Kàrtì",
+  "deliveryNotAvailable": "Ma banujẹ, a ko le gbe ránṣẹ si agbegbe rẹ lọwọlọwọ."
+
+
+
+
+
 }
+

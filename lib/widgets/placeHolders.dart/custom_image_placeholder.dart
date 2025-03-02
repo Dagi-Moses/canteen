@@ -1,10 +1,6 @@
-
 import 'package:flutter/material.dart';
 
 class CustomImagePlaceHolderWidget extends StatelessWidget {
- 
- 
-
   const CustomImagePlaceHolderWidget({
     Key? key,
   

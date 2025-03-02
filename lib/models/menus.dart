@@ -11,14 +11,14 @@ class Menus {
   final String status;
   final double rating;
   final List likes;
-  final int likesCount;
+
   final List raters;
   final String category;
   int quantity;
   int? availableQuantity;
 
   Menus({
-    required this.likesCount,
+    
     required this.menuID,
     required this.menuInfo,
     required this.menuTitle,
@@ -47,7 +47,7 @@ class Menus {
       likes: json['likes'],
       thumbnailUrl: json["thumbnailUrl"],
       category: json['category'],
-      likesCount: json['likesCount'],
+  
       quantity: json['quantity'] ?? 1,
       availableQuantity: json['availableQuantity'] ?? 50,
     );
@@ -57,7 +57,7 @@ class Menus {
     final Map<String, dynamic> data = <String, dynamic>{};
 
     data['title'] = menuTitle.toLowerCase();
-    data['likesCount'] = likesCount;
+
     data["menuID"] = menuID;
     data["menuPrice"] = menuPrice;
     data["menuInfo"] = menuInfo;
@@ -74,4 +74,37 @@ class Menus {
     
     return data;
   }
+
+   Menus copyWith({
+    String? menuID,
+    String? menuTitle,
+    String? menuInfo,
+    int? menuPrice,
+    DateTime? publishDate,
+    String? thumbnailUrl,
+    String? status,
+    double? rating,
+    List? likes,
+    List? raters,
+    String? category,
+    int? quantity,
+    int? availableQuantity,
+  }) {
+    return Menus(
+      menuID: menuID ?? this.menuID,
+      menuInfo: menuInfo ?? this.menuInfo,
+      menuTitle: menuTitle ?? this.menuTitle,
+      menuPrice: menuPrice ?? this.menuPrice,
+      publishDate: publishDate ?? this.publishDate,
+      status: status ?? this.status,
+      rating: rating ?? this.rating,
+      raters: raters ?? List.from(this.raters), // Copy list to prevent mutations
+      likes: likes ?? List.from(this.likes),   // Copy list to prevent mutations
+      category: category ?? this.category,
+      thumbnailUrl: thumbnailUrl ?? this.thumbnailUrl,
+      quantity: quantity ?? this.quantity,
+      availableQuantity: availableQuantity ?? this.availableQuantity,
+    );
+  }
+
 }
