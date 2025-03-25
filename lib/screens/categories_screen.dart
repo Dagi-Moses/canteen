@@ -1,15 +1,9 @@
-import 'package:canteen/models/menus.dart';
 import 'package:canteen/providers/menusProvider.dart';
 import 'package:canteen/util/categories.dart';
 import 'package:canteen/util/routes.dart';
-import 'package:canteen/widgets/menuGridFutureBuilder.dart';
-import 'package:canteen/widgets/slider_item.dart';
+import 'package:canteen/widgets/menuWidgets/menuGridFutureBuilder.dart';
 import 'package:flutter/material.dart';
-
-
-
 import 'package:canteen/widgets/badge.dart';
-
 import 'package:canteen/widgets/home_category.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -108,26 +102,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
             SizedBox(height: 10.0),
             Center(child: MenuGridFutureBuilder(menus: menuProvider.categoryMenus, menuProvider: menuProvider))
-            // GridView.builder(
-            //   shrinkWrap: true,
-            //   primary: false,
-            //   physics: NeverScrollableScrollPhysics(),
-            //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            //     crossAxisCount: 2,
-            //   crossAxisSpacing: 10,
-            //     childAspectRatio: MediaQuery.of(context).size.width /
-            //         (MediaQuery.of(context).size.height / 1.25),
-            //   ),
-            //   itemCount: menuProvider.categoryMenus.length,
-            //   itemBuilder: (BuildContext context, int index) {
-            //     final food = menuProvider.categoryMenus[index];
-            //     // Menus Menu = Menus.fromJson(json: food as Map<String, dynamic>)  ;
-            //     return SliderItem(
-            //       menuProvider: menuProvider,
-            //       model: food,
-            //     );
-            //   },
-            // ),
+           
           ],
         ),
       ),

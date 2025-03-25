@@ -1,7 +1,7 @@
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 
 import 'package:canteen/util/screenHelper.dart';
-import 'package:canteen/widgets/checkOutCard.dart';
+import 'package:canteen/widgets/cards/checkOutCard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

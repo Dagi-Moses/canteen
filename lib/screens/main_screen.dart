@@ -27,12 +27,14 @@ class _MainScreenState extends State<MainScreen> {
  late  MenuProvider menus;
  late NavigationProvider navigationProvider;
  
+@override
   void initState() {
     super.initState();
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent, // Set your desired status bar color
-      // Set your desired navigation bar color
-    ));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent, // Adjust if needed
+      ));
+    });
   }
 
   @override
@@ -74,11 +76,16 @@ class _MainScreenState extends State<MainScreen> {
                     ]
                   : null,
             ),
-      body: ScreenHelper(
-        mobile: _buildMobileLayout(navigationProvider),
-        tablet: _buildLayout(menus, navigationProvider, cartMenus),
-        desktop: _buildLayout(menus, navigationProvider, cartMenus),
-      ),
+      body:  Builder(
+  builder: (context) {
+    return ScreenHelper(
+      mobile: _buildMobileLayout(navigationProvider),
+      tablet: _buildLayout(menus, navigationProvider, cartMenus),
+      desktop: _buildLayout(menus, navigationProvider, cartMenus),
+    );
+  },
+),
+
       bottomNavigationBar: ScreenHelper.isMobile(context)
           ? BottomAppBar(
               height: 60,
@@ -122,7 +129,6 @@ class _MainScreenState extends State<MainScreen> {
         CartScreen(),
         SettingsScreen(),
 
-        // Profile(),
       ],
     );
   }

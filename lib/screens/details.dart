@@ -4,7 +4,7 @@ import 'package:canteen/providers/menusProvider.dart';
 import 'package:canteen/util/routes.dart';
 import 'package:canteen/util/screenHelper.dart';
 import 'package:canteen/widgets/buttons/cartButton.dart';
-import 'package:canteen/widgets/product.dart';
+import 'package:canteen/widgets/menuWidgets/product.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 

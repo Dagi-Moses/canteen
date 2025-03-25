@@ -20,7 +20,6 @@ class DashBoardWidget extends StatefulWidget {
 class _DashBoardWidgetState extends State<DashBoardWidget> {
   @override
   Widget build(BuildContext context) {
-    final app = Provider.of<AppProvider>(context, listen: true);
 
     return InkWell(
       onTap: () {

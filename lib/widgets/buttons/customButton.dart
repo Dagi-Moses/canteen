@@ -18,8 +18,8 @@ class CustomButton extends StatelessWidget {
       child: Card(
         elevation: 6.0,
         child: Container(
-          width: 80,
-          padding: const EdgeInsets.all(6),
+         
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
           decoration: const BoxDecoration(
             color: Colors.red,
             borderRadius: BorderRadius.all(Radius.circular(10)),

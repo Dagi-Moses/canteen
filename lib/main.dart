@@ -1,4 +1,4 @@
-import 'package:canteen/controllers/profileController.dart';
+
 import 'package:canteen/providers/authProvider.dart';
 import 'package:canteen/providers/cartProvider.dart';
 import 'package:canteen/providers/emailProvider.dart';
@@ -6,11 +6,11 @@ import 'package:canteen/providers/location_provider.dart';
 import 'package:canteen/providers/menusProvider.dart';
 import 'package:canteen/providers/firebase%20functions.dart';
 import 'package:canteen/providers/navigationProvider.dart';
+import 'package:canteen/providers/registerProvider.dart';
 import 'package:canteen/providers/search_provider.dart';
 import 'package:canteen/util/routes.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -23,11 +23,7 @@ import 'providers/app_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
- 
-
-
   runApp(
     MultiProvider(
       providers: [
@@ -37,18 +33,12 @@ void main() async {
         ChangeNotifierProvider(create: (_) => MenuProvider()),
         ChangeNotifierProvider(create: (_) => LocationProvider()),
         ChangeNotifierProvider(create: (_) => EmailProvider()),
-       
         ChangeNotifierProvider(create: (_) => AuthenticationProvider()),
         ChangeNotifierProvider(create: (_) => SearchProvider()),
-        // ChangeNotifierProvider(create: (_) => CartProvider()),
+        ChangeNotifierProvider(create: (_) => RegistrationProvider()),
         ChangeNotifierProvider(create: (_) => NavigationProvider()),
-   ChangeNotifierProxyProvider2<UserProvider, AppProvider,
-          SettingsController>(
-        create: (_) => SettingsController(
-            userProvider: UserProvider(), prov: AppProvider()),
-        update: (_, userProvider, appProvider, previous) =>
-            SettingsController(userProvider: userProvider, prov: appProvider),
-      ),
+     
+       
    ChangeNotifierProxyProvider<UserProvider, CartProvider>(
           create: (_) => CartProvider(
               userProvider: UserProvider()),
@@ -77,6 +67,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
        final app = AppLocalizations.of(context);
+        Provider.of<LocationProvider>(context, listen: false);
     return Consumer<AppProvider>(
       builder: (BuildContext context, AppProvider appProvider, Widget? child) {
         return MaterialApp(
@@ -87,19 +78,14 @@ class _MyAppState extends State<MyApp> {
             GlobalCupertinoLocalizations.delegate,
          
           ],
-           useInheritedMediaQuery: true,
-     // locale: DevicePreview.locale(context),
-      builder: DevicePreview.appBuilder,
+                builder: DevicePreview.appBuilder,
          locale: appProvider.preferredLocale,
           supportedLocales: [
-             Locale('en', ), // English
-            Locale('fr', ), // French
-            Locale('ig', ), // Igbo
-            Locale('yo',), // Yo
-            // const Locale('en'),
-            // const Locale('fr'),
-            // const Locale('ig'),
-            // const Locale('yo'),
+             Locale('en', ), 
+            Locale('fr', ), 
+            Locale('ig', ), 
+            Locale('yo',),
+         
           ],
            localeResolutionCallback: (locale, supportedLocales) {
             for (var supportedLocale in supportedLocales) {
@@ -107,9 +93,9 @@ class _MyAppState extends State<MyApp> {
                 return supportedLocale;
               }
             }
-            return const Locale('en'); // Fallback locale
+            return const Locale('en'); 
           },
-          key: appProvider.key,
+          //key: appProvider.key,
           debugShowCheckedModeBanner: false,
           navigatorKey: appProvider.navigatorKey,
           title: app?.appName ?? "Node-Tech Canteen",

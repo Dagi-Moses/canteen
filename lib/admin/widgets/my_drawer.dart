@@ -1,19 +1,20 @@
 import 'package:canteen/admin/screens/dashboard.dart';
 import 'package:canteen/admin/widgets/simple_dialog.dart';
+import 'package:canteen/util/routes.dart';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:canteen/admin/screens/history_screen.dart';
 import 'package:canteen/admin/screens/home_screen.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 import 'package:provider/provider.dart';
 
 import '../../providers/userProvider.dart';
 import '../../util/const.dart';
 import '../functions.dart';
-import '/screens/join.dart';
+
 
 class MyDrawer extends StatelessWidget {
   final TextEditingController _controller = TextEditingController();
@@ -70,8 +71,8 @@ class MyDrawer extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    // userProvider.name,
-                    "noel",
+                    userProvider.user?.firstName ?? "admin",
+                  
                     style: GoogleFonts.lato(
                       textStyle: const TextStyle(
                         fontSize: 25,
@@ -143,7 +144,7 @@ class MyDrawer extends StatelessWidget {
                       ),
                     ),
                     onTap: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                           builder: (c) => const DashBoard(),
@@ -212,10 +213,9 @@ class MyDrawer extends StatelessWidget {
                           context: context,
                           onTap: () {
                             firebaseAuth.signOut().then((value) {
-                              Navigator.pushAndRemoveUntil(
+                               Navigator.pushNamedAndRemoveUntil(
                                 context,
-                                MaterialPageRoute(
-                                    builder: (context) => JoinApp( canPop: false,)),
+                                Routes.join,
                                 (route) => false,
                               );
                               _controller.clear();

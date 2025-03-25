@@ -1,4 +1,5 @@
 import 'package:canteen/models/menus.dart';
+import 'package:canteen/models/user.dart';
 
 class CategoriesScreenArguments {
   final String catie;
@@ -13,3 +14,12 @@ class ProductDetailsArguments {
 
   ProductDetailsArguments({required this.model, });
 }
+
+class RegistrationCodeVerificationArgs {
+  final UserModel user;
+  final String password;
+
+  RegistrationCodeVerificationArgs(
+      {required this.user, required this.password});
+}
+

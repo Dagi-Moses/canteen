@@ -21,7 +21,11 @@ class _PlacePickerWidgetState extends State<PlacePickerWidget> {
 
     return MapLocationPicker(
       apiKey: apiKey,
-
+       backButton: GestureDetector(
+        onTap: (){
+          Navigator.pop(context);
+        },
+        child: Icon(Icons.arrow_back)),
       popOnNextButtonTaped: true,
       currentLatLng: LatLng(cartProvider.address?.geoPoint?.latitude,
           cartProvider.address?.geoPoint?.longitude),

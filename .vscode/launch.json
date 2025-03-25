@@ -6,6 +6,7 @@
     "configurations": [
 
 
+
         
         
 
@@ -29,6 +30,12 @@
             "deviceId": "emulator-5556"
         },
         {
+            "name":"Mobile",
+            "request":"launch",
+            "type":"dart",
+            "deviceId": "192.168.0.101:39893"
+        },
+        {
             "name":"Tab",
             "request":"launch",
             "type":"dart",
@@ -45,7 +52,7 @@
         {
             "name": "all mobile",
             "configurations": [
-            "Tab","Pixel"
+            "Tab","Pixel","Mobile"
             ]
         }
     ]

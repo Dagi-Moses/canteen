@@ -36,7 +36,7 @@ final UserProvider userProvider; // Store userProvider reference
     for (var menu in _cartMenus) {
       total += menu.menuPrice * menu.quantity;
     }
-    return total + deliveryFee;
+     return double.parse((total + deliveryFee).toStringAsFixed(2));
   }
 
   double get deliveryFee {

@@ -1,14 +1,8 @@
 import 'package:canteen/providers/menusProvider.dart';
-
-import 'package:canteen/widgets/menuGridFutureBuilder.dart';
-
-
+import 'package:canteen/widgets/menuWidgets/menuGridFutureBuilder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-
-
-
 
 class FavoriteScreen extends StatefulWidget {
   @override
@@ -17,16 +11,10 @@ class FavoriteScreen extends StatefulWidget {
 
 class _FavoriteScreenState extends State<FavoriteScreen>
     {
-
-
-
-  
   @override
   Widget build(BuildContext context) {
      final menuProvider = Provider.of<MenuProvider>(context);
      final app = AppLocalizations.of(context)!;
-    
-   
     return Scaffold(
       body: RefreshIndicator(
     onRefresh: () async {
@@ -47,9 +35,7 @@ class _FavoriteScreenState extends State<FavoriteScreen>
               SizedBox(height: 10.0),
                   MenuGridFutureBuilder(
                  menuProvider: menuProvider, menus: menuProvider.favoriteMenus, 
-             
               ),
-              
               SizedBox(height: 30),
             ],
           ),

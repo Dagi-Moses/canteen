@@ -16,7 +16,7 @@ signout({required BuildContext context , required VoidCallback onTap}) {
                   child: const Center(
                     child: Text(
                       "Yes",
-                      style: TextStyle(color: Colors.red),
+                      style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
                     ),
                   ),
                   onPressed: onTap,
@@ -25,7 +25,7 @@ signout({required BuildContext context , required VoidCallback onTap}) {
                   child: const Center(
                     child: Text(
                       "No",
-                      style: TextStyle(color: Colors.blue),
+                      style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
                     ),
                   ),
                   onPressed: () => {Navigator.pop(context)},

@@ -1,10 +1,7 @@
 import 'package:canteen/controllers/registerController.dart';
-import 'package:canteen/models/user.dart';
-import 'package:canteen/providers/firebase%20functions.dart';
 import 'package:canteen/providers/location_provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:canteen/providers/registerProvider.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -31,9 +28,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     final locationProvider = Provider.of<LocationProvider>(context);
-    final firebaseFunctions = Provider.of<FirebaseFunctions>(context, listen: false);
+    final regProvider = Provider.of<RegistrationProvider>(context);
     final app = AppLocalizations.of(context)!;
     
 
@@ -138,14 +134,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                 ),
                 const SizedBox(height: 10.0),
-                Consumer<LocationProvider>(
-                  builder: (context, locationProvider, child) {
-                    controller.locationController.text =
-                        locationProvider.completeAddress ?? "";
-                    return TextInput(
+              
+                    // if (controller.locationController.text.isEmpty) {
+                    //   controller.locationController.text =
+                    //       locationProvider.completeAddress ?? "";
+                    // }
+                  TextInput(
                       focusNode: controller.addressFocusNode,
                       icon: Icons.home_outlined,
-                      controller: controller.locationController,
+                      controller: locationProvider.locationController,
                       hintText: locationProvider.completeAddress ?? app.address,
                        onSubmitted: (_) {
                         FocusScope.of(context).requestFocus(controller.passwordFocusNode);
@@ -155,9 +152,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       validator: (val) {
                         return val!.length < 4 ? app.inputAddress : null;
                       },
-                    );
-                  },
-                ),
+                    ),
+                  
                 const SizedBox(height: 10.0),
                 TextInput(
                   focusNode: controller.passwordFocusNode,
@@ -203,7 +199,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                    onSubmitted: (_) {
                  controller.register(
                   context,
-                  firebaseFunctions,
+                  regProvider,
                   locationProvider,
                   app
 
@@ -216,7 +212,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 SizedBox(
                   height: 50.0,
                   child: ElevatedButton(
-                    child: !firebaseFunctions.isRegisterLoading
+                    child: !regProvider.isLoading
                         ? Text(
                             app.register.toUpperCase(),
                             style: const TextStyle(
@@ -229,7 +225,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             child: CircularProgressIndicator()),
                     onPressed: () {
                     controller.register(
-                          context, firebaseFunctions, locationProvider, app);
+                          context, regProvider, locationProvider, app);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,

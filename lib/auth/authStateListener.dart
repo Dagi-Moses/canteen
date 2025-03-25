@@ -33,7 +33,7 @@ class _AuthStateListenerState extends State<AuthStateListener> {
     prefs = await SharedPreferences.getInstance();
       await dotenv.load(); // Load .env file
     final app = Provider.of<AppProvider>(context, listen: false);
-    Provider.of<LocationProvider>(context, listen: false);
+   
 
     uid = prefs.getString('auth_token');
     code = prefs.getString('languageCode');

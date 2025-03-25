@@ -1,0 +1,2 @@
+C:/Users/dagit/Desktop/Last Project/canteen/android/app/.cxx/RelWithDebInfo/2px553v3/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/dagit/Desktop/Last Project/canteen/android/app/.cxx/RelWithDebInfo/2px553v3/armeabi-v7a/CMakeFiles/rebuild_cache.dir

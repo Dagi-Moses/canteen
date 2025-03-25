@@ -2,27 +2,24 @@ import 'package:canteen/admin/screens/dashboard.dart';
 import 'package:canteen/admin/screens/paymentPage.dart';
 import 'package:canteen/auth/authStateListener.dart';
 import 'package:canteen/screens/HomeLayout.dart';
-
+import 'package:canteen/screens/RegistrationCodeVerificationScreen.dart';
 import 'package:canteen/screens/categories_screen.dart';
 import 'package:canteen/screens/checkout.dart';
 import 'package:canteen/screens/details.dart';
 import 'package:canteen/screens/dishes.dart';
 import 'package:canteen/screens/forgot_password.dart';
-
 import 'package:canteen/screens/join.dart';
 import 'package:canteen/screens/language%20screen.dart';
-
 import 'package:canteen/screens/main_screen.dart';
 import 'package:canteen/screens/notifications.dart';
 import 'package:canteen/screens/pin_code.dart';
-
 import 'package:canteen/screens/splash.dart';
 import 'package:canteen/screens/walkthrough.dart';
 import 'package:canteen/util/arguments.dart';
 import 'package:flutter/material.dart';
 
 class Routes {
- static const authState = '/';
+  static const authState = '/';
   static const splash = '/splash';
   static const mainScreen = '/home';
   static const homeLayout = '/home-layout';
@@ -35,13 +32,14 @@ class Routes {
   static const join = '/auth';
   static const forgotPassword = '/forgot-password';
   static const pinCodeVerification = '/pin-code-verification';
+  static const regCodeVerification = '/registration-code-verification';
   static const notifications = '/notifications';
   static const paymentPage = '/payment';
   static const dashboard = '/dashboard';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
-         case authState:
+      case authState:
         return MaterialPageRoute(
           builder: (_) => AuthStateListener(),
         );
@@ -64,29 +62,30 @@ class Routes {
       case productDetails:
         final args = settings.arguments as ProductDetailsArguments;
         return MaterialPageRoute(
-            builder: (_) =>
-                ProductDetails(model: args.model, ));
+            builder: (_) => ProductDetails(
+                  model: args.model,
+                ));
       case dishes:
         return MaterialPageRoute(builder: (_) => DishesScreen());
       case dashboard:
         return MaterialPageRoute(builder: (_) => DashBoard());
-    case forgotPassword:
+      case forgotPassword:
         final bool? isForgotPassword = settings.arguments as bool?;
         return MaterialPageRoute(
           builder: (_) =>
               ForgotPasswordScreen(isForgotPassword: isForgotPassword ?? false),
         );
       case pinCodeVerification:
-        final phoneNumber = settings.arguments as String?;
+        final email = settings.arguments as String?;
         return MaterialPageRoute(
-          builder: (_) =>
-              PinCodeVerificationScreen(phoneNumber: phoneNumber ?? ''),
+          builder: (_) => PinCodeVerificationScreen(email: email ?? ''),
         );
       case paymentPage:
         final note = settings.arguments as String;
         return MaterialPageRoute(
-          builder: (_) =>
-              PaymentPage(note: note,),
+          builder: (_) => PaymentPage(
+            note: note,
+          ),
         );
       case join:
         final canPop =
@@ -96,10 +95,15 @@ class Routes {
                   canPop: canPop,
                 ));
       case notifications:
-    
+        return MaterialPageRoute(builder: (_) => Notifications());
+      case regCodeVerification:
+        final args = settings.arguments as RegistrationCodeVerificationArgs;
         return MaterialPageRoute(
-            builder: (_) => Notifications()
-                );
+          builder: (_) => RegistrationCodeVerificationScreen(
+            user: args.user,
+            password: args.password,
+          ),
+        );
       default:
         return MaterialPageRoute(builder: (_) => JoinApp());
     }

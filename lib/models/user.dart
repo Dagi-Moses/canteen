@@ -13,13 +13,13 @@ class UserModel {
   final String? state;      
   final String? city;         
   final String? zipCode;       
-  DateTime? dateJoined = DateTime.now();
+  final DateTime? dateJoined;
 
   UserModel({
      this.uid,
-   this.firstName,
+    this.firstName,
     this.lastName,
-  this.email,
+   this.email,
     this.completeAddress,
     this.address,
     this.phoneNumber,
@@ -28,8 +28,8 @@ class UserModel {
     this.state,
     this.city,
     this.zipCode,
-     this.dateJoined,
-  });
+    this.dateJoined, // Nullable parameter
+  }) ;
 
   factory UserModel.fromMap(Map<String, dynamic> data) {
     return UserModel(
@@ -83,6 +83,7 @@ class UserModel {
     String? state,
     String? city,
     String? zipCode,
+    DateTime? dateJoined, // ✅ Add this to avoid overwriting dateJoined
 
     
   }) {
@@ -94,12 +95,12 @@ class UserModel {
       completeAddress: completeAddress ?? this.completeAddress,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       profileImage: profileImage ?? this.profileImage,
-      dateJoined: dateJoined, 
       country: country?? this.country, 
       city: city ?? this.city, 
       zipCode: zipCode ?? this.zipCode,
       state: state ?? this.state,
       lastName: lastName ?? this.lastName,
+       dateJoined: dateJoined ?? this.dateJoined, // ✅ Preserve dateJoined
      
     );
   }

@@ -1,11 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
+enum OtpType { login, register }
 
 const Color kPrimaryColor = Color.fromRGBO(21, 181, 114, 1);
 const Color kBackgroundColor = Color.fromRGBO(7, 17, 26, 1);
@@ -17,13 +16,12 @@ Color primaryBlack = Colors.black;
 Color primaryWhite = Colors.white;
 Color linkBlue = Colors.blue;
 
-
 final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 String uid = firebaseAuth.currentUser!.uid;
 FirebaseFirestore firestore = FirebaseFirestore.instance;
 late SharedPreferences prefs;
 
-  final List<String> languageNames = [
+final List<String> languageNames = [
   "English",
   "Français",
   "Yorùbá",
@@ -35,12 +33,14 @@ final List<String> languageCodes = [
   "yo",
   "ig",
 ];
+
 class Constants {
   static String payStackApiKey = dotenv.env['PAY_STACK_API_KEY'] ?? '';
   static String admin = '1UuGd7EeZFcYZZmmvpYgWevOcGH3';
   static double STORE_LAT = double.parse(dotenv.env['STORE_LAT'] ?? '6.5244');
   static double STORE_LONG = double.parse(dotenv.env['STORE_LONG'] ?? '3.3792');
-  static String serverUrl = kIsWeb ? 'http://localhost:3000' : 'http://10.0.2.2:3000';
+  static String serverUrl = dotenv.env['SERVER_URL'] ??
+      "https://nodetech-canteen-server.onrender.com";
   static Color lightPrimary = Color(0xfffcfcff);
   static Color darkPrimary = Colors.black;
   static Color lightAccent = Colors.red;
@@ -59,18 +59,18 @@ class Constants {
       bodySmall: TextStyle(color: Colors.black),
     ),
     appBarTheme: AppBarTheme(
-       titleTextStyle: 
-         TextStyle(
-          color: darkBG,
-          fontSize: 18.0,
-          fontWeight: FontWeight.w800,
-        ),
-      ), colorScheme: ColorScheme.fromSwatch()
-.copyWith(secondary: lightAccent).copyWith(surface: lightBG),
+      titleTextStyle: TextStyle(
+        color: darkBG,
+        fontSize: 18.0,
+        fontWeight: FontWeight.w800,
+      ),
+    ),
+    colorScheme: ColorScheme.fromSwatch()
+        .copyWith(secondary: lightAccent)
+        .copyWith(surface: lightBG),
 //      iconTheme: IconThemeData(
 //        color: lightAccent,
 //      ),
-    
   );
 
   static ThemeData darkTheme = ThemeData(
@@ -80,28 +80,22 @@ class Constants {
     //cursorColor: darkAccent,
     appBarTheme: AppBarTheme(
       titleTextStyle: TextStyle(
-          color: lightBG,
-          fontSize: 18.0,
-          fontWeight: FontWeight.w800,
-        ),
+        color: lightBG,
+        fontSize: 18.0,
+        fontWeight: FontWeight.w800,
       ),
-       colorScheme: ColorScheme.dark(
-          onPrimary:
-          Colors.red, 
-    primary: darkPrimary,
-    secondary: darkAccent,
-    
-  ).copyWith(surface: darkBG),
+    ),
+    colorScheme: ColorScheme.dark(
+      onPrimary: Colors.red,
+      primary: darkPrimary,
+      secondary: darkAccent,
+    ).copyWith(surface: darkBG),
 
     iconTheme: IconThemeData(
-    
-      color: Colors.black, 
+      color: Colors.black,
     ),
   );
 }
-
-
-
 
 class HexColor extends Color {
   static int _getColorFromHex(String hexColor) {

@@ -1,31 +1,14 @@
 import 'package:canteen/providers/menusProvider.dart';
 import 'package:canteen/util/categories.dart';
 import 'package:canteen/util/screenHelper.dart';
+import 'package:canteen/widgets/menuWidgets/menuGridFutureBuilder.dart';
+import 'package:canteen/widgets/menuWidgets/slider_item.dart';
 import 'package:canteen/widgets/placeHolders.dart/custom_image_placeholder.dart';
-import 'package:canteen/widgets/menuGridFutureBuilder.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:flutter/material.dart';
-
-
-
 import 'package:canteen/widgets/home_category.dart';
-
-import 'package:canteen/widgets/slider_item.dart';
-
 import 'package:carousel_slider/carousel_slider.dart';
-
-
 import 'package:provider/provider.dart';
-
-import '../models/menus.dart';
-
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-
-// Inside your state class
-
-
 
 class Home extends StatefulWidget {
   @override
@@ -33,14 +16,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
- late ScrollController _scrollController = ScrollController();
 
- 
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
 
   
   @override
@@ -70,7 +46,7 @@ class _HomeState extends State<Home> {
                     Text(
                       app.popularItems,
                       style: TextStyle(
-                        fontSize: 23,
+                        fontSize: 23, 
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -82,9 +58,8 @@ class _HomeState extends State<Home> {
              Consumer<MenuProvider>(
                   builder: (context, menuProvider, child) {
          if (menuProvider.isLoading) {
-                      return Expanded(
-                        // height: MediaQuery.of(context).size.height /
-                        //     2.1, // Same height as CarouselSlider
+                      return SizedBox(
+                     
                         child: GridView.builder(
                           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount:
@@ -92,11 +67,11 @@ class _HomeState extends State<Home> {
                             crossAxisSpacing: 10.0,
                             mainAxisSpacing: 10.0,
                             childAspectRatio:
-                                3 / 2, // Adjust for carousel item proportions
+                                3 / 2, 
                           ),
                           itemCount: ScreenHelper.isMobile(context) ? 1 : 3,
                           itemBuilder: (context, index) {
-                                double scale = index == 1 ? 1.0 : 0.8; // 1.0 for center, 0.8 for others
+                                double scale = index == 1 ? 1.0 : 0.8; 
                             return Transform.scale(
                                        scale: scale,
                               child: CustomImagePlaceHolderWidget()
@@ -107,7 +82,7 @@ class _HomeState extends State<Home> {
                     }  else if (menuProvider.popularMenus.isEmpty) {
         return SizedBox();
             } else {
-        // Using CarouselSlider with the fetched menus
+      
         final carouselItems = menuProvider.popularMenus.map((menu) {
           return SliderItem(
             model: menu,
@@ -122,19 +97,15 @@ class _HomeState extends State<Home> {
           
             autoPlay: true,
             enableInfiniteScroll: true,
-            enlargeCenterPage: true, // Increase the size of the center item
-            autoPlayInterval: Duration(seconds: 10), // Set auto-play interval
-            autoPlayAnimationDuration: Duration(seconds: 2), // Set animation duration
-            autoPlayCurve: Curves.fastOutSlowIn, // Set animation curve
+            enlargeCenterPage: true, 
+            autoPlayInterval: Duration(seconds: 10), 
+            autoPlayAnimationDuration: Duration(seconds: 2), 
+            autoPlayCurve: Curves.fastOutSlowIn, 
             height: MediaQuery.of(context).size.height / 2.1,
             viewportFraction: ScreenHelper.isMobile(context) ? 1.0 : 0.3,
             aspectRatio: 2.0,
             onPageChanged: (index, reason) {
-              // SchedulerBinding.instance.addPostFrameCallback((_) {
-              //   setState(() {
-              //     _current = index;
-              //   });
-              // });
+           
             },
           ),
           items: carouselItems,
@@ -144,7 +115,7 @@ class _HomeState extends State<Home> {
         ),
         
         
-             
+
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
@@ -193,9 +164,6 @@ class _HomeState extends State<Home> {
         
                 SizedBox(height: 10.0),
             MenuGridFutureBuilder( menuProvider: menuProvider, menus: menuProvider.recentMenus, ),
-                
-        
-        
                 SizedBox(height: 30),
               ],
             ),

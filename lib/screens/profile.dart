@@ -235,7 +235,7 @@ class _ProfileState extends State<Profile> {
                 hintText: app.noName,
                 onSubmitted: (String value) {
                   if (value.trim().isNotEmpty) {
-                    userProvider.updateUserName(value);
+                 //   userProvider.updateUserName(value);
                   }
                 },
               ),
@@ -245,7 +245,7 @@ class _ProfileState extends State<Profile> {
                 hintText: app.noEmail,
                 onSubmitted: (String value) {
                   if (value.trim().isNotEmpty) {
-                    userProvider.updateUserEmail(value);
+                   // userProvider.updateUserEmail(value);
                   }
                 },
               ),
@@ -255,7 +255,7 @@ class _ProfileState extends State<Profile> {
                 hintText: app.noPhoneNumber,
                 onSubmitted: (String value) {
                   if (value.trim().isNotEmpty) {
-                    userProvider.updatePhoneNumber(value);
+                 //   userProvider.updatePhoneNumber(value);
                   }
                 },
               ),
@@ -265,7 +265,7 @@ class _ProfileState extends State<Profile> {
                 hintText: app.noAddress,
                 onSubmitted: (String value) {
                   if (value.trim().isNotEmpty) {
-                    userProvider.updateUserAddress(value);
+                 //   userProvider.updateUserAddress(value);
                   }
                 },
               ),

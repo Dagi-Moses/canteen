@@ -1,105 +1,79 @@
-import 'package:canteen/providers/app_provider.dart';
-import 'package:csc_picker/csc_picker.dart';
-import 'package:flutter/material.dart';
+
 import 'package:canteen/models/user.dart';
 import 'package:canteen/providers/userProvider.dart';
+import 'package:canteen/widgets/snackBar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 
-class SettingsController extends ChangeNotifier {
-  GlobalKey<CSCPickerState> cscPickerKey = GlobalKey();
- late UserProvider userProvider;
- late AppProvider prov;
-  TabController ?tabController;
-   TextEditingController firstNameController = TextEditingController();
-   TextEditingController lastNameController = TextEditingController();
-   TextEditingController emailController = TextEditingController();
-   TextEditingController phoneController = TextEditingController();
-   TextEditingController countryController = TextEditingController();
-   TextEditingController cityController = TextEditingController();
-   TextEditingController stateController = TextEditingController();
-   TextEditingController addressController = TextEditingController();
-   TextEditingController zipCodeController = TextEditingController();
+class UserController {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  final List<String> languages = [
-    "English",
-    "Français",
-    "Yorùbá",
-    "Igbo",
-  ];
-  final List<String> languageCodes = [
-    "en",
-    "fr",
-    "yo",
-    "ig",
-  ];
+  Future<void> updateUser({
+    required UserProvider userProvider,
+    required UserModel updatedUser,
+    required BuildContext context,
+  }) async {
+    if (userProvider.user == null) {
+      _showError(context, "User data not found.");
+      return;
+    }
 
-  String? selectedLanguage;
+    try {
+      userProvider.isLoading = true;
 
-  SettingsController({ required this.userProvider, this.tabController,  required this.prov}) {
-    firstNameController = TextEditingController(text: userProvider.user?.firstName );
-    lastNameController = TextEditingController(text: userProvider.user?.lastName);
-    emailController = TextEditingController(text: userProvider.user?.email);
-    phoneController = TextEditingController(text: userProvider.user?.phoneNumber);
-    countryController = TextEditingController(text: userProvider.user?.country);
-    cityController = TextEditingController(text:userProvider.user?.city);
-    addressController = TextEditingController(text:userProvider.user?.address);
-    zipCodeController = TextEditingController(text:userProvider.user?.zipCode);
-    stateController = TextEditingController(text: userProvider.user?.state);
+      String uid = userProvider.user!.uid!;
+      Map<String, dynamic> updates = {};
+
+      // Only update changed fields
+      if (updatedUser.firstName != userProvider.user!.firstName) {
+        updates['firstName'] = updatedUser.firstName;
+      }
+      if (updatedUser.lastName != userProvider.user!.lastName) {
+        updates['lastName'] = updatedUser.lastName;
+      }
+      if (updatedUser.phoneNumber != userProvider.user!.phoneNumber) {
+        updates['phoneNumber'] = updatedUser.phoneNumber;
+      }
+      if (updatedUser.country != userProvider.user!.country) {
+        updates['country'] = updatedUser.country;
+      }
+      if (updatedUser.state != userProvider.user!.state) {
+        updates['state'] = updatedUser.state;
+      }
+      if (updatedUser.city != userProvider.user!.city) {
+        updates['city'] = updatedUser.city;
+      }
+      if (updatedUser.address != userProvider.user!.address) {
+        updates['address'] = updatedUser.address;
+      }
+      if (updatedUser.zipCode != userProvider.user!.zipCode) {
+        updates['zipCode'] = updatedUser.zipCode;
+      }
+      // if (updatedUser.profileImage != userProvider.user!.profileImage) {
+      //   updates['profileImage'] = updatedUser.profileImage;
+      // }
+
+      if (updates.isNotEmpty) {
+        updates['updatedAt'] = FieldValue.serverTimestamp(); // Track updates
+        await _firestore.collection('users').doc(uid).update(updates);
+        // userProvider
+        //     .setUserFromSnapshot({...userProvider.user!.toMap(), ...updates});
+      }
+
+      snackBar("Profile updated successfully!",  context);
+    } catch (e) {
+      _showError(context, "Failed to update profile. Try again.");
+    } finally {
+      userProvider.isLoading = false;
+    }
   }
 
- void saveChanges() {
-    final updatedUser = UserModel(
-      firstName: firstNameController.text.trim(),
-      lastName: lastNameController.text.trim(),
-      phoneNumber: phoneController.text.trim(),
-      country: countryController.text.trim(),
-      state: stateController.text.trim(),
-      city: cityController.text.trim(),
-      address: addressController.text.trim(),
-      zipCode: zipCodeController.text.trim(),
+  void _showError(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+          content: Text(message, style: TextStyle(color: Colors.white)),
+          backgroundColor: Colors.red),
     );
-    userProvider.updateUser(updatedUser: updatedUser);
-  }
-
-  void updateCountry(String value) {
-    countryController.text = value;
-    notifyListeners();
-  }
-
-  void updateState(String value) {
-    stateController.text = value;
-    notifyListeners();
-  }
-
-  void updateCity(String value) {
-    cityController.text = value;
-    notifyListeners();
-  }
-
-  void updateSelectedLanguage(String languageCode) {
-    selectedLanguage = languageCode;
-    notifyListeners();
-  }
-void changeLanguage(String? newValue) {
-    if (newValue == null) return;
-    selectedLanguage = newValue;
-    int index = languages.indexOf(newValue);
-    prov.setPreferredLanguage(languageCodes[index]);
-    notifyListeners();
-  }
-
-  @override
-  void dispose() {
-    firstNameController.dispose();
-    lastNameController.dispose();
-    emailController.dispose();
-    phoneController.dispose();
-    countryController.dispose();
-    cityController.dispose();
-    stateController.dispose();
-    addressController.dispose();
-    zipCodeController.dispose();
-    tabController?.dispose();
-    super.dispose();
   }
 }

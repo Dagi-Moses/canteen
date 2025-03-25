@@ -7,7 +7,7 @@ import 'package:canteen/widgets/textFields/expandableTextField.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import '../widgets/HistoryWidget.dart';
+import '../widgets/menuWidgets/HistoryWidget.dart';
 
 class SearchScreen extends StatefulWidget {
   @override
@@ -60,16 +60,19 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Widget buildGridView(MenuProvider menuProvider, SearchProvider searchProvider ) {
     return GridView.builder(
+
+      
     shrinkWrap: true,
       primary: false,
       physics: NeverScrollableScrollPhysics(),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        
         crossAxisCount: ScreenHelper.isDesktop(context)
             ? 5
             : ScreenHelper.isTablet(context)
                 ? 4
                 : 1,
-        childAspectRatio:ScreenHelper.isMobile(context)? 1.0: 0.9,
+        childAspectRatio:ScreenHelper.isMobile(context)? 4: 0.9,
       ),
    
       itemCount: searchProvider.searchResults.length,
@@ -106,7 +109,9 @@ class _SearchScreenState extends State<SearchScreen> {
                   : ScreenHelper.isTablet(context)
                       ? 4
                       : 1,
-              childAspectRatio: ScreenHelper.isMobile(context) ? 1.0 : 0.9,
+                        crossAxisSpacing: 8.0, // Adjust for better spacing
+  mainAxisSpacing: 8.0,
+              childAspectRatio: ScreenHelper.isMobile(context) ? 4 : 0.9,
             ),
             itemCount: historyData.length,
             itemBuilder: (BuildContext context, int index) {
