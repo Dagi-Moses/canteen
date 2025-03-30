@@ -27,8 +27,9 @@ class _PlacePickerWidgetState extends State<PlacePickerWidget> {
         },
         child: Icon(Icons.arrow_back)),
       popOnNextButtonTaped: true,
-      currentLatLng: LatLng(cartProvider.address?.geoPoint?.latitude,
-          cartProvider.address?.geoPoint?.longitude),
+currentLatLng: LatLng(cartProvider.address?.geoPoint?.latitude ?? 0.0,
+          cartProvider.address?.geoPoint?.longitude ?? 0.0),
+
       onNext: (GeocodingResult? result) {
         if (result != null) {
           print(result.formattedAddress);

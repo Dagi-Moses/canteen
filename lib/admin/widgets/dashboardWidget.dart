@@ -1,7 +1,7 @@
-import 'package:canteen/providers/app_provider.dart';
+
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+
 
 class DashBoardWidget extends StatefulWidget {
   final int index;

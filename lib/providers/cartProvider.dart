@@ -327,7 +327,7 @@ final UserProvider userProvider; // Store userProvider reference
       id: userProvider.user!.uid!,
       date: DateTime.now().millisecondsSinceEpoch,
       pickupOption: PickupOption.delivery,
-      paymentMethod: paymentMethod.toString(),
+      paymentMethod: paymentMethod,
       address: address,
       userId: userProvider.user?.uid ?? "",
       userName: userProvider.user?.firstName ?? "",
@@ -335,7 +335,7 @@ final UserProvider userProvider; // Store userProvider reference
       userPhone: userProvider.user?.phoneNumber ?? "",
       userNote: note,
       employeeCancelNote: "",
-      deliveryStatus: DeliveryStatus.pending,
+      deliveryStatus: DeliveryStatus.upcoming,
       deliveryId: ud,
       deliveryGeoPoint: address?.geoPoint,
       menuTitle: model.menuTitle,
@@ -483,7 +483,7 @@ final UserProvider userProvider; // Store userProvider reference
       addres = Address(
           mobile: userProvider.user?.phoneNumber,
           city: city,
-          geoPoint: GeoPoin(position.latitude, position.longitude),
+          geoPoint: GeoPoint(position.latitude, position.longitude),
           state: pMark.administrativeArea,
           street: pMark.street);
 
@@ -521,7 +521,7 @@ final UserProvider userProvider; // Store userProvider reference
         Address addres = Address(
             mobile: userProvider.user?.phoneNumber,
             city: ciy,
-            geoPoint: GeoPoin(lat, long),
+            geoPoint: GeoPoint(lat, long),
             state: pMark.administrativeArea,
             street: pMark.street);
 

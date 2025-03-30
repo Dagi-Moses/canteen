@@ -1,10 +1,11 @@
 import 'package:canteen/models/geopoint.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class OrderRequestModel {
   final String id;
   final int date;
   final PickupOption pickupOption;
-  final String paymentMethod;
+  final PaymentMethod paymentMethod;
   final Address? address;
   final String userId;
   final String userName;
@@ -14,7 +15,7 @@ class OrderRequestModel {
   final String? employeeCancelNote;
   final DeliveryStatus deliveryStatus;
   final String? deliveryId;
-  final GeoPoin? deliveryGeoPoint;
+  final GeoPoint? deliveryGeoPoint;
   final String menuTitle;
   final String menuID;
   final int menuPrice;
@@ -46,8 +47,8 @@ class OrderRequestModel {
         'id': id,
         'date': date,
         'pickupOption': pickupOption.toString().split('.').last,
-        'paymentMethod': paymentMethod,
-        'address': address?.toJson(),
+        'paymentMethod': paymentMethod.toString().split('.').last,
+        'addressModel': address?.toJson(),
         'userId': userId,
         'userName': userName,
         'userImage': userImage,
@@ -56,7 +57,7 @@ class OrderRequestModel {
         'employeeCancelNote': employeeCancelNote,
         'deliveryStatus': deliveryStatus.toString().split('.').last,
         'deliveryId': deliveryId,
-        'deliveryGeoPoint': deliveryGeoPoint?.toJson(),
+        'deliveryGeoPoint': deliveryGeoPoint,
         'menuTitle': menuTitle,
         'menuID': menuID,
         'menuPrice': menuPrice,
@@ -69,9 +70,10 @@ class OrderRequestModel {
       date: json['date'],
       pickupOption: PickupOption.values.firstWhere((option) =>
           option.toString().split('.').last == json['pickupOption']),
-      paymentMethod: json['paymentMethod'],
+      paymentMethod: PaymentMethod.values.firstWhere((option) =>
+          option.toString().split('.').last == json['paymentMethod']),
       address:
-          json['address'] != null ? Address.fromJson(json['address']) : null,
+          json['addressModel'] != null ? Address.fromJson(json['addressModel']) : null,
       userId: json['userId'],
       userName: json['userName'],
       userImage: json['userImage'],
@@ -81,10 +83,7 @@ class OrderRequestModel {
       deliveryStatus: DeliveryStatus.values.firstWhere((status) =>
           status.toString().split('.').last == json['deliveryStatus']),
       deliveryId: json['deliveryId'],
-      deliveryGeoPoint: json['deliveryGeoPoint'] != null
-          ? GeoPoin(json['deliveryGeoPoint']['latitude'],
-              json['deliveryGeoPoint']['longitude'])
-          : null,
+      deliveryGeoPoint: json['deliveryGeoPoint'],
       menuTitle: json['menuTitle'],
       menuID: json['menuID'],
       menuPrice: json['menuPrice'],
@@ -98,7 +97,7 @@ class Address {
   final String? city;
   final String? street;
   final String? mobile;
-  final GeoPoin? geoPoint;
+  final GeoPoint? geoPoint;
 
   Address({
     this.state,
@@ -113,7 +112,7 @@ class Address {
         'city': city,
         'street': street,
         'mobile': mobile,
-        'geoPoint': geoPoint?.toJson(),
+        'geoPoint': geoPoint,
       };
 
   factory Address.fromJson(Map<String, dynamic> json) {
@@ -122,9 +121,7 @@ class Address {
       city: json['city'],
       street: json['street'],
       mobile: json['mobile'],
-      geoPoint: json['geoPoint'] != null
-          ? GeoPoin(json['geoPoint']['latitude'], json['geoPoint']['longitude'])
-          : null,
+      geoPoint: json['geoPoint']
     );
   }
 }
